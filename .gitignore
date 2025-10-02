@@ -24,7 +24,10 @@ temp/
 plan/
 
 # Offline vendor dependencies (downloaded during Docker build)
-static/vendor/
+static/vendor/*
+!static/vendor/katex/
+!static/vendor/katex/**
+static/vendor/katex/fonts/
 
 # Docs build artifacts
 docs/_site/
