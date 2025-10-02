@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Speakr - Audio Transcription & Summarization</title>
+    <title>LecApp - Audio Transcription & Summarization</title>
     {% include 'includes/loading_overlay.html' %}
     <!-- All dependencies bundled locally for offline support -->
     <script src="{{ url_for('static', filename='vendor/js/tailwind.min.js') }}"></script>
@@ -64,8 +64,8 @@
                 
                 <!-- Logo and Title -->
                 <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                    <img src="{{ url_for('static', filename='img/icon-32x32.png') }}" alt="Speakr" class="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0">
-                    <h1 class="text-lg sm:text-xl font-bold text-[var(--text-primary)] truncate">Speakr</h1>
+                    <img src="{{ url_for('static', filename='img/icon-32x32.png') }}" alt="LecApp" class="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0">
+                    <h1 class="text-lg sm:text-xl font-bold text-[var(--text-primary)] truncate">LecApp</h1>
                 </div>
             </div>
 

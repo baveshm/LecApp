@@ -1,8 +1,8 @@
 {
-  "id": "com.speakr.app",
-  "name": "Speakr",
-  "short_name": "Speakr",
-  "description": "Speakr - Audio transcription and summarization",
+  "id": "com.lecapp.app",
+  "name": "LecApp",
+  "short_name": "LecApp",
+  "description": "LecApp - Audio transcription and summarization",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

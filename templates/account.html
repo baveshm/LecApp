@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ title }} - Speakr</title>
+    <title>{{ title }} - LecApp</title>
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/svg+xml">
         <!-- All dependencies bundled locally for offline support -->
 <script src="{{ url_for('static', filename='vendor/js/tailwind.min.js') }}"></script>
@@ -329,8 +329,8 @@
         <header class="flex justify-between items-center mb-6 pb-4 border-b border-[var(--border-primary)]">
             <h1 class="text-3xl font-bold text-[var(--text-primary)]">
                 <a href="{{ url_for('index') }}" class="flex items-center">
-                    <img src="{{ url_for('static', filename='img/icon-192x192.png') }}" alt="Speakr Logo" class="h-9 w-9 mr-2">
-                    Speakr
+                    <img src="{{ url_for('static', filename='img/icon-192x192.png') }}" alt="LecApp Logo" class="h-9 w-9 mr-2">
+                    LecApp
                 </a>
             </h1>
             <div class="flex items-center space-x-2">
@@ -812,7 +812,7 @@
 
                         <!-- Documentation Link -->
                         <div class="mt-8 text-center">
-                            <a href="https://murtaza-nasir.github.io/speakr/user-guide/transcript-templates/" target="_blank" class="text-sm text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors">
+                            <a href="#" class="text-sm text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors">
                                 <i class="fas fa-question-circle mr-1"></i>
                                 <span data-i18n="transcriptTemplates.viewGuide">View Template Guide</span>
                             </a>
@@ -825,9 +825,9 @@
                         <!-- Header Section -->
                         <div class="text-center">
                             <div class="flex items-center justify-center mb-4">
-                                <img src="{{ url_for('static', filename='img/icon-192x192.png') }}" alt="Speakr Logo" class="h-16 w-16 mr-4">
+                                <img src="{{ url_for('static', filename='img/icon-192x192.png') }}" alt="LecApp Logo" class="h-16 w-16 mr-4">
                                 <div>
-                                    <h2 class="text-3xl font-bold text-[var(--text-primary)]">Speakr</h2>
+                                    <h2 class="text-3xl font-bold text-[var(--text-primary)]">LecApp</h2>
                                     <p class="text-[var(--text-secondary)]" data-i18n="aboutPage.tagline">AI-Powered Audio Transcription & Note-Taking</p>
                                 </div>
                             </div>
@@ -888,47 +888,20 @@
                             <div class="bg-[var(--bg-secondary)] rounded-xl p-6 border border-[var(--border-primary)] shadow-sm">
                                 <div class="flex items-center mb-4">
                                     <div class="p-2 bg-gray-800 rounded-lg mr-3">
-                                        <i class="fab fa-github text-white text-lg"></i>
+                                        <i class="fas fa-info-circle text-white text-lg"></i>
                                     </div>
-                                    <h3 class="text-xl font-semibold text-[var(--text-primary)]" data-i18n="aboutPage.projectLinks">Project Links</h3>
+                                    <h3 class="text-xl font-semibold text-[var(--text-primary)]" data-i18n="aboutPage.aboutLecApp">About LecApp</h3>
                                 </div>
-                                
-                                <div class="space-y-3">
-                                    <a href="https://github.com/murtaza-nasir/speakr" target="_blank" rel="noopener noreferrer" 
-                                       class="flex items-center p-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 group transform hover:scale-[1.02]">
-                                        <i class="fab fa-github text-xl mr-3"></i>
-                                        <div class="flex-1">
-                                            <div class="font-medium" data-i18n="aboutPage.githubRepository">GitHub Repository</div>
-                                            <div class="text-sm text-gray-300" data-i18n="aboutPage.githubDescription">Source code, issues, and releases</div>
-                                        </div>
-                                        <i class="fas fa-external-link-alt text-sm opacity-70 group-hover:opacity-100"></i>
-                                    </a>
-                                    
-                                    <a href="https://hub.docker.com/r/learnedmachine/speakr" target="_blank" rel="noopener noreferrer"
-                                       class="flex items-center p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all duration-200 group transform hover:scale-[1.02]">
-                                        <i class="fab fa-docker text-xl mr-3"></i>
-                                        <div class="flex-1">
-                                            <div class="font-medium" data-i18n="aboutPage.dockerHub">Docker Hub</div>
-                                            <div class="text-sm text-blue-100" data-i18n="aboutPage.dockerDescription">Official Docker images</div>
-                                        </div>
-                                        <i class="fas fa-external-link-alt text-sm opacity-70 group-hover:opacity-100"></i>
-                                    </a>
-                                    
-                                    <a href="https://murtaza-nasir.github.io/speakr" target="_blank" rel="noopener noreferrer"
-                                       class="flex items-center p-3 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-all duration-200 group transform hover:scale-[1.02]">
-                                        <i class="fas fa-book text-xl mr-3"></i>
-                                        <div class="flex-1">
-                                            <div class="font-medium" data-i18n="aboutPage.documentation">Documentation</div>
-                                            <div class="text-sm text-green-100" data-i18n="aboutPage.documentationDescription">User guide and tutorials</div>
-                                        </div>
-                                        <i class="fas fa-external-link-alt text-sm opacity-70 group-hover:opacity-100"></i>
-                                    </a>
+
+                                <div class="space-y-3 text-[var(--text-secondary)] leading-relaxed">
+                                    <p data-i18n="aboutPage.aboutLecAppDescription">LecApp gives you a focused space to manage lectures, talks, and meetings with AI-powered transcription tools.</p>
+                                    <p data-i18n="aboutPage.aboutLecAppCustomization">Adapt workflows, prompts, and exports to match the way you capture and review information.</p>
                                 </div>
-                                
+
                                 <div class="mt-6 p-3 bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border-secondary)]">
                                     <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
                                         <i class="fas fa-info-circle text-[var(--text-accent)] mr-2"></i>
-                                        <span data-i18n="aboutPage.projectDescription">Transform your audio recordings into organized, searchable notes with AI-powered transcription, summarization, and interactive chat features.</span>
+                                        <span data-i18n="aboutPage.projectDescription">LecApp transforms your audio recordings into organized, searchable notes with AI-powered transcription, summarization, and interactive chat features.</span>
                                     </p>
                                 </div>
                             </div>
@@ -1045,7 +1018,7 @@
         </main>
 
         <footer class="text-center py-4 mt-8 text-xs text-[var(--text-light)] border-t border-[var(--border-primary)]">
-            <span id="footer-text">Speakr &copy; {{ now.year }}</span>
+            <span id="footer-text">LecApp &copy; {{ now.year }}</span>
         </footer>
     </div>
 
@@ -1741,7 +1714,7 @@
                         const data = await response.json();
                         const footerText = document.getElementById('footer-text');
                         if (footerText && data.version) {
-                            footerText.textContent = `Speakr ${data.version} © {{ now.year }}`;
+                            footerText.textContent = `LecApp ${data.version} © {{ now.year }}`;
                         }
                     }
                 } catch (error) {
