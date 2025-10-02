@@ -1,4 +1,4 @@
-# Speakr — Start-up Guide for Agents
+# LacApp — Start-up Guide for Agents
 
 This guide shows the quickest, reliable ways to start the Speakr app for demos, testing, or local development.
 
