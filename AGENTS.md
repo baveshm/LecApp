@@ -1,61 +1,60 @@
-# LecApp — Start-up Guide for Agents
+# Speakr — Agent Runbook (Codex/Copilot)
 
-This guide shows the quickest, reliable ways to start the Speakr app for demos, testing, or local development.
+This file is for an automated coding agent to reliably run the web server and make safe edits.
 
 - Default URL: http://localhost:8899
-- Default database: SQLite
-- Recommended method: Docker Compose
+- Default DB: SQLite (file lives under `./instance/` locally or `/data/instance/` in Docker)
+- Preferred start method: Docker Compose (fully reproducible)
 
-## 1) Start with Docker Compose (recommended)
+## How to run the web server
 
-Works the same on macOS, Linux, and Windows (with Docker Desktop). Minimal setup and fully reproducible.
+### Option A — Docker Compose (recommended)
 
-### Steps
+Prereqs: Docker Desktop (macOS/Windows) or Docker Engine (Linux).
 
-1. From the repo root, copy the example compose and env file:
+1) Prepare config at repo root
 
 ```bash
 cp config/docker-compose.example.yml docker-compose.yml
-# Choose ONE env template:
-cp config/env.whisper.example .env   # Standard Whisper API (OpenAI-compatible)
+# Choose ONE env template
+cp config/env.whisper.example .env   # Whisper API (OpenAI-compatible)
 # or
-cp config/env.asr.example .env       # ASR endpoint with speaker diarization
+cp config/env.asr.example .env       # ASR endpoint + speaker diarization
 ```
 
-2. Edit .env and set your keys and settings:
+2) Edit `.env` and set keys
 
-- TEXT_MODEL_BASE_URL, TEXT_MODEL_API_KEY, TEXT_MODEL_NAME
-- For Whisper API: TRANSCRIPTION_BASE_URL, TRANSCRIPTION_API_KEY, WHISPER_MODEL
-- For ASR endpoint: USE_ASR_ENDPOINT=true, ASR_BASE_URL=http://whisper-asr:9000 (if using a companion ASR container)
-- Admin bootstrap on first run:
-  ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD
+- Text model: `TEXT_MODEL_BASE_URL`, `TEXT_MODEL_API_KEY`, `TEXT_MODEL_NAME`
+- Whisper API flow: `TRANSCRIPTION_BASE_URL`, `TRANSCRIPTION_API_KEY`, `WHISPER_MODEL`
+- ASR flow: `USE_ASR_ENDPOINT=true`, `ASR_BASE_URL=http://whisper-asr:9000`
+- Admin bootstrap (auto-created on first run): `ADMIN_USERNAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`
 
-3. Create data directories (bind mounts used by docker-compose.yml):
+3) Create host data dirs
 
 ```bash
 mkdir -p uploads instance
 ```
 
-4. Start the app:
+4) Start server
 
 ```bash
 docker compose up -d
 ```
 
-5. Open http://localhost:8899 and log in with the admin credentials set in .env.
+5) Health check
 
-Notes
-- If using ASR with diarization, run the ASR service container as well (see docs/getting-started/installation.md for compose examples). On macOS, use the CPU image of the ASR service.
-- View logs: `docker compose logs -f app`
+- Open http://localhost:8899/login and confirm HTTP 200 and the login form renders
+- Logs: `docker compose logs -f app`
 - Stop: `docker compose down`
 
-## 2) Run from source (local Python)
+Notes
+- For diarization, run the ASR webservice container too (see `docs/getting-started/installation.md`). On macOS use CPU image.
 
-Useful for quick edits and debugging without containers. Requires Python 3.11+ and ffmpeg installed on your system.
+### Option B — Run locally (Python)
 
-### Steps
+Prereqs: Python 3.11+, ffmpeg installed (macOS: `brew install ffmpeg`).
 
-1. Set up a virtual environment and install dependencies:
+1) Create venv and install deps
 
 ```bash
 python3.11 -m venv .venv
@@ -64,34 +63,32 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-2. Copy an env template and adjust for local paths:
+2) Env and local paths
 
 ```bash
-cp config/env.whisper.example .env   # or env.asr.example
+cp config/env.whisper.example .env   # or config/env.asr.example
 ```
 
-Edit .env and (recommended) override these two for local dev so files live in the project folder:
+Required local overrides (keep data inside project directory):
 
 ```bash
 SQLALCHEMY_DATABASE_URI=sqlite:///./instance/transcriptions.db
 UPLOAD_FOLDER=./uploads
 ```
 
-Then set your API keys and admin bootstrap values as described above.
-
-3. Create data directories:
+3) Create data dirs
 
 ```bash
 mkdir -p uploads instance
 ```
 
-4. Create an admin user (interactive):
+4) Create admin user (interactive)
 
 ```bash
 python scripts/create_admin.py
 ```
 
-5. Start the server:
+5) Start server
 
 - Production-like:
 
@@ -99,35 +96,78 @@ python scripts/create_admin.py
 gunicorn --workers 3 --bind 0.0.0.0:8899 --timeout 600 src.app:app
 ```
 
-- Or lightweight dev server (auto-reload):
+- Dev server with auto-reload:
 
 ```bash
 export FLASK_APP=src/app.py
 flask run --host 0.0.0.0 --port 8899
 ```
 
-Then open http://localhost:8899.
+6) Health check
 
-## Optional features
+- Open http://localhost:8899/login and verify HTTP 200 with login page
+- Server logs appear in the same terminal
 
-- Inquire Mode (semantic search across all recordings): set `ENABLE_INQUIRE_MODE=true` in .env. The Docker image already contains required packages; for local runs, requirements.txt includes sentence-transformers and scikit-learn.
-- Automated file processing (“black hole”): set `ENABLE_AUTO_PROCESSING=true` and adjust `AUTO_PROCESS_*` variables. Ensure the watch directory exists and is writable.
+## Editing workflow for the agent
 
-## Troubleshooting
+Where to make changes
+- Backend routes, logic, and config: `src/app.py`
+- Templates (HTML/Jinja): `templates/` (e.g., `templates/index.html`, `templates/login.html`)
+- Frontend assets: `static/js/` and `static/css/`
+- Background helpers: `src/audio_chunking.py`, `src/file_monitor.py`
+- Scripts and utilities: `scripts/`
+- Tests: `tests/`
 
-- Port already in use: change the host port mapping in docker-compose.yml (e.g., `"8080:8899"`) or stop the conflicting service.
-- Admin login fails: verify .env values and rerun admin creation (Docker auto-creates admin on first run; local uses `scripts/create_admin.py`).
-- Missing ASR results/diarization: ensure `USE_ASR_ENDPOINT=true` and `ASR_BASE_URL` points to a reachable ASR service; check its logs.
-- Large files with Whisper API: enable chunking in .env (`ENABLE_CHUNKING=true`, set `CHUNK_LIMIT` and `CHUNK_OVERLAP_SECONDS`). Chunking is not used with ASR endpoints.
+Safe edit-and-verify loop (local dev)
+1) Ensure venv active and deps installed (see run locally steps)
+2) Run dev server: `flask run --host 0.0.0.0 --port 8899`
+3) Make code changes, save, and verify changes hot-reload in the browser
+4) Run tests (optional, see below)
+
+Safe edit-and-verify loop (Docker)
+1) Edit files on host (volumes are bind-mounted in example compose)
+2) If using gunicorn in container, it won’t auto-reload — restart container after edits:
+
+```bash
+docker compose restart app
+```
+
+Testing
+- If pytest isn’t available, install it: `pip install pytest`
+- Run all tests: `pytest -q`
+- Relevant suites live under `tests/` (e.g., inquire mode, JSON fix/preprocessing)
+
+Adding/Updating dependencies
+1) Add pinned package to `requirements.txt`
+2) Reinstall: `pip install -r requirements.txt`
+3) For Docker, rebuild image only if system deps change; otherwise container pulls prebuilt image
+
+Common tasks
+- Reset DB (local dev only): use `scripts/reset_db.py` to clear state
+- Recreate admin: rerun `scripts/create_admin.py` (local) or set `ADMIN_*` in `.env` (Docker) and restart
+- Change port: update `docker-compose.yml` mapping (e.g., `"8080:8899"`) or change `--port` in dev server
+
+## Options and flags you may need
+
+- Inquire Mode (semantic search): set `ENABLE_INQUIRE_MODE=true` in `.env`
+- Automated file processing: set `ENABLE_AUTO_PROCESSING=true` and configure `AUTO_PROCESS_*`
+- Chunking for large files (Whisper API flow only): `ENABLE_CHUNKING=true`, set `CHUNK_LIMIT`, `CHUNK_OVERLAP_SECONDS`
+
+## Troubleshooting quick refs
+
+- Port in use: adjust compose port mapping or stop the other process
+- Admin login fails: confirm `.env` values and admin creation step
+- ASR features missing: ensure `USE_ASR_ENDPOINT=true` and `ASR_BASE_URL` points to reachable service
+- ffmpeg missing errors: install ffmpeg (macOS: `brew install ffmpeg`)
 
 ## Quick reference
 
-- URL: http://localhost:8899
+- App URL: http://localhost:8899
 - Docker logs: `docker compose logs -f app`
-- Local logs: printed to terminal; adjust `LOG_LEVEL` in .env
-- Data paths (Docker): `./uploads` and `./instance` on the host
-- Data paths (Local): as set by `UPLOAD_FOLDER` and `SQLALCHEMY_DATABASE_URI`
+- Local logs: printed to terminal; adjust `LOG_LEVEL` in `.env`
+- Data paths (Docker): host `./uploads` and `./instance` map into container
+- Data paths (Local): controlled by `UPLOAD_FOLDER` and `SQLALCHEMY_DATABASE_URI`
 
----
+—
 
-For full docs, see README.md and docs/getting-started/installation.md.
+For deeper details, see `README.md` and `docs/getting-started/installation.md`.
