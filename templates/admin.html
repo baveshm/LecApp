@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Admin Dashboard - Speakr</title>
+    <title>Admin Dashboard - LecApp</title>
 
     <!-- Loading overlay to prevent FOUC - MUST be first -->
     {% include 'includes/loading_overlay.html' %}
@@ -101,8 +101,8 @@
         <header class="flex justify-between items-center mb-6 pb-4 border-b border-[var(--border-primary)]">
             <h1 class="text-3xl font-bold text-[var(--text-primary)]">
                 <a href="{{ url_for('index') }}" class="flex items-center">
-                    <img src="{{ url_for('static', filename='img/icon-192x192.png') }}" alt="Speakr Logo" class="h-9 w-9 mr-2">
-                    Speakr
+                    <img src="{{ url_for('static', filename='img/icon-192x192.png') }}" alt="LecApp Logo" class="h-9 w-9 mr-2">
+                    LecApp
                 </a>
             </h1>
             <div class="flex items-center space-x-2">
@@ -723,7 +723,7 @@ Summarization Instructions:
         </main>
 
         <footer class="text-center py-4 mt-8 text-xs text-[var(--text-light)] border-t border-[var(--border-primary)]">
-            Speakr &copy; {{ now.year }}
+            LecApp &copy; {{ now.year }}
         </footer>
         
         <!-- Add User Modal -->
