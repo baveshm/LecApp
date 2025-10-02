@@ -14,7 +14,7 @@ project_files.md
 notes.md
 docker-compose.yml
 changes.txt
-
+.venv
 !README.md
 !docs/**/*.md
 docker-compose.dev.yml
