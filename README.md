@@ -2,7 +2,7 @@
     <img src="static/img/icon-32x32.png" alt="Speakr Logo" width="32"/>
 </div>
 
-<h1 align="center">Speakr</h1>
+<h1 align="center">LecApp</h1>
 <p align="center">Self-hosted AI transcription and intelligent note-taking platform</p>
 
 <p align="center">
