@@ -1,0 +1,3463 @@
+body.unloaded {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+/* Color Scheme CSS Variables */
+:root {
+    /* Default Light Theme (Blue) - More muted with better contrast */
+    --bg-primary: #e8eaed; /* muted gray */
+    --bg-secondary: #f8f9fa; /* off-white */
+    --bg-tertiary: #f0f2f4; /* light gray */
+    --bg-accent: #c3d9f7; /* muted blue */
+    --bg-accent-hover: #aec9f2; /* deeper muted blue */
+    --bg-button: #2563eb; /* blue-600 */
+    --bg-button-hover: #1d4ed8; /* blue-700 */
+    --bg-danger: #dc2626; /* red-600 */
+    --bg-danger-hover: #b91c1c; /* red-700 */
+    --bg-danger-light: #fce4e4; /* muted red */
+    --bg-info-light: #c3d9f7; /* muted blue */
+    --bg-warn-light: #d4e8f5; /* soft blue */
+    --bg-success-light: #c6f0dc; /* muted green */
+    --bg-pending-light: #eeeeec; /* stone */
+    --bg-input: #fafbfc; /* slightly gray white */
+    --bg-audio-player: var(--bg-tertiary);
+
+    --text-primary: #1f2937; /* gray-800 */
+    --text-secondary: #374151; /* gray-700 */
+    --text-muted: #6b7280; /* gray-500 */
+    --text-light: #9ca3af; /* gray-400 */
+    --text-accent: #1d4ed8; /* blue-700 */
+    --text-button: #ffffff; /* white */
+    --text-danger: #b91c1c; /* red-700 */
+    --text-danger-strong: #991b1b; /* red-800 */
+    --text-info-strong: #1e40af; /* blue-800 */
+    --text-warn-strong: #0369a1; /* sky-700 - friendly blue tone */
+    --text-success-strong: #065f46; /* green-800 */
+    --text-pending-strong: #44403c; /* stone-700 */
+
+    --border-primary: #e5e7eb; /* gray-200 */
+    --border-secondary: #d1d5db; /* gray-300 */
+    --border-accent: #93c5fd; /* blue-300 */
+    --border-danger: #f87171; /* red-400 */
+    --border-focus: #3b82f6; /* blue-500 */
+    --ring-focus: #bfdbfe; /* blue-200 */
+    
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #c5c5c5;
+    --scrollbar-thumb-hover: #a8a8a8;
+    
+    /* Toast notification colors */
+    --bg-success: #10b981;
+    --border-success: #059669;
+}
+
+/* Light Theme Variants */
+.theme-light-emerald {
+    --bg-primary: #e6f0e9; /* muted green-gray */
+    --bg-secondary: #f4f9f5; /* soft off-white green */
+    --bg-tertiary: #ebf4ed; /* light muted green */
+    --bg-accent: #d0e8d7; /* muted pastel green */
+    --bg-accent-hover: #c1e0ca; /* deeper muted green */
+    --bg-button: #059669; /* keep button visible */
+    --bg-button-hover: #047857; /* keep button visible */
+    --bg-input: #f9fcfa; /* slightly green white */
+    --text-accent: #047857; /* keep accent text visible */
+    --border-primary: #d4e5d8; /* muted green border */
+    --border-secondary: #c2dcc9; /* soft green border */
+    --border-accent: #a8d0b3; /* medium green border */
+    --border-focus: #10b981; /* keep focus visible */
+    --ring-focus: #d0e8d7; /* muted green ring */
+    --bg-audio-player: var(--bg-tertiary);
+}
+
+.theme-light-purple {
+    --bg-primary: #ebe9f0; /* muted purple-gray */
+    --bg-secondary: #f7f6f9; /* soft off-white purple */
+    --bg-tertiary: #f0eef4; /* light muted purple */
+    --bg-accent: #dcd7e8; /* muted pastel purple */
+    --bg-accent-hover: #d0c9df; /* deeper muted purple */
+    --bg-button: #7c3aed; /* keep button visible */
+    --bg-button-hover: #6d28d9; /* keep button visible */
+    --bg-input: #faf9fc; /* slightly purple white */
+    --text-accent: #6d28d9; /* keep accent text visible */
+    --border-primary: #dbd6e6; /* muted purple border */
+    --border-secondary: #cfc8dd; /* soft purple border */
+    --border-accent: #bab0d2; /* medium purple border */
+    --border-focus: #8b5cf6; /* keep focus visible */
+    --ring-focus: #dcd7e8; /* muted purple ring */
+    --bg-audio-player: var(--bg-tertiary);
+}
+
+.theme-light-rose {
+    --bg-primary: #f0e9ed; /* muted rose-gray */
+    --bg-secondary: #f9f6f7; /* soft off-white rose */
+    --bg-tertiary: #f4eef1; /* light muted rose */
+    --bg-accent: #e6d7df; /* muted pastel rose */
+    --bg-accent-hover: #dfc9d4; /* deeper muted rose */
+    --bg-button: #e11d48; /* keep button visible */
+    --bg-button-hover: #be185d; /* keep button visible */
+    --bg-input: #fcf9fa; /* slightly rose white */
+    --text-accent: #be185d; /* keep accent text visible */
+    --border-primary: #e5d6de; /* muted rose border */
+    --border-secondary: #dbc8d2; /* soft rose border */
+    --border-accent: #d0b0bf; /* medium rose border */
+    --border-focus: #ec4899; /* keep focus visible */
+    --ring-focus: #e6d7df; /* muted rose ring */
+    --bg-audio-player: var(--bg-tertiary);
+}
+
+.theme-light-amber {
+    --bg-primary: #efebe6; /* muted amber-gray */
+    --bg-secondary: #f9f7f4; /* soft off-white amber */
+    --bg-tertiary: #f3efe9; /* light muted amber */
+    --bg-accent: #e5ddd1; /* muted pastel amber */
+    --bg-accent-hover: #ddd2c2; /* deeper muted amber */
+    --bg-button: #d97706; /* keep button visible */
+    --bg-button-hover: #b45309; /* keep button visible */
+    --bg-input: #fbfaf8; /* slightly amber white */
+    --text-accent: #b45309; /* keep accent text visible */
+    --border-primary: #e2dace; /* muted amber border */
+    --border-secondary: #d9cdb9; /* soft amber border */
+    --border-accent: #cdbca1; /* medium amber border */
+    --border-focus: #f59e0b; /* keep focus visible */
+    --ring-focus: #e5ddd1; /* muted amber ring */
+    --bg-audio-player: var(--bg-tertiary);
+}
+
+.theme-light-teal {
+    --bg-primary: #e7f0ef; /* muted teal-gray */
+    --bg-secondary: #f5f9f8; /* soft off-white teal */
+    --bg-tertiary: #ecf4f3; /* light muted teal */
+    --bg-accent: #d2e5e2; /* muted pastel teal */
+    --bg-accent-hover: #c3ddd9; /* deeper muted teal */
+    --bg-button: #0d9488; /* keep button visible */
+    --bg-button-hover: #0f766e; /* keep button visible */
+    --bg-input: #f9fcfb; /* slightly teal white */
+    --text-accent: #0f766e; /* keep accent text visible */
+    --border-primary: #c8dfdc; /* muted teal border */
+    --border-secondary: #b5d3ce; /* soft teal border */
+    --border-accent: #9cc5be; /* medium teal border */
+    --border-focus: #14b8a6; /* keep focus visible */
+    --ring-focus: #d2e5e2; /* muted teal ring */
+    --bg-audio-player: var(--bg-tertiary);
+}
+
+/* Dark Theme Base */
+.dark {
+    --bg-primary: #111827; /* gray-900 */
+    --bg-secondary: #1f2937; /* gray-800 */
+    --bg-tertiary: #374151; /* gray-700 */
+    --bg-accent: #1e3a8a; /* blue-900 */
+    --bg-accent-hover: #1e40af; /* blue-800 */
+    --bg-button: #2563eb; /* blue-600 */
+    --bg-button-hover: #3b82f6; /* blue-500 */
+    --bg-danger: #dc2626; /* red-600 */
+    --bg-danger-hover: #ef4444; /* red-500 */
+    --bg-danger-light: #7f1d1d; /* red-900 */
+    --bg-info-light: #1e3a8a; /* blue-900 */
+    --bg-warn-light: #164e63; /* cyan-800 - soft, friendly dark blue */
+    --bg-success-light: #064e3b; /* green-900 */
+    --bg-pending-light: #292524; /* stone-800 */
+    --bg-input: #374151; /* gray-700 */
+    --bg-audio-player: var(--bg-secondary);
+
+    --text-primary: #f3f4f6; /* gray-100 */
+    --text-secondary: #d1d5db; /* gray-300 */
+    --text-muted: #cbd5e1; /* slate-300 - improved contrast */
+    --text-light: #94a3b8; /* slate-400 - better visibility */
+    --text-accent: #60a5fa; /* blue-400 */
+    --text-button: #ffffff; /* white */
+    --text-danger: #f87171; /* red-400 */
+    --text-danger-strong: #fca5a5; /* red-300 */
+    --text-info-strong: #93c5fd; /* blue-300 */
+    --text-warn-strong: #67e8f9; /* cyan-300 - soft, friendly cyan text */
+    --text-success-strong: #6ee7b7; /* green-300 */
+    --text-pending-strong: #d6d3d1; /* stone-300 */
+
+    --border-primary: #475569; /* slate-600 - more visible */
+    --border-secondary: #64748b; /* slate-500 - better contrast */
+    --border-accent: #1d4ed8; /* blue-700 */
+    --border-danger: #ef4444; /* red-500 */
+    --border-focus: #3b82f6; /* blue-500 */
+    --ring-focus: #1e40af; /* blue-800 */
+    
+    --scrollbar-track: #2d3748; /* gray-800 */
+    --scrollbar-thumb: #4a5568; /* gray-600 */
+    --scrollbar-thumb-hover: #718096; /* gray-500 */
+}
+
+/* Dark Theme Variants */
+.dark.theme-dark-emerald {
+    --bg-primary: #1a2420; /* lighter dark with emerald tint */
+    --bg-secondary: #243028; /* medium dark with emerald hint */
+    --bg-tertiary: #2e3c30; /* lighter dark with emerald hint */
+    --bg-accent: #384838; /* visible emerald accent */
+    --bg-accent-hover: #425440; /* lighter emerald accent */
+    --bg-button: #059669; /* keep button visible */
+    --bg-button-hover: #10b981; /* keep button visible */
+    --bg-input: #2e3c30; /* darker emerald input background */
+    --text-accent: #7dd3ae; /* muted pastel emerald text */
+    --border-primary: #3a4540; /* visible emerald border */
+    --border-secondary: #485548; /* lighter emerald border */
+    --border-accent: #556550; /* medium emerald border */
+    --border-focus: #10b981; /* keep focus visible */
+    --ring-focus: #384838; /* visible ring */
+    --bg-audio-player: var(--bg-tertiary);
+    --scrollbar-thumb: #485548; /* emerald tinted scrollbar */
+    --scrollbar-thumb-hover: #556655; /* brighter emerald on hover */
+}
+
+.dark.theme-dark-purple {
+    --bg-primary: #1e1a24; /* lighter dark with purple tint */
+    --bg-secondary: #2a2430; /* medium dark with purple hint */
+    --bg-tertiary: #36303c; /* lighter dark with purple hint */
+    --bg-accent: #423c48; /* visible purple accent */
+    --bg-accent-hover: #4e4854; /* lighter purple accent */
+    --bg-button: #7c3aed; /* keep button visible */
+    --bg-button-hover: #8b5cf6; /* keep button visible */
+    --bg-input: #36303c; /* darker purple input background */
+    --text-accent: #b8a5d4; /* muted pastel purple text */
+    --border-primary: #484050; /* visible purple border */
+    --border-secondary: #555058; /* lighter purple border */
+    --border-accent: #626060; /* medium purple border */
+    --border-focus: #8b5cf6; /* keep focus visible */
+    --ring-focus: #423c48; /* visible ring */
+    --bg-audio-player: var(--bg-tertiary);
+    --scrollbar-thumb: #555058; /* purple tinted scrollbar */
+    --scrollbar-thumb-hover: #666068; /* brighter purple on hover */
+}
+
+.dark.theme-dark-rose {
+    --bg-primary: #241a20; /* lighter dark with rose tint */
+    --bg-secondary: #302428; /* medium dark with rose hint */
+    --bg-tertiary: #3c3030; /* lighter dark with rose hint */
+    --bg-accent: #483c40; /* visible rose accent */
+    --bg-accent-hover: #54484c; /* lighter rose accent */
+    --bg-button: #e11d48; /* keep button visible */
+    --bg-button-hover: #f43f5e; /* keep button visible */
+    --bg-input: #3c3030; /* darker rose input background */
+    --text-accent: #d4a5b4; /* muted pastel rose text */
+    --border-primary: #504048; /* visible rose border */
+    --border-secondary: #585050; /* lighter rose border */
+    --border-accent: #606058; /* medium rose border */
+    --border-focus: #f43f5e; /* keep focus visible */
+    --ring-focus: #483c40; /* visible ring */
+    --bg-audio-player: var(--bg-tertiary);
+    --scrollbar-thumb: #554850; /* rose tinted scrollbar */
+    --scrollbar-thumb-hover: #665860; /* brighter rose on hover */
+}
+
+.dark.theme-dark-amber {
+    --bg-primary: #24201a; /* lighter dark with amber tint */
+    --bg-secondary: #302824; /* medium dark with amber hint */
+    --bg-tertiary: #3c342e; /* lighter dark with amber hint */
+    --bg-accent: #484038; /* visible amber accent */
+    --bg-accent-hover: #544c42; /* lighter amber accent */
+    --bg-button: #d97706; /* keep button visible */
+    --bg-button-hover: #f59e0b; /* keep button visible */
+    --bg-input: #3c342e; /* darker amber input background */
+    --text-accent: #d4c5a5; /* muted pastel amber text */
+    --border-primary: #504840; /* visible amber border */
+    --border-secondary: #585548; /* lighter amber border */
+    --border-accent: #606250; /* medium amber border */
+    --border-focus: #f59e0b; /* keep focus visible */
+    --ring-focus: #484038; /* visible ring */
+    --bg-audio-player: var(--bg-tertiary);
+    --scrollbar-thumb: #585548; /* amber tinted scrollbar */
+    --scrollbar-thumb-hover: #686658; /* brighter amber on hover */
+}
+
+.dark.theme-dark-teal {
+    --bg-primary: #1a2424; /* lighter dark with teal tint */
+    --bg-secondary: #243030; /* medium dark with teal hint */
+    --bg-tertiary: #2e3c3c; /* lighter dark with teal hint */
+    --bg-accent: #384848; /* visible teal accent */
+    --bg-accent-hover: #425454; /* lighter teal accent */
+    --bg-button: #0d9488; /* keep button visible */
+    --bg-button-hover: #14b8a6; /* keep button visible */
+    --bg-input: #2e3c3c; /* darker teal input background */
+    --text-accent: #a5d4d0; /* muted pastel teal text */
+    --border-primary: #404848; /* visible teal border */
+    --border-secondary: #485555; /* lighter teal border */
+    --border-accent: #506262; /* medium teal border */
+    --border-focus: #14b8a6; /* keep focus visible */
+    --ring-focus: #384848; /* visible ring */
+    --bg-audio-player: var(--bg-tertiary);
+    --scrollbar-thumb: #485555; /* teal tinted scrollbar */
+    --scrollbar-thumb-hover: #586666; /* brighter teal on hover */
+}
+
+/* Modern UI styles */
+.height-100 { height: 100%; }
+.drag-area { transition: background-color 0.3s ease, border-color 0.3s ease; }
+/* Global Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+/* Fix scrollbar corner for rounded containers */
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+html { /* Apply base colors to html for smoother transitions */
+    background-color: var(--bg-primary); 
+    color: var(--text-primary); 
+    transition: background-color 0.3s, color 0.3s; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+html { 
+    height: 100%; 
+    margin: 0;
+}
+body {
+    height: 100%;
+    margin: 0;
+    overflow-y: auto; /* Allow scrolling on the body */
+}
+
+/* Mobile fly-in menu specific styles */
+@media (max-width: 1023px) { /* Corresponds to Tailwind's lg breakpoint */
+    .sidebar-container.fixed {
+        height: 100vh; /* Full viewport height */
+        overflow-y: auto; /* Allow scrolling within the fly-in menu */
+        z-index: 9999 !important; /* Ensure it's above everything else */
+    }
+    /* .main-content-area styling for mobile is handled by v-if in html now */
+    /*
+    .main-content-area {
+        transition: filter 0.3s ease-in-out;
+    }
+    body.mobile-menu-open .main-content-area {
+        filter: blur(4px); 
+    }
+    */
+    body.mobile-menu-open {
+        overflow: hidden; /* Prevent body scroll when mobile menu is open */
+    }
+    
+    /* Fix for mobile sidebar visibility */
+    .sidebar-container {
+        z-index: 50 !important; /* Ensure proper z-index */
+    }
+    
+    /* Ensure the mobile sidebar shows above the overlay */
+    .fixed.inset-y-0.left-0.z-40 { /* This targets the overlay, not the sidebar */
+        z-index: 50 !important;
+    }
+
+    /* Custom easing for mobile sidebar slide animation */
+    /* This targets the main sidebar div when it's in mobile fly-in mode */
+    /* and has the transition-transform class applied by Vue/Tailwind. */
+    div.fixed.z-50.transition-transform {
+        transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+}
+
+/* Mobile viewport height fix */
+@media (max-width: 767px) { /* Target mobile devices specifically */
+    .main {
+        min-height: 4000px !important; /* Fixed viewport height for mobile */
+    }
+}
+#app { 
+    min-height: 100%; /* Full viewport height */
+    display: flex; 
+    flex-direction: column;
+}
+main { 
+    flex: 1; 
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Allow scrolling on main */
+}
+
+/* Sidebar styles with flexible height */
+.sidebar-container {
+    height: 100%; /* Use relative height */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Allow sidebar to scroll */
+}
+
+/* Grid container with flex layout and flexible height */
+.grid-container {
+    height: 100%; /* Use relative height */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Allow scrolling */
+}
+
+.sidebar-header {
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.sidebar-content {
+    flex-grow: 1;
+    overflow-y: auto; /* Enable scrolling for content */
+    padding-right: 6px; /* Space for scrollbar */
+    min-height: 0; /* Added for robust flex scrolling */
+}
+.progress-popup { position: fixed; bottom: 1rem; left: 1rem; z-index: 100; transition: all 0.3s ease-in-out; min-width: 300px; max-width: 400px; border-radius: 12px; overflow: hidden; }
+.progress-popup.minimized { transform: translateY(calc(100% - 45px)); }
+.progress-list-item { display: grid; grid-template-columns: auto 1fr auto; gap: 0.5rem; align-items: center; }
+.progress-list-item .truncate { 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+    min-width: 0; 
+}
+.summary-box,
+.notes-box {
+    flex: 1; /* Take up available space in content-box */
+    min-height: 0; /* Critical for flex shrinking */
+    max-height: 100%; /* Prevent expansion beyond parent */
+    overflow-y: auto; /* Enable scrolling */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    /* Keep existing styling */
+    background-color: var(--bg-tertiary);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-primary);
+    /* Fix scrollbar clipping rounded corners */
+    scrollbar-gutter: stable;
+    color: var(--text-secondary);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.transcription-box {
+    background-color: var(--bg-tertiary);
+    padding: 1rem; /* p-4 */
+    border-radius: 0.75rem; /* rounded-xl */
+    border: 1px solid var(--border-primary);
+    min-height: 0; /* Allow proper flex shrinking for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    white-space: normal; /* Allow markdown HTML to control spacing */
+    font-family: inherit; /* Use body font */
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.5; /* Consistent line height */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03); /* Subtle shadow */
+    flex: 1; /* Take up available space */
+    color: var(--text-secondary);
+}
+
+/* Standardize border radius for all content boxes */
+.transcription-box, 
+.summary-box, 
+.chat-container,
+textarea,
+div[v-if="!editingParticipants"],
+div[v-if="!editingNotes"] {
+    border-radius: 0.75rem !important; /* rounded-xl */
+}
+
+/* Content boxes with flex layout */
+.content-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0; /* Allow content to size based on parent container */
+    flex: 1 1 auto; /* Grow and shrink as needed */
+    overflow: hidden;
+}
+
+/* Left column content (participants, transcription, tabs) */
+.left-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0; /* Allow flex to work properly */
+    overflow: hidden; /* Prevent this container from scrolling */
+}
+
+/* Right column content (audio player, chat) */
+.right-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 1rem;
+    overflow-y: auto; /* Enable scrolling for content that exceeds container */
+    min-height: 0; /* Allows flex to work properly */
+}
+
+/* Participants section - small fixed height */
+.participants-section {
+    flex-shrink: 0;
+    margin-bottom: 1rem; /* Add space below participants box */
+}
+
+/* Transcription section - takes up significant space */
+.transcription-section {
+    /* flex: 2; */ /* Removed: Let JavaScript control flex values */
+    min-height: 0; /* Critical for flex shrinking */
+    overflow: hidden; /* Contain overflow to enable proper flex behavior */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tab content section - takes up remaining space and aligns with chat box */
+.tab-section {
+    min-height: 0; /* Critical for flex items */
+    overflow: hidden; /* Prevent internal overflow from affecting layout */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Audio player section - small fixed height */
+.audio-section {
+    flex-shrink: 0;
+}
+
+/* Chat section - takes up remaining space */
+.chat-section {
+    flex: 1;
+    min-height: 0; /* Allows flex to work properly */
+    overflow-y: auto; /* Changed from hidden to auto to enable scrolling */
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-content-box {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0; /* Allows flex to work properly */
+    height: 100%; /* Fill available height */
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-content-box {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0; /* Allows flex to work properly */
+}
+.metadata-panel {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem; /* rounded-xl to match others */
+    padding: 1rem; /* p-4 to be consistent */
+    /* margin-top removed to align with other boxes */
+    font-size: 0.875rem; /* text-sm */
+    color: var(--text-secondary);
+    flex: 1; /* Take up available space */
+    height: 100%; /* Fill the container height */
+    overflow-y: auto; /* Enable scrolling when content overflows */
+}
+.metadata-panel dt {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.1rem;
+}
+.metadata-panel dd {
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+    word-break: break-all; /* Wrap long filenames */
+}
+ .status-badge {
+     display: inline-block;
+     padding: 0.12rem 0.5rem; /* Even smaller padding */
+     font-size: 0.6rem; /* Smaller text */
+     font-weight: 500; /* font-medium */
+     border-radius: 9999px; /* rounded-full */
+     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+     letter-spacing: 0.025em;
+     vertical-align: middle; /* Align with text */
+     margin-left: 0.5rem; /* Less space */
+     opacity: 0.85; /* Slightly more subtle */
+     transition: opacity 0.2s ease;
+ }
+ .status-badge:hover {
+     opacity: 1;
+ }
+ .status-processing { color: #1d4ed8; background-color: #dbeafe; } /* text-blue-800 bg-blue-100 */
+ .status-summarizing { color: #92400e; background-color: #fef3c7; } /* text-amber-800 bg-amber-100 */
+ .status-completed { color: #065f46; background-color: #d1fae5; } /* text-green-800 bg-green-100 */
+ .status-failed { color: #991b1b; background-color: #fee2e2; } /* text-red-800 bg-red-100 */
+ .status-pending { color: #57534e; background-color: #f5f5f4; } /* text-stone-700 bg-stone-100 */
+ .status-highlighted { color: #d97706; background-color: #fef3c7; border: 1px solid #f59e0b; } /* text-amber-700 bg-amber-100 border-amber-500 */
+ .status-inbox { color: #1d4ed8; background-color: #dbeafe; border: 1px solid #3b82f6; } /* text-blue-700 bg-blue-100 border-blue-500 */
+ 
+ /* Clickable badge styles */
+ .clickable-badge {
+     cursor: pointer;
+     transition: all 0.2s ease;
+ }
+ 
+ .clickable-badge:hover {
+     transform: translateY(-1px);
+     box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+     opacity: 0.8;
+ }
+ 
+ /* Transcription box with flex layout */
+ .transcription-box {
+     flex: 1;
+     overflow-y: auto;
+     position: relative;
+     min-height: 0; /* Allows flex to work properly */
+ }
+ 
+ /* Modern copy button styles */
+ .copy-btn {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+ }
+ 
+ .copy-btn:hover {
+     background-color: var(--bg-accent-hover);
+     transform: translateY(-1px);
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ }
+
+ .dark .copy-btn {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-secondary);
+    color: var(--text-primary);
+}
+
+.dark .copy-btn:hover {
+    background-color: var(--bg-tertiary);
+}
+ 
+ /* Hover edit button styles */
+.content-box {
+    position: relative;
+    height: 100%; /* Fill the available flex space */
+    min-height: 0; /* Allow shrinking */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent overflow from affecting parent layout */
+}
+ 
+ .hover-edit-btn {
+     position: absolute;
+     top: 10px;
+     right: 10px;
+     background-color: rgba(255, 255, 255, 0.9);
+     border: 1px solid #e5e7eb;
+     border-radius: 0.5rem;
+     padding: 0.35rem 0.75rem;
+     font-size: 0.75rem;
+     cursor: pointer;
+     z-index: 10;
+     transition: all 0.2s ease;
+     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+     opacity: 0;
+ }
+ 
+ .content-box:hover .hover-edit-btn {
+     opacity: 1;
+ }
+ 
+ .hover-edit-btn:hover {
+     background-color: #f3f4f6;
+     transform: translateY(-1px);
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ }
+ 
+ .dark .hover-edit-btn {
+     background-color: rgba(55, 65, 81, 0.9);
+     border-color: #4b5563;
+ }
+ 
+ .dark .hover-edit-btn:hover {
+     background-color: #4b5563;
+ }
+ 
+ /* Modern chat section styles */
+ .chat-container {
+     border: 1px solid #e5e7eb;
+     border-radius: 0.75rem;
+     display: flex;
+     flex-direction: column;
+     height: 100%;
+     min-height: 300px; /* Minimum height for chat container */
+     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+     overflow: hidden;
+ }
+ 
+ .chat-messages {
+     flex-grow: 1;
+     overflow-y: auto;
+     padding: 1.25rem;
+ }
+ 
+ .chat-input-container {
+     border-top: 1px solid #e5e7eb;
+     padding: 0.75rem;
+     display: flex;
+     background-color: var(--bg-tertiary);
+ }
+ 
+ .message {
+     margin-bottom: 1.25rem;
+     max-width: 80%;
+     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+     line-height: 1.5;
+ }
+ 
+ .user-message {
+     background-color: var(--accent-primary);
+     color: var(--text-accent-contrast);
+     border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+     padding: 0.875rem 1rem;
+     margin-left: auto;
+     border: 1px solid var(--border-accent);
+ }
+ 
+ .ai-message {
+     background-color: var(--bg-tertiary);
+     color: var(--text-primary);
+     border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+     padding: 0.875rem 1rem;
+     border: 1px solid var(--border-secondary);
+ }
+
+ 
+ .copyable {
+     position: relative;
+ }
+ 
+ /* Markdown styling */
+ .ai-message h1, .ai-message h2, .ai-message h3,
+ .summary-box h1, .summary-box h2, .summary-box h3,
+ .notes-box h1, .notes-box h2, .notes-box h3 {
+     font-weight: 600;
+     margin-top: 1rem;
+     margin-bottom: 0.5rem;
+ }
+ 
+ .ai-message h1, .summary-box h1, .notes-box h1 { font-size: 1.25rem; }
+ .ai-message h2, .summary-box h2, .notes-box h2 { font-size: 1.15rem; }
+ .ai-message h3, .summary-box h3, .notes-box h3 { font-size: 1.05rem; }
+ 
+ .ai-message p, .summary-box p, .notes-box p {
+     margin-bottom: 0.75rem;
+ }
+ 
+ .ai-message ul, .ai-message ol,
+ .summary-box ul, .summary-box ol,
+ .notes-box ul, .notes-box ol {
+     margin-left: 1.5rem;
+     margin-bottom: 0.75rem;
+     list-style-position: outside; /* Ensures bullets are outside the text flow */
+ }
+ 
+ .ai-message ul, .summary-box ul, .notes-box ul { list-style-type: disc; }
+ .ai-message ol, .summary-box ol, .notes-box ol { list-style-type: decimal; }
+
+ .ai-message li, .summary-box li, .notes-box li {
+    display: list-item; /* Ensure li elements are treated as list items */
+    margin-bottom: 0.25rem; /* Add some space between list items */
+ }
+ 
+ .ai-message code, .summary-box code, .notes-box code {
+     background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+     padding: 0.125rem 0.25rem;
+     border-radius: 0.25rem;
+     font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+     font-size: 0.875rem;
+     word-wrap: break-word;
+     overflow-wrap: break-word;
+ }
+ 
+ .ai-message pre, .summary-box pre, .notes-box pre {
+     background-color: var(--bg-tertiary);
+     color: var(--text-primary);
+     padding: 0.75rem;
+     border-radius: 0.5rem;
+     overflow-x: auto;
+     white-space: pre-wrap;
+     word-wrap: break-word;
+     overflow-wrap: break-word;
+     margin-bottom: 0.75rem;
+ }
+ 
+ .ai-message pre code, .summary-box pre code, .notes-box pre code {
+     background-color: transparent;
+     padding: 0;
+     border-radius: 0;
+     color: inherit;
+     white-space: pre-wrap;
+     word-wrap: break-word;
+     overflow-wrap: break-word;
+ }
+ 
+ .ai-message table, .summary-box table, .notes-box table {
+     border-collapse: collapse;
+     width: 100%;
+     margin-bottom: 0.75rem;
+ }
+ 
+ .ai-message th, .ai-message td,
+ .summary-box th, .summary-box td,
+ .notes-box th, .notes-box td {
+     border: 1px solid var(--border-secondary); /* Use theme variable */
+     padding: 0.5rem;
+     text-align: left;
+ }
+ 
+ .ai-message th, .summary-box th, .notes-box th {
+     background-color: var(--bg-tertiary); /* Use theme variable */
+     font-weight: 600;
+ }
+ 
+ .ai-message blockquote, .summary-box blockquote, .notes-box blockquote {
+     border-left: 4px solid var(--border-secondary); /* Use theme variable */
+     padding-left: 1rem;
+     margin-left: 0;
+     margin-bottom: 0.75rem;
+     color: var(--text-muted); /* Use theme variable */
+ }
+ 
+ /* Main content container - ensure it fills available space and allows scrolling */
+.flex-grow.flex.flex-col.md\:flex-row.gap-6.overflow-hidden {
+    max-height: none !important; /* Override the inline style */
+    height: 100%;
+    flex: 1;
+    overflow-y: auto; /* Allow scrolling */
+}
+
+/* Ensure the main content container can grow properly and scroll - works for both col-span-3 and col-span-4 */
+.lg\:col-span-3.bg-\[var\(--bg-secondary\)\].p-6.rounded-lg.shadow-md.flex.flex-col.max-h-85vh,
+.lg\:col-span-4.bg-\[var\(--bg-secondary\)\].p-6.rounded-lg.shadow-md.flex.flex-col.max-h-85vh {
+    /* max-height: none !important; /* Let Tailwind class 'max-h-85vh' apply */
+    height: 100%; /* Occupy the height of its grid cell */
+    flex: 1; /* For its own children, as it's a flex container */
+    overflow-y: auto; /* Allow its own content to scroll if it exceeds its height (max 85vh) */
+}
+
+/* Ensure the main content area maintains its internal layout regardless of sidebar state */
+.main-content-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+/* Ensure the main content columns container maintains consistent behavior */
+#mainContentColumns {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    width: 100%; /* Ensure full width usage */
+}
+
+/* Ensure left and right columns maintain their proportional widths */
+#leftMainColumn {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    flex-shrink: 0; /* Prevent shrinking */
+    border-right: 1px solid var(--border-primary);
+    /* Width is controlled by inline style */
+}
+
+#rightMainColumn {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    /* Width will be calculated as remaining space */
+}
+
+/* Ensure the main column resizer remains functional */
+#mainColumnResizer {
+    flex-shrink: 0;
+}
+
+/* Form styling for edit modal */
+.form-group {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.form-group:hover {
+    transform: translateY(-1px);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Dark mode adjustments for form elements */
+.dark .form-group input:focus,
+.dark .form-group textarea:focus {
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.3);
+}
+
+/* Elegant divider styling */
+.relative.py-3 {
+    margin: 0.5rem 0;
+}
+
+/* Toast notification styles */
+.toast {
+    padding: 12px 18px;
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    display: flex;
+    align-items: center;
+    min-width: 200px;
+}
+ 
+ .toast.show {
+     opacity: 1;
+     transform: translateY(0);
+ }
+ 
+ .toast i {
+     margin-right: 8px;
+ }
+ 
+ /* Copy button animation */
+ @keyframes copy-success {
+     0% { transform: scale(1); }
+     50% { transform: scale(1.2); }
+     100% { transform: scale(1); }
+ }
+ 
+ .copy-success {
+     animation: copy-success 0.3s ease;
+     color: #4CAF50 !important;
+ }
+
+/* Fix for sidebar height and scrolling */
+/* Remove fixed height constraint from the grid container to allow natural height */
+.grid.grid-cols-1.lg\:grid-cols-4.gap-6.flex-grow {
+    display: grid;
+    min-height: 0; /* Allow the grid to shrink if needed */
+    overflow: visible; /* Allow overflow to be visible and scroll with the main window */
+    align-items: start; /* Align grid items to start to prevent stretching */
+}
+
+/* Set a fixed height for the sidebar only */
+.lg\:col-span-1.bg-\[var\(--bg-secondary\)\].p-4.rounded-lg.shadow-md.sidebar-container.max-h-85vh {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Hide overflow at container level */
+    height: calc(100vh - 10rem); 
+    position: sticky;
+    top: 1rem; /* Stick to the top with some padding */
+}
+
+/* Make sure the sidebar content scrolls internally */
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto; /* Enable scrolling for content */
+    min-height: 0; /* Allow content to shrink */
+}
+
+/* Ensure the main content area uses the window scroll and has consistent height */
+.lg\:col-span-3.bg-\[var\(--bg-secondary\)\].p-6.rounded-lg.shadow-md.flex.flex-col.max-h-85vh {
+    max-height: calc(100vh - 10rem) !important; /* Match sidebar height */
+    height: calc(100vh - 10rem); /* Fixed height to match sidebar */
+    overflow-y: auto; /* Enable internal scrolling */
+}
+
+/* Allow the main container to use window scrolling */
+main { 
+    overflow-y: visible; /* Use window scrolling instead of internal scrolling */
+}
+
+/* Ensure body scrolls when content exceeds viewport */
+body {
+    overflow-y: auto; /* Allow scrolling on the body */
+}
+
+/* Fix recording list item layout to prevent title wrapping */
+.sidebar-content li {
+    display: flex;
+    align-items: center;
+    min-height: 3rem; /* Consistent minimum height for all items */
+    max-height: 3rem; /* Prevent items from growing taller */
+}
+
+/* Ensure recording title container doesn't grow beyond available space */
+.sidebar-content li .flex.items-center.overflow-hidden {
+    min-width: 0; /* Allow flex item to shrink below content size */
+    flex: 1; /* Take up available space */
+}
+
+/* Ensure truncate works properly on recording titles */
+.sidebar-content li .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0; /* Allow text to shrink */
+}
+
+/* Blinking animation for recording indicator */
+@keyframes blink-animation {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+.blink {
+    animation: blink-animation 1.5s infinite;
+}
+
+/* Speaker tag styling in the modal */
+.speaker-tag {
+    font-weight: 600; /* Make speaker tags bold */
+    color: var(--text-accent);
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+.speaker-highlight {
+    padding: 3px 6px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Speaker-specific highlight styles that match speaker colors - reduced glow */
+.speaker-highlight.speaker-color-1 {
+    background-color: #E3F2FD;
+    color: #0D47A1;
+    box-shadow: 0 0 8px rgba(227, 242, 253, 0.6), 0 0 12px rgba(13, 71, 161, 0.2);
+}
+
+.speaker-highlight.speaker-color-2 {
+    background-color: #F3E5F5;
+    color: #6A1B9A;
+    box-shadow: 0 0 8px rgba(243, 229, 245, 0.6), 0 0 12px rgba(106, 27, 154, 0.2);
+}
+
+.speaker-highlight.speaker-color-3 {
+    background-color: #E8F5E8;
+    color: #1B5E20;
+    box-shadow: 0 0 8px rgba(232, 245, 232, 0.6), 0 0 12px rgba(27, 94, 32, 0.2);
+}
+
+.speaker-highlight.speaker-color-4 {
+    background-color: #FFF3E0;
+    color: #E65100;
+    box-shadow: 0 0 8px rgba(255, 243, 224, 0.6), 0 0 12px rgba(230, 81, 0, 0.2);
+}
+
+.speaker-highlight.speaker-color-5 {
+    background-color: #FCE4EC;
+    color: #AD1457;
+    box-shadow: 0 0 8px rgba(252, 228, 236, 0.6), 0 0 12px rgba(173, 20, 87, 0.2);
+}
+
+.speaker-highlight.speaker-color-6 {
+    background-color: #E0F7FA;
+    color: #006064;
+    box-shadow: 0 0 8px rgba(224, 247, 250, 0.6), 0 0 12px rgba(0, 96, 100, 0.2);
+}
+
+.speaker-highlight.speaker-color-7 {
+    background-color: #FFF9C4;
+    color: #F57F17;
+    box-shadow: 0 0 8px rgba(255, 249, 196, 0.6), 0 0 12px rgba(245, 127, 23, 0.2);
+}
+
+.speaker-highlight.speaker-color-8 {
+    background-color: #EFEBE9;
+    color: #5D4037;
+    box-shadow: 0 0 8px rgba(239, 235, 233, 0.6), 0 0 12px rgba(93, 64, 55, 0.2);
+}
+
+/* Dark mode speaker-specific highlights - reduced glow */
+.dark .speaker-highlight.speaker-color-1 {
+    background-color: #1E3A5F;
+    color: #A5C9EA;
+    box-shadow: 0 0 8px rgba(30, 58, 95, 0.6), 0 0 12px rgba(165, 201, 234, 0.2);
+}
+
+.dark .speaker-highlight.speaker-color-2 {
+    background-color: #4A2C5A;
+    color: #D4A5D4;
+    box-shadow: 0 0 8px rgba(74, 44, 90, 0.6), 0 0 12px rgba(212, 165, 212, 0.2);
+}
+
+.dark .speaker-highlight.speaker-color-3 {
+    background-color: #1F4A3C;
+    color: #A8D5A8;
+    box-shadow: 0 0 8px rgba(31, 74, 60, 0.6), 0 0 12px rgba(168, 213, 168, 0.2);
+}
+
+.dark .speaker-highlight.speaker-color-4 {
+    background-color: #5A3A1F;
+    color: #E6B366;
+    box-shadow: 0 0 8px rgba(90, 58, 31, 0.6), 0 0 12px rgba(230, 179, 102, 0.2);
+}
+
+.dark .speaker-highlight.speaker-color-5 {
+    background-color: #5A2C3E;
+    color: #E6A5C4;
+    box-shadow: 0 0 8px rgba(90, 44, 62, 0.6), 0 0 12px rgba(230, 165, 196, 0.2);
+}
+
+.dark .speaker-highlight.speaker-color-6 {
+    background-color: #1F4A47;
+    color: #A5D5D0;
+    box-shadow: 0 0 8px rgba(31, 74, 71, 0.6), 0 0 12px rgba(165, 213, 208, 0.2);
+}
+
+.dark .speaker-highlight.speaker-color-7 {
+    background-color: #4A4A1F;
+    color: #E6E266;
+    box-shadow: 0 0 8px rgba(74, 74, 31, 0.6), 0 0 12px rgba(230, 226, 102, 0.2);
+}
+
+.dark .speaker-highlight.speaker-color-8 {
+    background-color: #3E2723;
+    color: #D7CCC8;
+    box-shadow: 0 0 8px rgba(62, 39, 35, 0.6), 0 0 12px rgba(215, 204, 200, 0.2);
+}
+
+/* Speaker Legend and Bubble Styles */
+.speaker-legend {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin-bottom: 0.5rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.dark .speaker-legend {
+    border: 1px solid var(--border-secondary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.speaker-legend-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-primary);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dark .speaker-legend-header {
+    background-color: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-secondary);
+}
+
+.speaker-legend-header:hover {
+    background-color: var(--bg-accent);
+}
+
+.speaker-legend-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.speaker-legend-toggle {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.speaker-legend.expanded .speaker-legend-toggle {
+    transform: rotate(180deg);
+    color: var(--text-accent);
+}
+
+.speaker-legend-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.speaker-legend.expanded .speaker-legend-content {
+    max-height: 200px; /* Reasonable max height for scrolling */
+    overflow-y: auto;
+    padding: 0.5rem 0.75rem;
+}
+
+.speaker-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: auto;
+    max-width: fit-content;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.speaker-legend-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.speaker-name {
+    font-weight: 500;
+}
+
+/* Compact legend when collapsed - show as many speakers as fit */
+.speaker-legend:not(.expanded) .speaker-legend-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: hidden;
+    max-height: 3rem; /* Allow up to 2 rows of speakers */
+    padding: 0.25rem 0.75rem;
+}
+
+.speaker-legend:not(.expanded) .speaker-legend-item {
+    flex-shrink: 1;
+    min-width: fit-content;
+}
+
+.speaker-count-indicator {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: 0.25rem;
+}
+
+/* Enhanced transcription display with speaker bubbles */
+.transcription-with-speakers {
+    line-height: 1.6;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.speaker-bubble {
+    display: inline-block;
+    margin: 0.125rem 0.25rem 0.125rem 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
+    max-width: fit-content;
+    min-width: fit-content;
+    width: auto;
+    word-wrap: break-word;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255,255,255,0.3);
+    vertical-align: top;
+}
+
+.speaker-bubble:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+}
+
+.speaker-bubble.speaker-me {
+    border-bottom-right-radius: 0.25rem;
+}
+
+.speaker-bubble:not(.speaker-me) {
+    border-bottom-left-radius: 0.25rem;
+}
+
+.speaker-bubble-content {
+    margin: 0;
+    color: inherit;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+/* Bubble row container for horizontal grouping */
+.bubble-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+    gap: 0.25rem;
+    width: 100%;
+}
+
+.bubble-row.speaker-me {
+    justify-content: flex-end;
+}
+
+.bubble-row:not(.speaker-me) {
+    justify-content: flex-start;
+}
+
+/* Individual bubbles within rows should size to content and allow wrapping */
+.bubble-row .speaker-bubble {
+    flex: 0 0 auto;
+    max-width: calc(100% - 0.5rem);
+    width: auto;
+    min-width: fit-content;
+    margin: 0;
+}
+
+/* Ensure bubbles can wrap to fill available space on mobile - preserve desktop styling */
+@media (max-width: 1023px) {
+    /* Target all bubble rows on mobile - preserve desktop gap and margin */
+    .bubble-row,
+    .mobile-content-box .bubble-row,
+    .transcription-with-speakers .bubble-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        gap: 0.25rem !important;
+        margin-bottom: 0.5rem !important;
+        align-items: flex-start !important;
+    }
+    
+    /* Target all speaker bubbles on mobile - preserve desktop spacing and styling */
+    .speaker-bubble,
+    .mobile-content-box .speaker-bubble,
+    .bubble-row .speaker-bubble {
+        display: inline-block !important;
+        flex: 0 0 auto !important;
+        max-width: calc(70% - 0.25rem) !important;
+        width: auto !important;
+        min-width: fit-content !important;
+        margin: 0.125rem 0.25rem 0.125rem 0 !important; /* Preserve desktop margin */
+        flex-shrink: 1 !important;
+        vertical-align: top !important;
+        padding: 0.5rem 0.75rem !important; /* Preserve desktop padding */
+        border-radius: 0.75rem !important; /* Preserve desktop border-radius */
+        box-shadow: 0 1px 2px rgba(0,0,0,0.08) !important; /* Preserve desktop shadow */
+        transition: all 0.2s ease !important; /* Preserve desktop transition */
+        border: 1px solid rgba(255,255,255,0.3) !important; /* Preserve desktop border */
+    }
+    
+    /* Preserve desktop hover effects */
+    .speaker-bubble:hover,
+    .mobile-content-box .speaker-bubble:hover,
+    .bubble-row .speaker-bubble:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.12) !important;
+    }
+    
+    /* Preserve desktop bubble content styling */
+    .speaker-bubble .speaker-bubble-content,
+    .mobile-content-box .speaker-bubble .speaker-bubble-content {
+        margin: 0 !important;
+        color: inherit !important;
+        font-size: 0.875rem !important;
+        line-height: 1.4 !important;
+        white-space: pre-wrap !important;
+    }
+    
+    /* Force horizontal layout for speaker rows */
+    .bubble-row.speaker-me,
+    .bubble-row:not(.speaker-me) {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+    }
+    
+    /* Override any conflicting styles */
+    .transcription-with-speakers {
+        display: block !important;
+    }
+}
+
+/* Simple view with speaker tablets */
+.transcription-simple-view {
+    line-height: 1.6;
+    font-family: inherit;
+}
+
+.speaker-segment {
+    margin-bottom: 1rem;
+}
+
+.speaker-tablet {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.speaker-text {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-left: 0;
+}
+
+/* View mode toggle - compact tablet style */
+.view-mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.5rem;
+    padding: 0;
+    gap: 0;
+}
+
+.toggle-button {
+    padding: 0.35rem 0.75rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.toggle-button.active {
+    background-color: var(--bg-accent);
+    color: var(--text-accent);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.toggle-button:hover:not(.active) {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.toggle-button i {
+    font-size: 0.75rem;
+    margin-right: 0;
+}
+.toggle-button span + i,
+.toggle-button i + span {
+    margin-left: 0.25rem;
+}
+
+.dark .view-mode-toggle {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-secondary);
+}
+
+/* Speaker colors - enhanced palette with better variation and contrast */
+.speaker-color-1 { background-color: #E3F2FD; color: #0D47A1; } /* Deep Blue */
+.speaker-color-2 { background-color: #F3E5F5; color: #6A1B9A; } /* Deep Purple */
+.speaker-color-3 { background-color: #E8F5E8; color: #1B5E20; } /* Deep Green */
+.speaker-color-4 { background-color: #FFF3E0; color: #E65100; } /* Deep Orange */
+.speaker-color-5 { background-color: #FCE4EC; color: #AD1457; } /* Deep Pink */
+.speaker-color-6 { background-color: #E0F7FA; color: #006064; } /* Deep Cyan */
+.speaker-color-7 { background-color: #FFF9C4; color: #F57F17; } /* Deep Yellow */
+.speaker-color-8 { background-color: #EFEBE9; color: #5D4037; } /* Deep Brown */
+
+/* Dark mode speaker colors - tasteful muted pastels with better variation */
+.dark .speaker-color-1 { background-color: #1E3A5F; color: #A5C9EA; } /* Muted blue background, soft blue text */
+.dark .speaker-color-2 { background-color: #4A2C5A; color: #D4A5D4; } /* Muted purple background, soft purple text */
+.dark .speaker-color-3 { background-color: #1F4A3C; color: #A8D5A8; } /* Muted green background, soft green text */
+.dark .speaker-color-4 { background-color: #5A3A1F; color: #E6B366; } /* Muted orange background, soft orange text */
+.dark .speaker-color-5 { background-color: #5A2C3E; color: #E6A5C4; } /* Muted pink background, soft pink text */
+.dark .speaker-color-6 { background-color: #1F4A47; color: #A5D5D0; } /* Muted teal background, soft teal text */
+.dark .speaker-color-7 { background-color: #4A4A1F; color: #E6E266; } /* Muted yellow background, soft yellow text */
+.dark .speaker-color-8 { background-color: #3E2723; color: #D7CCC8; } /* Muted brown background, soft brown text */
+
+/* Meeting/Created time styling improvements */
+.recording-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.metadata-item:hover {
+    color: var(--text-secondary);
+}
+
+.metadata-icon {
+    color: var(--text-accent);
+    opacity: 0.75;
+    font-size: 0.75rem;
+    width: 12px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.metadata-label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+}
+
+.metadata-value {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+}
+
+.metadata-value.editable {
+    cursor: pointer;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.metadata-value.editable:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-accent);
+}
+
+.metadata-edit-input {
+    padding: 0.125rem 0.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-secondary);
+    color: var(--text-primary);
+    font-size: inherit;
+    width: 140px;
+}
+
+.metadata-edit-input:focus {
+    outline: none;
+    border-bottom-color: var(--border-focus);
+}
+
+.metadata-edit-button {
+    margin-left: 0.25rem;
+    padding: 0.125rem;
+    background: none;
+    border: none;
+    color: var(--text-accent);
+    cursor: pointer;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.metadata-edit-button:hover {
+    opacity: 1;
+}
+
+.modal-content {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+/* Mobile Tabbed Layout */
+@media (max-width: 1023px) {
+    /* Desktop layout's main content is hidden via v-if="!isMobileScreen" in HTML */
+    /* .desktop-layout {
+        display: none !important;
+    } */
+    
+    /* Show mobile layout only on mobile */
+    .mobile-layout {
+        display: flex !important;
+        flex-direction: column;
+        height: calc(100vh - 120px); /* Account for header and footer */
+        overflow: hidden;
+    }
+    
+    /* Mobile audio player section */
+    .mobile-audio-section {
+        flex-shrink: 0;
+        padding: 1rem;
+        background-color: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-primary);
+    }
+    
+    /* Mobile tab navigation */
+    .mobile-tab-nav {
+        flex-shrink: 0;
+        background-color: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-primary);
+        padding: 0 1rem;
+    }
+    
+    .mobile-tab-nav .tab-list {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .mobile-tab-nav .tab-list::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .mobile-tab-button {
+        flex-shrink: 0;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-bottom: 2px solid transparent;
+        color: var(--text-muted);
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    
+    .mobile-tab-button.active {
+        color: var(--text-accent);
+        border-bottom-color: var(--border-focus);
+    }
+    
+    .mobile-tab-button:hover {
+        color: var(--text-secondary);
+    }
+    
+    /* Mobile tab content area */
+    .mobile-tab-content {
+        flex: 1;
+        overflow: hidden;
+        background-color: var(--bg-secondary);
+    }
+    
+    .mobile-tab-panel {
+        height: 100%;
+        overflow-y: auto;
+        padding: 1rem;
+        display: none;
+    }
+    
+    .mobile-tab-panel.active {
+        display: block;
+    }
+    
+/* Mobile tab content styling */
+.mobile-content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+/* Mobile fullscreen button for editors */
+.mobile-fullscreen-btn {
+    padding: 0.375rem;
+    background: none;
+    border: 1px solid var(--border-secondary);
+    border-radius: 0.375rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+}
+
+.mobile-fullscreen-btn:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-accent);
+}
+    
+    .mobile-content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .mobile-content-title {
+        font-weight: 600;
+        color: var(--text-secondary);
+        flex: 1;
+    }
+    
+    .mobile-content-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .mobile-action-btn {
+        padding: 0.5rem;
+        background: none;
+        border: 1px solid var(--border-secondary);
+        border-radius: 0.375rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.875rem;
+    }
+    
+    .mobile-action-btn:hover {
+        background-color: var(--bg-tertiary);
+        color: var(--text-accent);
+    }
+    
+    .mobile-content-box {
+        flex: 1;
+        background-color: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        /* Fix scrollbar clipping rounded corners */
+        scrollbar-gutter: stable;
+        color: var(--text-secondary);
+        min-height: 0;
+    }
+    
+    /* Mobile chat layout */
+    .mobile-chat-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .mobile-chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: var(--bg-secondary); /* Changed from --bg-tertiary */
+        border: 1px solid var(--border-primary);
+        border-radius: 0.75rem 0.75rem 0 0;
+        margin-bottom: 0;
+    }
+    
+    .mobile-chat-input {
+        background-color: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-top: none;
+        border-radius: 0 0 0.75rem 0.75rem;
+        padding: 0.75rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .mobile-chat-input textarea { /* Changed from input to textarea */
+        flex: 1;
+        padding: 0.5rem;
+        border: 1px solid var(--border-secondary);
+        border-radius: 0.375rem;
+        background-color: var(--bg-input);
+        color: var(--text-primary);
+        font-size: 0.875rem;
+        line-height: 1.5; /* Added for consistent line height */
+        resize: none; /* Prevent manual resizing */
+        min-height: calc(1.5em + 1rem); /* Approx 1 line with padding */
+        max-height: calc(1.5em * 4 + 1rem); /* Approx 4 lines with padding */
+        overflow-y: auto; /* Allow scrolling after max-height */
+    }
+
+/* Desktop chat input textarea styling */
+.chat-input-container textarea {
+    min-height: calc(1.5em * 3 + 1rem); /* Approx 3 lines with padding */
+    max-height: calc(1.5em * 6 + 1rem); /* Approx 6 lines with padding */
+    overflow-y: auto; /* Allow scrolling after max-height */
+    line-height: 1.5; /* Consistent line height */
+    font-family: inherit; /* Use the same font as the rest of the app */
+}
+    
+    .mobile-chat-input button {
+        padding: 0.5rem 1rem;
+        background-color: var(--bg-button);
+        color: var(--text-button);
+        border: none;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+    }
+    
+    .mobile-chat-input button:disabled {
+        background-color: var(--bg-tertiary);
+        color: var(--text-muted);
+        cursor: not-allowed;
+    }
+}
+
+/* Hide mobile layout on desktop */
+@media (min-width: 1024px) {
+    .mobile-layout {
+        display: none !important;
+    }
+    
+    .desktop-layout {
+        display: block !important;
+    }
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 1023px) {
+    /* Ensure modals are not too wide on small screens */
+    .fixed.inset-0 .w-full.max-w-md,
+    .fixed.inset-0 .w-full.max-w-lg,
+    .fixed.inset-0 .w-full.max-w-4xl {
+        max-width: 95vw !important;
+        max-height: 90vh;
+    }
+
+    /* Ensure the main content area is visible when the mobile menu is closed */
+    .main-content-area {
+        display: block !important;
+    }
+
+}
+
+/* Responsive title that shrinks font size instead of wrapping */
+.responsive-title {
+    font-size: clamp(1.125rem, 3.5vw, 1.5rem); /* More aggressive responsive scaling */
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* Ensure the title container doesn't grow beyond available space */
+.responsive-title-container {
+    min-width: 0;
+    flex: 1;
+    max-width: calc(100% - 200px); /* Reserve space for buttons */
+}
+
+/* Responsive button container */
+.responsive-button-container {
+    display: flex;
+    gap: 0.375rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Responsive button styling */
+.responsive-button-container button {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+    min-width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+/* On very narrow screens, make buttons smaller */
+@media (max-width: 640px) {
+    .responsive-title {
+        font-size: clamp(1rem, 4vw, 1.25rem);
+    }
+    
+    .responsive-title-container {
+        max-width: calc(100% - 150px); /* Less space reserved for buttons */
+    }
+    
+    .responsive-button-container {
+        gap: 0.25rem;
+    }
+    
+    .responsive-button-container button {
+        padding: 0.25rem 0.375rem;
+        font-size: 0.75rem;
+        min-width: 1.75rem;
+        height: 1.75rem;
+    }
+    
+    /* Hide button text on very small screens, show only icons */
+    .responsive-button-container button span {
+        display: none;
+    }
+    
+    .responsive-button-container button i {
+        margin: 0;
+    }
+}
+
+/* Header layout improvements for better responsiveness */
+.recording-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.recording-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 2.5rem;
+}
+
+.recording-metadata-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+}
+
+/* Ensure metadata items stay on same line when possible */
+@media (min-width: 768px) {
+    .recording-metadata-row {
+        flex-wrap: nowrap;
+        gap: 1.5rem;
+    }
+}
+
+/* Toast notifications */
+#toastContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.toast {
+    background: var(--bg-success);
+    color: var(--text-success-strong);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-success);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 300px;
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast i {
+    flex-shrink: 0;
+}
+
+/* Discrete horizontal resize divider */
+#mainColumnResizer {
+    width: 12px !important;
+    background-color: transparent !important;
+    cursor: ew-resize !important;
+    margin: 0 -6px !important;
+    position: relative;
+    z-index: 10;
+}
+
+#mainColumnResizer:hover::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 60px;
+    background-color: var(--border-accent);
+    border-radius: 2px;
+    transition: background-color 0.15s ease;
+}
+
+/* Ensure consistent layout behavior when sidebar is collapsed */
+.sidebar-container.lg\:col-span-1 {
+    transition: all 0.3s ease;
+}
+
+/* Smooth transition for main content area when sidebar toggles */
+.main-content-area {
+    transition: all 0.3s ease;
+}
+
+/* Preserve column widths during sidebar transitions */
+.content-column {
+    transition: none !important; /* Disable transitions on content columns to prevent layout shifts */
+}
+
+/* Ensure the grid container adapts smoothly */
+.grid.grid-cols-1.lg\:grid-cols-4.gap-6.flex-grow {
+    transition: all 0.3s ease;
+}
+
+/* Force consistent internal layout regardless of parent grid span */
+.main-content-area #mainContentColumns {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+}
+
+/* Ensure left column maintains its set width - respect inline styles */
+.main-content-area #leftMainColumn {
+    flex-shrink: 0 !important;
+    min-width: 0 !important;
+    /* Don't override width - let inline style control it */
+}
+
+/* Ensure right column fills remaining space */
+.main-content-area #rightMainColumn {
+    flex: 1 !important;
+    min-width: 0 !important;
+    width: auto !important;
+}
+
+/* Specific rule to ensure inline width styles are respected */
+#leftMainColumn[style*="width"] {
+    flex-basis: auto !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+}
+
+/* Prevent layout shifts when grid span changes */
+.main-content-area .recording-header,
+.main-content-area .participants-section,
+.main-content-area .transcription-section,
+.main-content-area .tab-section,
+.main-content-area .audio-section,
+.main-content-area .chat-section {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+/* Discrete vertical resize divider */
+.resize-handle {
+    height: 12px !important;
+    background-color: transparent !important;
+    cursor: ns-resize !important;
+    margin: 2px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+.resize-handle .w-10 {
+    width: 60px !important;
+    height: 4px !important;
+    background-color: var(--text-light) !important;
+    border-radius: 2px !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.resize-handle:hover .w-10 {
+    background-color: var(--border-accent) !important;
+}
+
+/* Color Scheme Modal Styles */
+.color-scheme-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease-in-out;
+}
+
+.color-scheme-modal-content {
+    background-color: var(--bg-secondary);
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 42rem;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: scale(1);
+    transition: all 0.3s ease-in-out;
+}
+
+.color-scheme-header {
+    background: linear-gradient(135deg, var(--bg-accent), var(--bg-secondary));
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.color-scheme-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.color-scheme-subtitle {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+.color-scheme-body {
+    padding: 1.5rem;
+    max-height: calc(90vh - 200px);
+    overflow-y: auto;
+}
+
+.color-scheme-section {
+    margin-bottom: 2rem;
+}
+
+.color-scheme-section:last-child {
+    margin-bottom: 0;
+}
+
+.color-scheme-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.color-scheme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.color-scheme-option {
+    border: 2px solid var(--border-primary);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: var(--bg-tertiary);
+    position: relative;
+    overflow: hidden;
+}
+
+.color-scheme-option:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.color-scheme-option.active {
+    border-color: var(--border-focus);
+    background-color: var(--bg-accent);
+    box-shadow: 0 0 0 3px var(--ring-focus);
+}
+
+.color-scheme-preview {
+    height: 60px;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-scheme-preview-segment {
+    flex: 1;
+    transition: all 0.2s ease;
+}
+
+.color-scheme-option:hover .color-scheme-preview-segment {
+    transform: scale(1.02);
+}
+
+.color-scheme-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.color-scheme-description {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+.color-scheme-check {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: var(--bg-button);
+    color: var(--text-button);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease;
+}
+
+.color-scheme-option.active .color-scheme-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.color-scheme-footer {
+    background-color: var(--bg-tertiary);
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.color-scheme-close-btn {
+    padding: 0.5rem 1rem;
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.color-scheme-close-btn:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.color-scheme-reset-btn {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-secondary);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.color-scheme-reset-btn:hover {
+    background-color: var(--bg-danger-light);
+    color: var(--text-danger);
+    border-color: var(--border-danger);
+}
+
+/* Color scheme preview colors */
+.preview-blue-primary { background-color: #2563eb; }
+.preview-blue-secondary { background-color: #dbeafe; }
+.preview-blue-tertiary { background-color: #93c5fd; }
+
+.preview-emerald-primary { background-color: #059669; }
+.preview-emerald-secondary { background-color: #d1fae5; }
+.preview-emerald-tertiary { background-color: #6ee7b7; }
+
+.preview-purple-primary { background-color: #7c3aed; }
+.preview-purple-secondary { background-color: #e9d5ff; }
+.preview-purple-tertiary { background-color: #c4b5fd; }
+
+.preview-rose-primary { background-color: #e11d48; }
+.preview-rose-secondary { background-color: #fce7f3; }
+.preview-rose-tertiary { background-color: #f9a8d4; }
+
+.preview-amber-primary { background-color: #d97706; }
+.preview-amber-secondary { background-color: #fef3c7; }
+.preview-amber-tertiary { background-color: #fcd34d; }
+
+.preview-teal-primary { background-color: #0d9488; }
+.preview-teal-secondary { background-color: #ccfbf1; }
+.preview-teal-tertiary { background-color: #5eead4; }
+
+/* Dark theme preview colors */
+.preview-dark-blue-primary { background-color: #1e3a8a; }
+.preview-dark-blue-secondary { background-color: #1e40af; }
+.preview-dark-blue-tertiary { background-color: #60a5fa; }
+
+.preview-dark-emerald-primary { background-color: #064e3b; }
+.preview-dark-emerald-secondary { background-color: #065f46; }
+.preview-dark-emerald-tertiary { background-color: #6ee7b7; }
+
+.preview-dark-purple-primary { background-color: #581c87; }
+.preview-dark-purple-secondary { background-color: #6b21a8; }
+.preview-dark-purple-tertiary { background-color: #c4b5fd; }
+
+.preview-dark-rose-primary { background-color: #881337; }
+.preview-dark-rose-secondary { background-color: #9f1239; }
+.preview-dark-rose-tertiary { background-color: #fda4af; }
+
+.preview-dark-amber-primary { background-color: #78350f; }
+.preview-dark-amber-secondary { background-color: #92400e; }
+.preview-dark-amber-tertiary { background-color: #fcd34d; }
+
+.preview-dark-teal-primary { background-color: #134e4a; }
+.preview-dark-teal-secondary { background-color: #115e59; }
+.preview-dark-teal-tertiary { background-color: #5eead4; }
+
+/* Line clamp utility for text truncation */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Responsive adjustments for color scheme modal */
+@media (max-width: 768px) {
+    .color-scheme-modal {
+        padding: 0.5rem;
+    }
+    
+    .color-scheme-modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+    
+    .color-scheme-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .color-scheme-header {
+        padding: 1rem;
+    }
+    
+    .color-scheme-body {
+        padding: 1rem;
+    }
+    
+    .color-scheme-footer {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}
+
+/* Enhanced Audio Player Styling for Better Dark Mode Visibility */
+.audio-player-container {
+    background: var(--bg-audio-player);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.dark .audio-player-container {
+    border: 1px solid var(--border-secondary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Audio player controls styling */
+.audio-player-container audio {
+    width: 100%;
+    height: 40px;
+    background-color: var(--bg-tertiary);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-primary);
+    outline: none;
+}
+
+.dark .audio-player-container audio {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-secondary);
+}
+
+/* Audio player controls for WebKit browsers */
+.audio-player-container audio::-webkit-media-controls-panel {
+    background-color: var(--bg-tertiary);
+    border-radius: 0.5rem;
+}
+
+.dark .audio-player-container audio::-webkit-media-controls-panel {
+    background-color: var(--bg-secondary);
+}
+
+.audio-player-container audio::-webkit-media-controls-enclosure {
+    border: none;
+    background: none;
+}
+
+.audio-player-container audio::-webkit-media-controls-play-button,
+.audio-player-container audio::-webkit-media-controls-pause-button {
+    background-color: var(--bg-button);
+    border-radius: 50%;
+    margin: 0 0.25rem;
+}
+
+.dark .audio-player-container audio::-webkit-media-controls-play-button,
+.dark .audio-player-container audio::-webkit-media-controls-pause-button {
+}
+
+.audio-player-container audio::-webkit-media-controls-timeline {
+    background-color: var(--border-primary);
+    border-radius: 0.25rem;
+    margin: 0 0.5rem;
+}
+
+.dark .audio-player-container audio::-webkit-media-controls-timeline {
+    background-color: var(--border-secondary);
+}
+
+.audio-player-container audio::-webkit-media-controls-current-time-display,
+.audio-player-container audio::-webkit-media-controls-time-remaining-display {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+}
+
+.dark .audio-player-container audio::-webkit-media-controls-current-time-display,
+.dark .audio-player-container audio::-webkit-media-controls-time-remaining-display {
+    color: var(--text-primary);
+}
+
+/* Audio player volume controls */
+.audio-player-container audio::-webkit-media-controls-volume-slider {
+    background-color: var(--border-primary);
+    border-radius: 0.25rem;
+}
+
+.dark .audio-player-container audio::-webkit-media-controls-volume-slider {
+    background-color: var(--border-secondary);
+}
+
+.audio-player-container audio::-webkit-media-controls-mute-button {
+    background-color: transparent;
+}
+
+.dark .audio-player-container audio::-webkit-media-controls-mute-button {
+}
+
+/* Custom audio player wrapper for better control */
+.custom-audio-wrapper {
+    position: relative;
+    background: var(--bg-audio-player);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .custom-audio-wrapper {
+    border: 1px solid var(--border-secondary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: var(--bg-audio-player);
+}
+
+/* Audio player title/metadata styling */
+.audio-player-title {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark .audio-player-title {
+    color: var(--text-primary);
+}
+
+.audio-player-icon {
+    color: var(--text-accent);
+    font-size: 1rem;
+}
+
+/* Audio player duration/time display */
+.audio-player-time {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.dark .audio-player-time {
+    color: var(--text-secondary);
+}
+
+/* ASR Editor Table Styles */
+.asr-editor-table {
+    width: 100%;
+    border-collapse: collapse; /* Changed to collapse */
+}
+
+.asr-editor-table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--border-primary);
+}
+
+.asr-editor-table td {
+    padding: 0.25rem; /* Reduced padding */
+    vertical-align: middle;
+    border: 1px solid var(--border-primary);
+}
+
+/* Custom Number Input with Subtle Spinners */
+.custom-number-input {
+    position: relative;
+}
+
+.custom-number-input input[type="number"] {
+    -moz-appearance: textfield;
+    padding-right: 1.75rem; /* Space for spinners */
+}
+
+.custom-number-input input[type="number"]::-webkit-inner-spin-button,
+.custom-number-input input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.number-spinners {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.custom-number-input:hover .number-spinners {
+    opacity: 1;
+}
+
+.number-spinners button {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.number-spinners button:hover {
+    color: var(--text-primary);
+}
+
+.number-spinners button svg {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+/* Speaker Combobox Styles */
+.speaker-combobox {
+    position: relative;
+}
+
+.speaker-combobox-input {
+    width: 100%;
+    padding-right: 2rem; /* Space for dropdown arrow */
+}
+
+.speaker-combobox-arrow {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.speaker-combobox-suggestions {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    margin-top: 0.25rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 12rem;
+    overflow-y: auto;
+}
+
+.speaker-suggestion-item {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.speaker-suggestion-item:hover {
+    background-color: var(--bg-accent);
+}
+
+/* Markdown Editor Styles */
+.markdown-editor-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.markdown-editor-container .EasyMDEContainer {
+    background: var(--bg-input);
+    border: none;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.markdown-editor-container .EasyMDEContainer .CodeMirror {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 0 0 0.75rem 0.75rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden !important;
+}
+
+/* Fix double scrolling by ensuring only the wrapper scrolls */
+.markdown-editor-container .EasyMDEContainer .CodeMirror-scroll {
+    overflow: auto !important;
+    height: 100% !important;
+}
+
+.markdown-editor-container .EasyMDEContainer .CodeMirror-sizer {
+    min-height: 100% !important;
+}
+
+.markdown-editor-container .EasyMDEContainer .CodeMirror-focused {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring-focus);
+}
+
+.markdown-editor-container .EasyMDEContainer .editor-toolbar {
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-secondary);
+    border-radius: 0.75rem 0.75rem 0 0;
+    padding: 0.5rem;
+    flex-shrink: 0;
+}
+
+.markdown-editor-container .EasyMDEContainer .editor-toolbar button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+    margin: 0 0.125rem;
+    transition: all 0.2s ease;
+}
+
+.markdown-editor-container .EasyMDEContainer .editor-toolbar button:hover {
+    background: var(--bg-accent);
+    color: var(--text-accent);
+    border-color: var(--border-accent);
+}
+
+.markdown-editor-container .EasyMDEContainer .editor-toolbar button.active {
+    background: var(--bg-accent);
+    color: var(--text-accent);
+    border-color: var(--border-accent);
+}
+
+/* EasyMDE Fullscreen Mode Fixes */
+.EasyMDEContainer .editor-fullscreen {
+    z-index: 9999 !important;
+    /* Add top padding to ensure toolbar is visible below the app header */
+    padding-top: 0 !important; /* Reset padding - we'll handle this in the CodeMirror element */
+}
+
+/* Force hide speaker legend during any fullscreen mode - comprehensive approach */
+.editor-fullscreen .speaker-legend,
+.CodeMirror-fullscreen .speaker-legend,
+body:has(.editor-fullscreen) .speaker-legend,
+body:has(.CodeMirror-fullscreen) .speaker-legend {
+    display: none !important;
+}
+
+/* Alternative: Lower z-index approach for speaker legend during fullscreen */
+.editor-fullscreen ~ .speaker-legend,
+.CodeMirror-fullscreen ~ .speaker-legend,
+.editor-fullscreen + .speaker-legend,
+.CodeMirror-fullscreen + .speaker-legend {
+    z-index: -1 !important;
+}
+
+/* Target the specific fullscreen container that EasyMDE creates */
+.CodeMirror-fullscreen-wrapper {
+    z-index: 9999 !important;
+}
+
+/* Ensure fullscreen editor is above everything */
+.CodeMirror-fullscreen {
+    z-index: 99998 !important; /* Just below the toolbar */
+    /* Add top padding to ensure content starts below the toolbar */
+    padding-top: 20px !important; /* Increased padding to match toolbar height */
+    margin-top: 0 !important; /* Remove any margin */
+    box-sizing: border-box !important; /* Ensure padding is included in height */
+}
+
+/* Ensure the editor toolbar is visible in fullscreen mode */
+.editor-toolbar.fullscreen {
+    position: fixed !important;
+    top: 0 !important; /* Position at the very top of the screen */
+    z-index: 99999 !important; /* Extremely high z-index to be above everything */
+    background-color: var(--bg-tertiary) !important;
+    border-bottom: 1px solid var(--border-secondary) !important;
+    width: 100% !important; /* Full width */
+    padding: 5px !important; /* Reduced padding */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* Add shadow for better visibility */
+    height: 60px !important; /* Further increased height to ensure buttons are fully visible */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box !important; /* Ensure padding is included in height */
+}
+
+/* Ensure the editor preview is properly positioned in fullscreen mode */
+.editor-preview-side.editor-preview-active-side {
+    top: 60px !important; /* Match the padding-top of the editor */
+    padding-top: 0 !important; /* Remove default padding */
+    background-color: var(--bg-input) !important; /* Match editor background */
+    margin-top: 0 !important; /* Remove any margin */
+    z-index: 99997 !important; /* Below the editor but above other elements */
+}
+
+/* Ensure the editor preview in split-screen mode is properly positioned */
+.CodeMirror-sided.CodeMirror-fullscreen {
+    padding-top: 20px !important; /* Match the padding of regular fullscreen mode */
+    width: 50% !important; /* Ensure editor takes exactly half the width */
+    background-color: var(--bg-input) !important; /* Match editor background */
+    margin-top: 0 !important; /* Remove any margin */
+    box-sizing: border-box !important; /* Ensure padding is included in height */
+}
+
+/* Fix the split-screen preview to match the editor */
+.editor-preview-active-side.editor-preview-side {
+    top: 60px !important; /* Match the editor padding */
+    padding-top: 0 !important; /* Remove default padding */
+    margin-top: 0 !important; /* Remove any margin */
+    height: calc(100% - 60px) !important; /* Adjust height to account for top position */
+    border-top: none !important; /* Remove top border */
+    background-color: var(--bg-input) !important; /* Match editor background */
+    z-index: 99997 !important; /* Below the editor but above other elements */
+    box-sizing: border-box !important; /* Ensure padding is included in height */
+}
+
+/* Hide speaker legend when any fullscreen editor is active */
+body.CodeMirror-fullscreen .speaker-legend,
+.CodeMirror-fullscreen .speaker-legend {
+    display: none !important;
+}
+
+/* Ensure the save/cancel buttons are visible in fullscreen mode */
+.markdown-editor-container .flex.justify-end.gap-2.mt-2 {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 100000 !important; /* Above everything else */
+    background-color: var(--bg-secondary) !important;
+    padding: 10px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+/* Additional fixes for fullscreen mode */
+body.fullscreen-mode {
+    overflow: hidden !important; /* Prevent scrolling when in fullscreen mode */
+}
+
+/* Ensure the editor container is properly positioned in fullscreen mode */
+.CodeMirror-fullscreen-wrapper {
+    z-index: 99998 !important; /* Below the toolbar but above other elements */
+}
+
+/* Ensure the editor is properly positioned in fullscreen mode */
+.CodeMirror-fullscreen .CodeMirror-scroll {
+    padding-top: 0 !important; /* Remove default padding */
+    margin-top: 0 !important; /* Remove any margin */
+}
+
+/* Additional fixes for toolbar buttons to ensure they're fully visible */
+.editor-toolbar.fullscreen button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 40px !important; /* Increased height for better visibility */
+    width: 40px !important; /* Increased width for better visibility */
+    margin: 0 3px !important; /* Increased margin for better spacing */
+    padding: 0 !important;
+    font-size: 18px !important; /* Increased font size for better visibility */
+    line-height: 1 !important;
+    background-color: var(--bg-secondary) !important; /* Add background color for better visibility */
+    border: 1px solid var(--border-secondary) !important; /* Add border for better visibility */
+    border-radius: 4px !important; /* Add border radius for better visibility */
+}
+
+/* Add hover state for toolbar buttons */
+.editor-toolbar.fullscreen button:hover {
+    background-color: var(--bg-accent) !important;
+    color: var(--text-accent) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Add active state for toolbar buttons */
+.editor-toolbar.fullscreen button.active {
+    background-color: var(--bg-accent) !important;
+    color: var(--text-accent) !important;
+    border-color: var(--border-accent) !important;
+}
+
+/* Ensure the editor toolbar wrapper is properly positioned */
+.editor-toolbar-wrapper {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 99999 !important;
+}
+
+.markdown-editor-container .EasyMDEContainer .editor-preview {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    padding: 1rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.markdown-editor-container .EasyMDEContainer .editor-preview-side {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border-left: 1px solid var(--border-secondary);
+    padding-top: 0 !important; /* Remove default padding */
+    box-sizing: border-box !important; /* Ensure padding is included in height */
+}
+
+/* Dark mode adjustments for markdown editor */
+.dark .markdown-editor-container .EasyMDEContainer .CodeMirror {
+    background: var(--bg-input);
+    color: var(--text-primary);
+}
+
+/* Fix cursor/caret color in dark mode for ALL CodeMirror instances */
+.dark .CodeMirror-cursor {
+    border-left: 2px solid var(--text-primary) !important;
+}
+
+/* Also fix the caret in the actual textarea (when CodeMirror is not active) */
+.dark textarea,
+.dark input[type="text"],
+.dark input[type="search"] {
+    caret-color: var(--text-primary);
+}
+
+/* Ensure cursor is visible in all markdown editors */
+.markdown-editor-container .CodeMirror-cursor,
+.recording-notes-editor .CodeMirror-cursor {
+    border-left: 2px solid var(--text-primary) !important;
+}
+
+.dark .markdown-editor-container .EasyMDEContainer .editor-toolbar {
+    background: var(--bg-tertiary);
+    border-bottom-color: var(--border-secondary);
+}
+
+.dark .markdown-editor-container .EasyMDEContainer .editor-toolbar button {
+    color: var(--text-secondary);
+}
+
+.dark .markdown-editor-container .EasyMDEContainer .editor-toolbar button:hover,
+.dark .markdown-editor-container .EasyMDEContainer .editor-toolbar button.active {
+    background: var(--bg-accent);
+    color: var(--text-accent);
+    border-color: var(--border-accent);
+}
+
+/* Markdown preview styling in notes */
+.notes-preview h1, .notes-preview h2, .notes-preview h3,
+.notes-preview h4, .notes-preview h5, .notes-preview h6 {
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.notes-preview h1 { font-size: 1.5rem; }
+.notes-preview h2 { font-size: 1.25rem; }
+.notes-preview h3 { font-size: 1.125rem; }
+
+.notes-preview p {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+.notes-preview ul, .notes-preview ol {
+    margin-left: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.notes-preview li {
+    margin-bottom: 0.25rem;
+}
+
+.notes-preview code {
+    background-color: var(--bg-tertiary);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.875rem;
+}
+
+.notes-preview pre {
+    background-color: var(--bg-tertiary);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 0.75rem;
+}
+
+.notes-preview pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+.notes-preview blockquote {
+    border-left: 4px solid var(--border-accent);
+    padding-left: 1rem;
+    margin-left: 0;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.notes-preview table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.notes-preview th, .notes-preview td {
+    border: 1px solid var(--border-secondary);
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.notes-preview th {
+    background-color: var(--bg-tertiary);
+    font-weight: 600;
+}
+
+/* Recording notes editor styles */
+.recording-notes-editor .EasyMDEContainer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-secondary);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.summary-editor-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.recording-notes-editor .CodeMirror,
+.recording-notes-editor .editor-preview,
+.recording-notes-editor .editor-preview-side {
+    flex-grow: 1;
+    background: var(--bg-input);
+    color: var(--text-primary);
+}
+
+.recording-notes-editor .editor-toolbar {
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-secondary);
+}
+
+.recording-notes-editor .editor-toolbar button {
+    color: var(--text-secondary);
+    border: none;
+}
+
+.recording-notes-editor .editor-toolbar button:hover,
+.recording-notes-editor .editor-toolbar button.active {
+    background: var(--bg-accent);
+    color: var(--text-accent);
+    border: none;
+}
+
+.recording-notes-editor .CodeMirror-cursor {
+    border-left: 1px solid var(--text-primary);
+}
+
+/* Recording notes editor - fixed height with internal scrolling */
+.recording-notes-editor {
+    flex: 1 !important; /* Take available space in flex container */
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 200px !important; /* Minimum usable height */
+    max-height: none !important; /* Allow parent to control max height */
+    overflow: hidden !important; /* Prevent container from growing */
+}
+
+.recording-notes-editor .EasyMDEContainer {
+    height: 100% !important; /* Fill parent container */
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+.recording-notes-editor .EasyMDEContainer .CodeMirror {
+    flex: 1 !important; /* Take all available space */
+    height: auto !important; /* Let flex control height */
+    min-height: 0 !important; /* Allow flex shrinking */
+    overflow: hidden !important; /* Prevent CodeMirror from growing */
+}
+
+.recording-notes-editor .EasyMDEContainer .CodeMirror-scroll {
+    height: 100% !important; /* Fill CodeMirror container */
+    overflow-y: auto !important; /* Enable internal scrolling */
+    min-height: 0 !important; /* Allow flex shrinking */
+}
+
+.recording-notes-editor .EasyMDEContainer .CodeMirror-sizer {
+    min-height: auto !important; /* Don't force content to fill editor */
+}
+
+/* Recording notes textarea fallback - fixed height with internal scrolling */
+.recording-notes-editor textarea {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-secondary) !important;
+    flex: 1 !important; /* Take available space */
+    height: auto !important; /* Let flex control height */
+    min-height: 200px !important; /* Minimum usable height */
+    max-height: none !important; /* No max height - let parent control */
+    overflow-y: auto !important; /* Enable internal scrolling */
+    resize: none !important; /* Prevent manual resizing */
+}
+
+.recording-notes-editor textarea:focus {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-focus) !important;
+    box-shadow: 0 0 0 2px var(--ring-focus) !important;
+}
+
+/* Ensure all textareas in recording view use theme colors and fixed height */
+.recording-notes-editor textarea,
+textarea[ref="recordingNotesEditor"] {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-secondary) !important;
+    flex: 1 !important; /* Take available space */
+    height: auto !important; /* Let flex control height */
+    min-height: 200px !important; /* Minimum usable height */
+    max-height: none !important; /* No max height - let parent control */
+    overflow-y: auto !important; /* Enable internal scrolling */
+    resize: none !important; /* Prevent manual resizing */
+}
+
+/* Dark mode specific adjustments for recording notes */
+.dark .recording-notes-editor textarea,
+.dark textarea[ref="recordingNotesEditor"] {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-secondary) !important;
+}
+
+/* Focus states for recording notes textarea */
+.recording-notes-editor textarea:focus,
+textarea[ref="recordingNotesEditor"]:focus {
+    outline: none !important;
+    border-color: var(--border-focus) !important;
+    box-shadow: 0 0 0 2px var(--ring-focus) !important;
+}
+
+.mobile-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.mobile-header {
+    flex-shrink: 0;
+}
+
+.mobile-audio-player {
+    flex-shrink: 0;
+}
+
+.mobile-tabs {
+    flex-shrink: 0;
+    overflow-x: auto;
+}
+
+.mobile-content {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* --- New Sidebar & Main Content Layout --- */
+
+/* Sidebar Container */
+.sidebar {
+    position: fixed; /* Changed to fixed to overlay correctly */
+    top: 69px; /* Height of the header */
+    left: 0;
+    bottom: 0;
+    width: 320px; /* w-80 */
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-primary);
+    z-index: 50; /* Higher z-index to be above backdrop */
+    transform: translateX(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.collapsed {
+    transform: translateX(-100%);
+}
+
+/* Wrapper to prevent sidebar's own content from squishing */
+.sidebar-content-wrapper {
+    width: 320px; /* Fixed width */
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-left: 320px; /* Default space for the sidebar */
+}
+
+.main-content.sidebar-open {
+    padding-left: 320px;
+}
+
+/* When sidebar is collapsed, main content takes full width */
+.main-content:not(.sidebar-open) {
+    padding-left: 0;
+}
+
+/* --- Responsive Styles --- */
+@media (max-width: 1023px) {
+    /* On mobile, main content always takes full width */
+    .main-content {
+        padding-left: 0 !important;
+    }
+
+    /* Sidebar is an overlay on mobile */
+    .sidebar {
+        top: 0; /* Cover full height on mobile */
+        z-index: 60; /* Higher z-index for mobile overlay */
+    }
+    
+    /* Make buttons smaller in mobile view */
+    .mobile-action-btn,
+    .p-2.rounded-lg {
+        padding: 0.375rem !important;
+        min-width: 1.5rem !important;
+        height: 1.5rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* Ensure icons are properly sized */
+    .mobile-action-btn i,
+    .p-2.rounded-lg i {
+        font-size: 0.875rem !important;
+    }
+}
+
+/* --- Tab Navigation Responsive Styles --- */
+@media (max-width: 640px) {
+    /* Mobile tab navigation */
+    nav.tab-nav {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+        space: 0 !important;
+    }
+    
+    nav.tab-nav a,
+    nav.tab-nav button {
+        width: 100% !important;
+        text-align: left !important;
+        border-bottom: 1px solid var(--border-primary) !important;
+        border-left: 3px solid transparent !important;
+        border-right: none !important;
+        border-top: none !important;
+        padding: 0.75rem 1rem !important;
+        margin-bottom: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        white-space: nowrap !important;
+    }
+    
+    nav.tab-nav a.border-\\[var\\(--border-accent\\)\\],
+    nav.tab-nav button:has(.border-\\[var\\(--border-focus\\)\\]) {
+        border-left: 3px solid var(--border-accent) !important;
+        background-color: var(--bg-tertiary) !important;
+    }
+    
+    /* Fix spacing between elements */
+    .tab-nav > * + * {
+        margin-left: 0 !important;
+    }
+}
+
+/* Custom Checkbox Styling for Speaker Modal */
+input[type="checkbox"].speaker-checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 2px solid var(--border-secondary);
+    border-radius: 0.25rem;
+    background-color: var(--bg-input);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+input[type="checkbox"].speaker-checkbox:hover {
+    border-color: var(--text-accent);
+    background-color: var(--bg-secondary);
+}
+
+input[type="checkbox"].speaker-checkbox:focus {
+    outline: none;
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+input[type="checkbox"].speaker-checkbox:checked {
+    background-color: var(--text-accent);
+    border-color: var(--text-accent);
+}
+
+input[type="checkbox"].speaker-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.25rem;
+    height: 0.5rem;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -60%) rotate(45deg);
+}
+
+input[type="checkbox"].speaker-checkbox:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Dark mode adjustments */
+:root[data-theme="dark"] input[type="checkbox"].speaker-checkbox {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme="dark"] input[type="checkbox"].speaker-checkbox:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="dark"] input[type="checkbox"].speaker-checkbox:checked {
+    background-color: var(--text-accent);
+    border-color: var(--text-accent);
+}
+
+/* Custom Select Dropdown Styling */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%236b7280' d='M4.5 5.5L8 9l3.5-3.5L10.75 4.75 8 7.5 5.25 4.75z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+/* Dark mode select styling */
+.dark select {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23cbd5e1' d='M4.5 5.5L8 9l3.5-3.5L10.75 4.75 8 7.5 5.25 4.75z'/%3E%3C/svg%3E");
+    background-color: var(--bg-input);
+    border-color: var(--border-secondary);
+}
+
+/* Hover and focus states for select */
+select:hover {
+    border-color: var(--border-accent);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dark select:focus {
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+/* Disabled select styling */
+select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--bg-tertiary);
+}
+
+/* Input and textarea improvements for dark mode */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="date"],
+.dark input[type="number"],
+.dark textarea {
+    background-color: var(--bg-input);
+    border-color: var(--border-secondary);
+    color: var(--text-primary);
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="password"]:focus,
+.dark input[type="date"]:focus,
+.dark input[type="number"]:focus,
+.dark textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+/* Placeholder text improvements */
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: var(--text-light);
+    opacity: 0.7;
+}
+
+/* Description text improvements */
+.dark .text-xs.text-gray-500,
+.dark .text-xs.text-gray-400,
+.dark .text-sm.text-gray-500,
+.dark .text-sm.text-gray-400 {
+    color: var(--text-muted) !important;
+}
+
+/* Label text improvements */
+.dark label {
+    color: var(--text-secondary);
+}

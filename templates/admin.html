@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Admin Dashboard - Speakr</title>
+
+    <!-- Loading overlay to prevent FOUC - MUST be first -->
+    {% include 'includes/loading_overlay.html' %}
+
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/svg+xml">
+        <!-- All dependencies bundled locally for offline support -->
+<script src="{{ url_for('static', filename='vendor/js/tailwind.min.js') }}"></script>
+        <!-- All dependencies bundled locally for offline support -->
+<script src="{{ url_for('static', filename='vendor/js/vue.global.js') }}"></script>
+        <!-- All dependencies bundled locally for offline support -->
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/loading.js') }}"></script>
+    <style>
+        /* Hide Vue content until compiled */
+        [v-cloak] {
+            display: none !important;
+        }
+
+        /* Hide scrollbar for tabs */
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <script>
+        // Initialize i18n
+        let t = (key) => key; // Default fallback
+        
+        async function initializeI18n() {
+            const userLanguage = "{{ user_language }}";
+            
+            // Initialize the global i18n instance
+            if (window.i18n) {
+                await window.i18n.init(userLanguage);
+                
+                // Create a shorthand translation function
+                t = (key, params) => window.i18n.t(key, params);
+                
+                // Update all elements with data-i18n attribute
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    el.textContent = t(key);
+                });
+                
+                // Update all elements with data-i18n-placeholder attribute
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-placeholder');
+                    el.placeholder = t(key);
+                });
+            }
+        }
+        
+        // Function to apply the theme based on localStorage
+        function applyTheme() {
+            // Guard against early execution
+            if (!document.documentElement) return;
+
+            // Apply dark mode
+            const savedMode = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedMode === 'true' || (savedMode === null && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            // Apply color scheme
+            const savedScheme = localStorage.getItem('colorScheme') || 'blue';
+            const isDark = document.documentElement.classList.contains('dark');
+            const themePrefix = isDark ? 'theme-dark-' : 'theme-light-';
+            
+            // Remove all other theme classes
+            const themeClasses = ['blue', 'emerald', 'purple', 'rose', 'amber', 'teal'];
+            themeClasses.forEach(theme => {
+                document.documentElement.classList.remove(`theme-light-${theme}`);
+                document.documentElement.classList.remove(`theme-dark-${theme}`);
+            });
+
+            // Add the correct theme class
+            if (savedScheme !== 'blue') {
+                 document.documentElement.classList.add(themePrefix + savedScheme);
+            }
+        }
+        applyTheme();
+    </script>
+</head>
+<body class="bg-[var(--bg-primary)] text-[var(--text-primary)]">
+    <div id="app" v-cloak class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col min-h-screen">
+        <header class="flex justify-between items-center mb-6 pb-4 border-b border-[var(--border-primary)]">
+            <h1 class="text-3xl font-bold text-[var(--text-primary)]">
+                <a href="{{ url_for('index') }}" class="flex items-center">
+                    <img src="{{ url_for('static', filename='img/icon-192x192.png') }}" alt="Speakr Logo" class="h-9 w-9 mr-2">
+                    Speakr
+                </a>
+            </h1>
+            <div class="flex items-center space-x-2">
+                <button @click="toggleDarkMode" class="p-2 rounded-full text-[var(--text-muted)] hover:bg-[var(--bg-tertiary)] dark:text-gray-400 dark:hover:bg-gray-700 transition-colors duration-200" :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+                    <i :class="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+                </button>
+                <div class="relative">
+                    <button @click="isUserMenuOpen = !isUserMenuOpen" class="flex items-center px-3 py-2 border border-[var(--border-secondary)] rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-accent)] focus:outline-none">
+                        <i class="fas fa-user-shield mr-2"></i>
+                        <span>{{ current_user.username }}</span>
+                        <i class="fas fa-chevron-down ml-2"></i>
+                    </button>
+                    <div v-if="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-lg shadow-lg z-10">
+                        <a href="{{ url_for('index') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-accent)]">
+                            <i class="fas fa-home mr-2"></i> ${t('nav.home')}
+                        </a>
+                        <a href="{{ url_for('account') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-accent)]">
+                            <i class="fas fa-user mr-2"></i> ${t('nav.account')}
+                        </a>
+                        <a href="{{ url_for('admin') }}" class="block px-4 py-2 text-[var(--text-accent)] bg-[var(--bg-accent)]">
+                            <i class="fas fa-user-shield mr-2"></i> ${t('nav.admin')}
+                        </a>
+                        <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-danger)]">
+                            <i class="fas fa-sign-out-alt mr-2"></i> ${t('nav.signOut')}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <div class="bg-[var(--bg-secondary)] p-4 sm:p-6 lg:p-8 rounded-xl shadow-lg border border-[var(--border-primary)]">
+                <h2 class="text-2xl font-semibold text-[var(--text-primary)] mb-6">Admin Dashboard</h2>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="mb-4 p-3 rounded-lg {% if category == 'success' %}bg-[var(--bg-success-light)] text-[var(--text-success-strong)]{% elif category == 'danger' %}bg-[var(--bg-danger-light)] text-[var(--text-danger-strong)]{% else %}bg-[var(--bg-info-light)] text-[var(--text-info-strong)]{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <!-- Tabs -->
+                <div class="border-b border-[var(--border-primary)] mb-6">
+                    <div class="relative">
+                        <!-- Scroll gradient indicators -->
+                        <div class="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[var(--bg-secondary)] to-transparent z-[1] pointer-events-none opacity-0 transition-opacity duration-200 flex items-center justify-start" id="admin-left-scroll-indicator">
+                            <i class="fas fa-chevron-left text-[var(--text-muted)] ml-1"></i>
+                        </div>
+                        <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[var(--bg-secondary)] to-transparent z-[1] pointer-events-none opacity-100 transition-opacity duration-200 flex items-center justify-end" id="admin-right-scroll-indicator">
+                            <i class="fas fa-chevron-right text-[var(--text-muted)] mr-1"></i>
+                        </div>
+                        <nav class="tab-nav px-1 sm:px-4 lg:px-6 pt-3 sm:pt-4 lg:pt-6 pb-4 sm:pb-6 -mb-px overflow-x-auto scrollbar-hide" aria-label="Tabs" id="admin-tabs-container">
+                            <div class="inline-flex gap-1 sm:gap-2">
+                                <button @click="activeTab = 'users'"
+                                        :class="activeTab === 'users' ? 'border-[var(--border-accent)] text-[var(--text-accent)]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-secondary)]'"
+                                        class="inline-flex items-center whitespace-nowrap py-1 px-1.5 sm:py-3 sm:px-3 border-b-2 font-medium text-xs sm:text-sm rounded-t-md sm:rounded-t-lg hover:bg-[var(--bg-tertiary)]">
+                                    <i class="fas fa-users mr-0.5 sm:mr-2 text-xs sm:text-sm"></i><span>${t('adminDashboard.userManagement')}</span>
+                                </button>
+                                <button @click="activeTab = 'stats'"
+                                        :class="activeTab === 'stats' ? 'border-[var(--border-accent)] text-[var(--text-accent)]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-secondary)]'"
+                                        class="inline-flex items-center whitespace-nowrap py-1 px-1.5 sm:py-3 sm:px-3 border-b-2 font-medium text-xs sm:text-sm rounded-t-md sm:rounded-t-lg hover:bg-[var(--bg-tertiary)]">
+                                    <i class="fas fa-chart-bar mr-0.5 sm:mr-2 text-xs sm:text-sm"></i><span>${t('adminDashboard.systemStatistics')}</span>
+                                </button>
+                                <button @click="activeTab = 'settings'"
+                                        :class="activeTab === 'settings' ? 'border-[var(--border-accent)] text-[var(--text-accent)]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-secondary)]'"
+                                        class="inline-flex items-center whitespace-nowrap py-1 px-1.5 sm:py-3 sm:px-3 border-b-2 font-medium text-xs sm:text-sm rounded-t-md sm:rounded-t-lg hover:bg-[var(--bg-tertiary)]">
+                                    <i class="fas fa-cogs mr-0.5 sm:mr-2 text-xs sm:text-sm"></i><span>${t('adminDashboard.systemSettings')}</span>
+                                </button>
+                                <button @click="activeTab = 'prompts'"
+                                        :class="activeTab === 'prompts' ? 'border-[var(--border-accent)] text-[var(--text-accent)]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-secondary)]'"
+                                        class="inline-flex items-center whitespace-nowrap py-1 px-1.5 sm:py-3 sm:px-3 border-b-2 font-medium text-xs sm:text-sm rounded-t-md sm:rounded-t-lg hover:bg-[var(--bg-tertiary)]">
+                                    <i class="fas fa-file-alt mr-0.5 sm:mr-2 text-xs sm:text-sm"></i><span>${t('adminDashboard.defaultPrompts')}</span>
+                                </button>
+                                <button @click="activeTab = 'vectorstore'"
+                                        :class="activeTab === 'vectorstore' ? 'border-[var(--border-accent)] text-[var(--text-accent)]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-secondary)]'"
+                                        class="inline-flex items-center whitespace-nowrap py-1 px-1.5 sm:py-3 sm:px-3 border-b-2 font-medium text-xs sm:text-sm rounded-t-md sm:rounded-t-lg hover:bg-[var(--bg-tertiary)]"
+                                        v-if="inquireModeEnabled">
+                                    <i class="fas fa-database mr-0.5 sm:mr-2 text-xs sm:text-sm"></i><span>${t('adminDashboard.vectorStore')}</span>
+                                </button>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                
+                <!-- User Management Tab -->
+                <div v-show="activeTab === 'users'">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-[var(--text-secondary)]">${t('adminDashboard.userManagement')}</h3>
+                        <button @click="showAddUserModal = true" class="px-4 py-2 bg-[var(--bg-button)] text-[var(--text-button)] rounded-lg shadow hover:bg-[var(--bg-button-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] focus:ring-offset-2 transition duration-150 ease-in-out">
+                            <i class="fas fa-user-plus mr-2"></i> ${t('adminDashboard.addUser')}
+                        </button>
+                    </div>
+                    
+                    <!-- Search and Filter -->
+                    <div class="mb-4 flex">
+                        <div class="relative flex-grow">
+                            <input type="text" v-model="userSearchQuery" :placeholder="t('adminDashboard.searchUsers')" class="w-full px-4 py-2 border border-[var(--border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]">
+                            <button v-if="userSearchQuery" @click="userSearchQuery = ''" class="absolute right-3 top-2.5 text-[var(--text-muted)] hover:text-[var(--text-secondary)]">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Users Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-[var(--border-primary)]">
+                            <thead class="bg-[var(--bg-tertiary)]">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">${t('adminDashboard.id')}</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">${t('adminDashboard.username')}</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">${t('adminDashboard.email')}</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">${t('adminDashboard.admin')}</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">${t('adminDashboard.recordings')}</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">${t('adminDashboard.storageUsed')}</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">${t('adminDashboard.actions')}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-[var(--bg-secondary)] divide-y divide-[var(--border-primary)]">
+                                <tr v-for="user in filteredUsers" :key="user.id" class="hover:bg-[var(--bg-tertiary)]">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">${ user.id }</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">${ user.username }</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">${ user.email }</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">
+                                        <span v-if="user.is_admin" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[var(--bg-success-light)] text-[var(--text-success-strong)]">Yes</span>
+                                        <span v-else class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[var(--bg-pending-light)] text-[var(--text-pending-strong)]">No</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">${ user.recordings_count }</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">${ formatFileSize(user.storage_used) }</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">
+                                        <div class="flex space-x-2">
+                                            <button @click="editUser(user)" class="text-[var(--text-accent)] hover:text-[var(--text-accent-hover)]" :title="t('buttons.editUser')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button @click="toggleAdminStatus(user)" :class="user.is_admin ? 'text-[var(--text-warn-strong)]' : 'text-[var(--text-info-strong)]'" :title="user.is_admin ? 'Remove Admin' : 'Make Admin'">
+                                                <i class="fas" :class="user.is_admin ? 'fa-user-minus' : 'fa-user-shield'"></i>
+                                            </button>
+                                            <button @click="confirmDeleteUser(user)" class="text-[var(--text-danger)] hover:text-[var(--text-danger-hover)]" :title="t('buttons.deleteUser')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr v-if="filteredUsers.length === 0">
+                                    <td colspan="7" class="px-6 py-4 text-center text-sm text-[var(--text-muted)]">
+                                        <div v-if="isLoadingUsers">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i> Loading users...
+                                        </div>
+                                        <div v-else>
+                                            No users found.
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- System Statistics Tab -->
+                <div v-show="activeTab === 'stats'">
+                    <h3 class="text-lg font-medium text-[var(--text-secondary)] mb-4">${t('adminDashboard.systemStatistics')}</h3>
+                    
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-[var(--bg-info-light)] text-[var(--text-info-strong)]">
+                                    <i class="fas fa-users text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-[var(--text-muted)]">${t('adminDashboard.totalUsers')}</p>
+                                    <p class="text-2xl font-semibold text-[var(--text-primary)]">${ stats.total_users }</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-[var(--bg-success-light)] text-[var(--text-success-strong)]">
+                                    <i class="fas fa-file-audio text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-[var(--text-muted)]">${t('adminDashboard.totalRecordings')}</p>
+                                    <p class="text-2xl font-semibold text-[var(--text-primary)]">${ stats.total_recordings }</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-[var(--bg-warn-light)] text-[var(--text-warn-strong)]">
+                                    <i class="fas fa-database text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-[var(--text-muted)]">${t('adminDashboard.totalStorage')}</p>
+                                    <p class="text-2xl font-semibold text-[var(--text-primary)]">${ formatFileSize(stats.total_storage) }</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-[var(--bg-accent)] text-[var(--text-accent)]">
+                                    <i class="fas fa-comments text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-[var(--text-muted)]">${t('adminDashboard.totalQueries')}</p>
+                                    <p class="text-2xl font-semibold text-[var(--text-primary)]">${ stats.total_queries }</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Distribution -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <h4 class="text-md font-medium text-[var(--text-secondary)] mb-3">${t('adminDashboard.recordingStatusDistribution')}</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] shadow-sm">
+                                    <span class="block text-2xl font-bold text-[var(--text-success-strong)]">${ stats.completed_recordings }</span>
+                                    <span class="block text-sm text-[var(--text-muted)]">${t('adminDashboard.completedRecordings')}</span>
+                                </div>
+                                <div class="text-center p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] shadow-sm">
+                                    <span class="block text-2xl font-bold text-[var(--text-warn-strong)]">${ stats.processing_recordings }</span>
+                                    <span class="block text-sm text-[var(--text-muted)]">${t('adminDashboard.processingRecordings')}</span>
+                                </div>
+                                <div class="text-center p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] shadow-sm">
+                                    <span class="block text-2xl font-bold text-[var(--text-pending-strong)]">${ stats.pending_recordings }</span>
+                                    <span class="block text-sm text-[var(--text-muted)]">${t('adminDashboard.pendingRecordings')}</span>
+                                </div>
+                                <div class="text-center p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)] shadow-sm">
+                                    <span class="block text-2xl font-bold text-[var(--text-danger-strong)]">${ stats.failed_recordings }</span>
+                                    <span class="block text-sm text-[var(--text-muted)]">${t('adminDashboard.failedRecordings')}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <h4 class="text-md font-medium text-[var(--text-secondary)] mb-3">${t('adminDashboard.topUsersByStorage')}</h4>
+                            <div class="space-y-3">
+                                <div v-for="user in stats.top_users" :key="user.id" class="flex justify-between items-center p-2 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)]">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-user text-[var(--text-accent)] mr-2"></i>
+                                        <span class="text-sm font-medium text-[var(--text-primary)]">${ user.username }</span>
+                                    </div>
+                                    <div class="text-sm text-[var(--text-secondary)]">
+                                        <span class="font-medium">${ formatFileSize(user.storage_used) }</span>
+                                        <span class="text-[var(--text-muted)] ml-2">(${ user.recordings_count} recordings)</span>
+                                    </div>
+                                </div>
+                                <div v-if="stats.top_users.length === 0" class="text-center text-sm text-[var(--text-muted)] p-2">
+                                    No data available
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Settings Tab -->
+                <div v-show="activeTab === 'settings'">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-[var(--text-secondary)]">${t('adminDashboard.systemSettings')}</h3>
+                        <button @click="loadSettings" class="px-4 py-2 bg-[var(--bg-button)] text-[var(--text-button)] rounded-lg shadow hover:bg-[var(--bg-button-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] focus:ring-offset-2 transition duration-150 ease-in-out">
+                            <i class="fas fa-sync-alt mr-2"></i> ${t('buttons.refresh')}
+                        </button>
+                    </div>
+                    
+                    <!-- Settings List -->
+                    <div class="space-y-4">
+                        <div v-for="setting in settings" :key="setting.id" class="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-grow">
+                                    <h4 class="text-md font-medium text-[var(--text-primary)] mb-1">${ setting.key }</h4>
+                                    <p class="text-sm text-[var(--text-muted)] mb-2">${ getSettingDescription(setting) }</p>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs px-2 py-1 bg-[var(--bg-accent)] text-[var(--text-accent)] rounded">${ setting.setting_type }</span>
+                                        <span class="text-xs text-[var(--text-muted)]">${t('adminDashboard.lastUpdated')}: ${ formatDate(setting.updated_at) }</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4 flex items-center space-x-2">
+                                    <div class="text-right">
+                                        <div class="text-sm font-medium text-[var(--text-primary)]">
+                                            <span v-if="setting.setting_type === 'boolean'">
+                                                <span v-if="setting.value === 'true'" class="text-[var(--text-success-strong)]">
+                                                    <i class="fas fa-check-circle mr-1"></i> Enabled
+                                                </span>
+                                                <span v-else class="text-[var(--text-danger-strong)]">
+                                                    <i class="fas fa-times-circle mr-1"></i> Disabled
+                                                </span>
+                                            </span>
+                                            <span v-else-if="setting.key === 'transcript_length_limit' && setting.value === '-1'" class="text-[var(--text-info-strong)]">
+                                                <i class="fas fa-infinity mr-1"></i> ${t('adminDashboard.noLimit')}
+                                            </span>
+                            <span v-else-if="setting.key === 'transcript_length_limit'" class="text-[var(--text-primary)]">
+                                ${ Number(setting.value).toLocaleString() } ${t('adminDashboard.characters')}
+                            </span>
+                            <span v-else-if="setting.key === 'max_file_size_mb'" class="text-[var(--text-primary)]">
+                                ${ Number(setting.value).toLocaleString() } ${t('adminDashboard.megabytes')}
+                            </span>
+                            <span v-else-if="setting.key === 'asr_timeout_seconds'" class="text-[var(--text-primary)]">
+                                ${ Number(setting.value).toLocaleString() } ${t('adminDashboard.seconds')}
+                            </span>
+                                            <span v-else>${ setting.value || t('adminDashboard.notSet') }</span>
+                                        </div>
+                                    </div>
+                                    <button @click="editSetting(setting)" class="text-[var(--text-accent)] hover:text-[var(--text-accent-hover)] p-1" :title="t('buttons.editSetting')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div v-if="settings.length === 0" class="text-center py-8">
+                            <div v-if="isLoadingSettings">
+                                <i class="fas fa-spinner fa-spin mr-2"></i> Loading settings...
+                            </div>
+                            <div v-else class="text-[var(--text-muted)]">
+                                No system settings found.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Default Prompts Tab -->
+                <div v-show="activeTab === 'prompts'">
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-[var(--text-secondary)] mb-4">${t('adminDashboard.defaultPrompts')}</h3>
+                        <div class="bg-[var(--bg-info-light)] text-[var(--text-info-strong)] p-4 rounded-lg mb-4">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            ${t('adminDashboard.defaultPromptInfo')}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-[var(--bg-tertiary)] p-6 rounded-lg border border-[var(--border-primary)]">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                                ${t('adminDashboard.defaultSummarizationPrompt')}
+                            </label>
+                            <p class="text-sm text-[var(--text-muted)] mb-3">
+                                ${t('adminDashboard.promptDescription')}
+                            </p>
+                            <textarea 
+                                v-model="defaultSummaryPrompt"
+                                rows="8"
+                                class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]"
+                                :placeholder="t('form.summaryPromptPlaceholder')">
+                            </textarea>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <button @click="resetDefaultPrompt" 
+                                        class="px-4 py-2 border border-[var(--border-secondary)] text-[var(--text-secondary)] rounded-md hover:bg-[var(--bg-tertiary)]">
+                                    <i class="fas fa-undo mr-2"></i> ${t('adminDashboard.resetToDefault')}
+                                </button>
+                            </div>
+                            <div>
+                                <button @click="saveDefaultPrompt" 
+                                        :disabled="isSavingPrompt"
+                                        class="px-4 py-2 bg-[var(--bg-button)] text-[var(--text-button)] rounded-md hover:bg-[var(--bg-button-hover)] disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i v-if="isSavingPrompt" class="fas fa-spinner fa-spin mr-2"></i>
+                                    <i v-else class="fas fa-save mr-2"></i>
+                                    ${ isSavingPrompt ? t('adminDashboard.saving') : t('buttons.saveChanges') }
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div v-if="promptSaveMessage" class="mt-4">
+                            <div :class="promptSaveError ? 'bg-[var(--bg-danger-light)] text-[var(--text-danger-strong)]' : 'bg-[var(--bg-success-light)] text-[var(--text-success-strong)]'" 
+                                 class="p-3 rounded-md text-sm">
+                                ${ promptSaveMessage }
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 bg-[var(--bg-tertiary)] p-6 rounded-lg border border-[var(--border-primary)]">
+                        <h4 class="text-md font-medium text-[var(--text-secondary)] mb-3">${t('adminDashboard.promptHierarchy')}</h4>
+                        <p class="text-sm text-[var(--text-muted)] mb-3">
+                            ${t('adminDashboard.promptPriorityDescription')}
+                        </p>
+                        <ol class="list-decimal list-inside space-y-2 text-sm text-[var(--text-secondary)]">
+                            <li><strong>${t('adminDashboard.tagCustomPrompt')}:</strong> ${t('adminDashboard.tagCustomPromptDesc')}</li>
+                            <li><strong>${t('adminDashboard.userCustomPrompt')}:</strong> ${t('adminDashboard.userCustomPromptDesc')}</li>
+                            <li><strong>${t('adminDashboard.adminDefaultPrompt')}:</strong> ${t('adminDashboard.adminDefaultPromptDesc')}</li>
+                            <li><strong>${t('adminDashboard.systemFallback')}:</strong> ${t('adminDashboard.systemFallbackDesc')}</li>
+                        </ol>
+                    </div>
+                    
+                    <!-- Full LLM Prompt Structure Expander -->
+                    <div class="mt-6 bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border-primary)]">
+                        <button @click="showFullPromptStructure = !showFullPromptStructure" 
+                                class="w-full p-6 flex justify-between items-center hover:bg-[var(--bg-quaternary)] transition-colors duration-200">
+                            <h4 class="text-md font-medium text-[var(--text-secondary)]">
+                                <i class="fas fa-code mr-2"></i>
+                                ${t('adminDashboard.viewFullPromptStructure')}
+                            </h4>
+                            <i :class="showFullPromptStructure ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" 
+                               class="text-[var(--text-muted)]"></i>
+                        </button>
+                        
+                        <div v-show="showFullPromptStructure" class="border-t border-[var(--border-primary)]">
+                            <div class="p-6 space-y-6">
+                                <div>
+                                    <h5 class="text-sm font-semibold text-[var(--text-accent)] mb-2">${t('adminDashboard.systemPrompt')}:</h5>
+                                    <div class="bg-[var(--bg-secondary)] p-4 rounded-md border border-[var(--border-secondary)]">
+                                        <pre class="text-xs text-[var(--text-secondary)] whitespace-pre-wrap font-mono">You are an AI assistant that generates comprehensive summaries for meeting transcripts. Respond only with the summary in Markdown format. Do NOT use markdown code blocks (```markdown). Provide raw markdown content directly.
+
+Context:
+- Current date: {current_date}
+- Tags applied to this transcript by the user: {tag_names} <span class="text-[var(--text-muted)]">(if tags exist)</span>
+- Information about the user: Name: {name}, Job title: {job_title}, Company: {company} <span class="text-[var(--text-muted)]">(if provided)</span>
+
+<span class="text-[var(--text-muted)]">Language Requirement: You MUST generate the entire summary in {user_output_language}. This is mandatory. (if language preference is set)</span></pre>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="text-sm font-semibold text-[var(--text-accent)] mb-2">${t('adminDashboard.userMessageTemplate')}:</h5>
+                                    <div class="bg-[var(--bg-secondary)] p-4 rounded-md border border-[var(--border-secondary)]">
+                                        <pre class="text-xs text-[var(--text-secondary)] whitespace-pre-wrap font-mono">Transcription:
+"""
+{transcript_text}
+"""
+
+Summarization Instructions:
+<span class="text-[var(--text-muted)]">/* This section is dynamically replaced with one of the following (in order of priority):
+   1. Combined tag prompts (if tags with custom prompts are selected)
+   2. User's personal summarization prompt (if set in account settings)
+   3. Admin default prompt (shown below)
+   4. System fallback prompt */</span>
+<span v-if="defaultSummaryPrompt || originalDefaultPrompt">${ defaultSummaryPrompt || originalDefaultPrompt }</span>
+
+<span class="text-[var(--text-muted)]">{language_directive} (e.g., "Ensure your response is in {language}." if language is set)</span></pre>
+                                    </div>
+                                    <p class="text-xs text-[var(--text-muted)] mt-2">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        ${t('adminDashboard.placeholdersNote')}
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="text-sm font-semibold text-[var(--text-accent)] mb-2">${t('adminDashboard.additionalContext')}:</h5>
+                                    <div class="bg-[var(--bg-info-light)] p-4 rounded-md">
+                                        <ul class="text-xs text-[var(--text-info-strong)] space-y-2">
+                                            <li><i class="fas fa-check-circle mr-1"></i> ${t('adminDashboard.contextNotes.transcriptLimit')}</li>
+                                            <li><i class="fas fa-check-circle mr-1"></i> ${t('adminDashboard.contextNotes.jsonConversion')}</li>
+                                            <li><i class="fas fa-check-circle mr-1"></i> ${t('adminDashboard.contextNotes.tagPrompts')}</li>
+                                            <li><i class="fas fa-check-circle mr-1"></i> ${t('adminDashboard.contextNotes.modelConfig')}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Vector Store Tab -->
+                <div v-show="activeTab === 'vectorstore'" v-if="inquireModeEnabled">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-medium text-[var(--text-secondary)]">${t('adminDashboard.vectorStoreManagement')}</h3>
+                        <button @click="loadInquireStatus" class="px-4 py-2 bg-[var(--bg-button)] text-[var(--text-button)] rounded-lg shadow hover:bg-[var(--bg-button-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] focus:ring-offset-2 transition duration-150 ease-in-out">
+                            <i class="fas fa-sync-alt mr-2"></i> ${t('adminDashboard.refreshStatus')}
+                        </button>
+                    </div>
+                    
+                    <!-- Vector Store Info -->
+                    <div class="bg-[var(--bg-tertiary)] p-6 rounded-lg border border-[var(--border-primary)] mb-6">
+                        <h4 class="text-md font-semibold text-[var(--text-primary)] mb-4">
+                            <i class="fas fa-info-circle mr-2"></i>${t('adminDashboard.aboutInquireMode')}
+                        </h4>
+                        <p class="text-sm text-[var(--text-secondary)] mb-3">
+                            ${t('adminDashboard.inquireModeDescription')}
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-[var(--text-muted)]">${t('adminDashboard.chunkSize')}:</span>
+                                <span class="ml-2 text-[var(--text-primary)]">500 ${t('adminDashboard.characters')}</span>
+                            </div>
+                            <div>
+                                <span class="text-[var(--text-muted)]">${t('adminDashboard.overlap')}:</span>
+                                <span class="ml-2 text-[var(--text-primary)]">50 ${t('adminDashboard.characters')}</span>
+                            </div>
+                            <div>
+                                <span class="text-[var(--text-muted)]">${t('adminDashboard.embeddingModel')}:</span>
+                                <span class="ml-2 text-[var(--text-primary)]">all-MiniLM-L6-v2</span>
+                            </div>
+                            <div>
+                                <span class="text-[var(--text-muted)]">${t('adminDashboard.vectorDimensions')}:</span>
+                                <span class="ml-2 text-[var(--text-primary)]">384</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistics Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-[var(--bg-secondary)] p-6 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-[var(--text-muted)]">${t('adminDashboard.totalRecordings')}</p>
+                                    <p class="text-2xl font-semibold text-[var(--text-primary)]">${ inquireStatus.total_completed_recordings || 0 }</p>
+                                </div>
+                                <i class="fas fa-file-audio text-3xl text-[var(--text-accent)] opacity-50"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-secondary)] p-6 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-[var(--text-muted)]">${t('adminDashboard.processedForInquire')}</p>
+                                    <p class="text-2xl font-semibold text-[var(--text-success-strong)]">${ inquireStatus.processed_for_inquire || 0 }</p>
+                                </div>
+                                <i class="fas fa-check-circle text-3xl text-[var(--text-success-strong)] opacity-50"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-secondary)] p-6 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-[var(--text-muted)]">${t('adminDashboard.needProcessing')}</p>
+                                    <p class="text-2xl font-semibold" :class="inquireStatus.need_processing > 0 ? 'text-[var(--text-warning-strong)]' : 'text-[var(--text-primary)]'">
+                                        ${ inquireStatus.need_processing || 0 }
+                                    </p>
+                                </div>
+                                <i class="fas fa-clock text-3xl opacity-50" :class="inquireStatus.need_processing > 0 ? 'text-[var(--text-warning-strong)]' : 'text-[var(--text-muted)]'"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-secondary)] p-6 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-[var(--text-muted)]">${t('adminDashboard.totalChunks')}</p>
+                                    <p class="text-2xl font-semibold text-[var(--text-primary)]">${ inquireStatus.total_chunks || 0 }</p>
+                                </div>
+                                <i class="fas fa-th text-3xl text-[var(--text-accent)] opacity-50"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-secondary)] p-6 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-[var(--text-muted)]">${t('adminDashboard.embeddingsStatus')}</p>
+                                    <p class="text-lg font-semibold" :class="inquireStatus.embeddings_available ? 'text-[var(--text-success-strong)]' : 'text-[var(--text-warning-strong)]'">
+                                        <i :class="inquireStatus.embeddings_available ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'" class="mr-2"></i>
+                                        ${ inquireStatus.embeddings_available ? t('adminDashboard.available') : t('adminDashboard.textSearchOnly') }
+                                    </p>
+                                </div>
+                                <i class="fas fa-brain text-3xl opacity-50" :class="inquireStatus.embeddings_available ? 'text-[var(--text-success-strong)]' : 'text-[var(--text-warning-strong)]'"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[var(--bg-secondary)] p-6 rounded-lg border border-[var(--border-primary)] shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-[var(--text-muted)]">${t('adminDashboard.processingProgress')}</p>
+                                    <div class="mt-2">
+                                        <div class="w-full bg-[var(--bg-tertiary)] rounded-full h-2.5">
+                                            <div class="bg-[var(--text-accent)] h-2.5 rounded-full" :style="{width: getProcessingProgress() + '%'}"></div>
+                                        </div>
+                                        <p class="text-xs text-[var(--text-muted)] mt-1">${ getProcessingProgress() }% ${t('adminDashboard.complete')}</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-tasks text-3xl text-[var(--text-accent)] opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Processing Actions -->
+                    <div class="bg-[var(--bg-tertiary)] p-6 rounded-lg border border-[var(--border-primary)]">
+                        <h4 class="text-md font-semibold text-[var(--text-primary)] mb-4">
+                            <i class="fas fa-cog mr-2"></i>${t('adminDashboard.processingActions')}
+                        </h4>
+                        
+                        <div v-if="inquireStatus.need_processing > 0" class="mb-4">
+                            <p class="text-sm text-[var(--text-secondary)] mb-4">
+                                ${t('adminDashboard.recordingsNeedProcessing').replace('{{count}}', inquireStatus.need_processing)}
+                            </p>
+                            
+                            <div class="flex flex-wrap gap-3">
+                                <button @click="processAllRecordings" 
+                                        :disabled="isProcessingRecordings"
+                                        class="px-4 py-2 bg-[var(--bg-button)] text-[var(--text-button)] rounded-lg shadow hover:bg-[var(--bg-button-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] focus:ring-offset-2 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i :class="isProcessingRecordings ? 'fas fa-spinner fa-spin' : 'fas fa-play'" class="mr-2"></i>
+                                    ${ isProcessingRecordings ? t('adminDashboard.processing') : t('adminDashboard.processAllRecordings') }
+                                </button>
+                                
+                                <button @click="processBatchRecordings(10)" 
+                                        :disabled="isProcessingRecordings"
+                                        class="px-4 py-2 bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-secondary)] rounded-lg shadow hover:bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] focus:ring-offset-2 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-forward mr-2"></i>
+                                    ${t('adminDashboard.processNext10')}
+                                </button>
+                            </div>
+                            
+                            <div v-if="processingResult" class="mt-4 p-4 rounded-lg" 
+                                 :class="processingResult.success ? 'bg-[var(--bg-success-light)] text-[var(--text-success-strong)]' : 'bg-[var(--bg-danger-light)] text-[var(--text-danger-strong)]'">
+                                <p class="font-medium">${ processingResult.message }</p>
+                                <div v-if="processingResult.failed && processingResult.failed.length > 0" class="mt-2">
+                                    <p class="text-sm font-medium">Failed recordings:</p>
+                                    <ul class="text-xs mt-1 space-y-1">
+                                        <li v-for="fail in processingResult.failed" :key="fail.id">
+                                            ID ${ fail.id }: ${ fail.title } - ${ fail.reason }
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div v-else class="text-center py-4">
+                            <i class="fas fa-check-circle text-4xl text-[var(--text-success-strong)] mb-3"></i>
+                            <p class="text-[var(--text-success-strong)] font-medium">${t('adminDashboard.allRecordingsProcessed')}</p>
+                            <p class="text-sm text-[var(--text-muted)] mt-1">${t('adminDashboard.vectorStoreUpToDate')}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center py-4 mt-8 text-xs text-[var(--text-light)] border-t border-[var(--border-primary)]">
+            Speakr &copy; {{ now.year }}
+        </footer>
+        
+        <!-- Add User Modal -->
+        <div v-if="showAddUserModal" @click.self="showAddUserModal = false" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-xl w-full max-w-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-[var(--text-primary)]">${t('adminDashboard.addNewUser')}</h3>
+                    <button @click="showAddUserModal = false" class="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">&times;</button>
+                </div>
+                <form @submit.prevent="addUser">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">${t('adminDashboard.usernameLabel')}</label>
+                        <input v-model="newUser.username" type="text" required class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">${t('adminDashboard.emailLabel')}</label>
+                        <input v-model="newUser.email" type="email" required class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">${t('adminDashboard.passwordLabel')}</label>
+                        <input v-model="newUser.password" type="password" required class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">${t('adminDashboard.confirmPasswordLabel')}</label>
+                        <input v-model="newUser.confirmPassword" type="password" required class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]">
+                    </div>
+                    <div class="mb-4">
+                        <label class="flex items-center cursor-pointer">
+                            <input v-model="newUser.isAdmin" type="checkbox" class="sr-only peer">
+                            <div class="relative w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--text-accent)]"></div>
+                            <span class="ml-3 text-sm text-[var(--text-secondary)]">${t('adminDashboard.adminUser')}</span>
+                        </label>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" @click="showAddUserModal = false" class="px-4 py-2 border border-[var(--border-secondary)] text-[var(--text-secondary)] rounded-md hover:bg-[var(--bg-tertiary)]">${t('buttons.cancel')}</button>
+                        <button type="submit" class="px-4 py-2 bg-[var(--bg-button)] text-[var(--text-button)] rounded-md hover:bg-[var(--bg-button-hover)]">${t('adminDashboard.addUser')}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Edit User Modal -->
+        <div v-if="showEditUserModal" @click.self="showEditUserModal = false" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-xl w-full max-w-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-[var(--text-primary)]">${t('adminDashboard.editUser')}</h3>
+                    <button @click="showEditUserModal = false" class="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">&times;</button>
+                </div>
+                <form @submit.prevent="updateUser">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">${t('adminDashboard.usernameLabel')}</label>
+                        <input v-model="editingUser.username" type="text" required class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">${t('adminDashboard.emailLabel')}</label>
+                        <input v-model="editingUser.email" type="email" required class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">${t('adminDashboard.newPasswordLabel')}</label>
+                        <input v-model="editingUser.password" type="password" class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]">
+                    </div>
+                    <div class="mb-4">
+                        <label class="flex items-center cursor-pointer">
+                            <input v-model="editingUser.is_admin" type="checkbox" class="sr-only peer">
+                            <div class="relative w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--text-accent)]"></div>
+                            <span class="ml-3 text-sm text-[var(--text-secondary)]">${t('adminDashboard.adminUser')}</span>
+                        </label>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" @click="showEditUserModal = false" class="px-4 py-2 border border-[var(--border-secondary)] text-[var(--text-secondary)] rounded-md hover:bg-[var(--bg-tertiary)]">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-[var(--bg-button)] text-[var(--text-button)] rounded-md hover:bg-[var(--bg-button-hover)]">${t('adminDashboard.updateUser')}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Delete User Confirmation Modal -->
+        <div v-if="showDeleteUserModal" @click.self="showDeleteUserModal = false" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-xl w-full max-w-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-[var(--text-primary)]">Confirm Delete</h3>
+                    <button @click="showDeleteUserModal = false" class="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">&times;</button>
+                </div>
+                <p class="mb-4 text-[var(--text-secondary)]">Are you sure you want to delete the user <span class="font-semibold">${ userToDelete?.username }</span>? This action cannot be undone.</p>
+                <div class="flex justify-end space-x-3">
+                    <button @click="showDeleteUserModal = false" class="px-4 py-2 border border-[var(--border-secondary)] text-[var(--text-secondary)] rounded-md hover:bg-[var(--bg-tertiary)]">Cancel</button>
+                    <button @click="deleteUser" class="px-4 py-2 bg-[var(--bg-danger)] text-[var(--text-button)] rounded-md hover:bg-[var(--bg-danger-hover)]">Delete User</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Edit System Setting Modal -->
+        <div v-if="showEditSettingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-xl w-full max-w-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-[var(--text-primary)]">Edit System Setting</h3>
+                    <button @click="showEditSettingModal = false" class="text-[var(--text-muted)] hover:text-[var(--text-secondary)] text-2xl leading-none">&times;</button>
+                </div>
+                
+                <div v-if="editingSetting" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">Setting Key</label>
+                        <div class="px-3 py-2 bg-[var(--bg-tertiary)] text-[var(--text-muted)] rounded-md font-mono text-sm">
+                            ${ editingSetting.key }
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">Description</label>
+                        <div class="px-3 py-2 text-[var(--text-muted)] text-sm">
+                            ${ editingSetting.description || 'No description available' }
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">Type</label>
+                        <span class="inline-block px-2 py-1 bg-[var(--bg-accent)] text-[var(--text-accent)] rounded text-xs">
+                            ${ editingSetting.setting_type }
+                        </span>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">Current Value</label>
+                        <div class="px-3 py-2 bg-[var(--bg-tertiary)] text-[var(--text-muted)] rounded-md">
+                            <span v-if="editingSetting.key === 'transcript_length_limit' && editingSetting.value === '-1'">
+                                ${t('adminDashboard.noLimit')}
+                            </span>
+                            <span v-else-if="editingSetting.key === 'transcript_length_limit'">
+                                ${ Number(editingSetting.value).toLocaleString() } ${t('adminDashboard.characters')}
+                            </span>
+                            <span v-else-if="editingSetting.key === 'max_file_size_mb'">
+                                ${ Number(editingSetting.value).toLocaleString() } ${t('adminDashboard.megabytes')}
+                            </span>
+                            <span v-else-if="editingSetting.key === 'asr_timeout_seconds'">
+                                ${ Number(editingSetting.value).toLocaleString() } ${t('adminDashboard.seconds')} (${ Math.round(Number(editingSetting.value) / 60) } ${t('adminDashboard.minutes')})
+                            </span>
+                            <span v-else>${ editingSetting.value || t('adminDashboard.notSet') }</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">New Value</label>
+                        
+                        <!-- Boolean type -->
+                        <div v-if="editingSetting.setting_type === 'boolean'" class="flex items-center space-x-4">
+                            <label class="flex items-center cursor-pointer">
+                                <input v-model="settingNewValue" type="radio" value="true" class="mr-2 text-[var(--text-accent)] focus:ring-[var(--border-focus)]">
+                                <span class="text-[var(--text-primary)]">Enabled</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input v-model="settingNewValue" type="radio" value="false" class="mr-2 text-[var(--text-accent)] focus:ring-[var(--border-focus)]">
+                                <span class="text-[var(--text-primary)]">Disabled</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Integer/Float type with special handling for specific keys -->
+                        <div v-else-if="editingSetting.setting_type === 'integer' || editingSetting.setting_type === 'float'" class="space-y-2">
+                            <!-- Special input for transcript_length_limit -->
+                            <div v-if="editingSetting.key === 'transcript_length_limit'" class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <input v-model="settingUseNoLimit" type="checkbox" id="noLimit" class="rounded border-[var(--border-secondary)] text-[var(--text-accent)] focus:ring-[var(--border-focus)]">
+                                    <label for="noLimit" class="text-sm text-[var(--text-secondary)]">No limit (use entire transcript)</label>
+                                </div>
+                                <input v-if="!settingUseNoLimit" v-model.number="settingNewValue" type="number" min="1000" step="1000" 
+                                       class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]"
+                                       :placeholder="t('form.placeholderCharacterLimit')">
+                                <small v-if="!settingUseNoLimit" class="text-[var(--text-muted)]">Recommended: 30000-50000 characters for most LLMs</small>
+                            </div>
+                            
+                            <!-- Special input for max_file_size_mb -->
+                            <div v-else-if="editingSetting.key === 'max_file_size_mb'" class="space-y-2">
+                                <input v-model.number="settingNewValue" type="number" min="1" max="10000" step="50"
+                                       class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]"
+                                       :placeholder="t('form.placeholderSizeMB')">
+                                <small class="text-[var(--text-muted)]">${t('adminDashboard.maxFileSizeHelp')}</small>
+                            </div>
+                            
+                            <!-- Special input for asr_timeout_seconds -->
+                            <div v-else-if="editingSetting.key === 'asr_timeout_seconds'" class="space-y-2">
+                                <div class="flex space-x-2">
+                                    <div class="flex-1">
+                                        <input v-model.number="settingTimeoutMinutes" type="number" min="1" max="600" step="1"
+                                               class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]"
+                                               :placeholder="t('form.placeholderMinutes')">
+                                        <small class="text-[var(--text-muted)]">${t('adminDashboard.minutes')}</small>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input v-model.number="settingTimeoutSeconds" type="number" min="0" max="59" step="1"
+                                               class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]"
+                                               :placeholder="t('form.placeholderSeconds')">
+                                        <small class="text-[var(--text-muted)]">${t('adminDashboard.seconds')}</small>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-[var(--text-muted)]">
+                                    ${t('adminDashboard.total')}: <span class="font-medium text-[var(--text-primary)]">${ (settingTimeoutMinutes * 60 + settingTimeoutSeconds).toLocaleString() } ${t('adminDashboard.seconds')}</span>
+                                </div>
+                                <small class="text-[var(--text-muted)]">${t('adminDashboard.timeoutRecommendation')}</small>
+                            </div>
+                            
+                            <!-- Default number input -->
+                            <input v-else v-model.number="settingNewValue" :type="editingSetting.setting_type === 'integer' ? 'number' : 'text'" 
+                                   class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]"
+                                   :placeholder="`Enter ${editingSetting.setting_type} value`">
+                        </div>
+                        
+                        <!-- String type -->
+                        <textarea v-else v-model="settingNewValue" rows="3"
+                                  class="w-full px-3 py-2 border border-[var(--border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] bg-[var(--bg-input)] text-[var(--text-primary)]"
+                                  :placeholder="'Enter value'"></textarea>
+                    </div>
+                    
+                    <div v-if="settingError" class="p-3 bg-[var(--bg-danger-light)] text-[var(--text-danger-strong)] rounded-md text-sm">
+                        ${ settingError }
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button @click="showEditSettingModal = false" 
+                            class="px-4 py-2 border border-[var(--border-secondary)] text-[var(--text-secondary)] rounded-md hover:bg-[var(--bg-tertiary)]">
+                        Cancel
+                    </button>
+                    <button @click="saveSettingValue" 
+                            class="px-4 py-2 bg-[var(--bg-button)] text-[var(--text-button)] rounded-md hover:bg-[var(--bg-button-hover)]">
+                        ${t('buttons.saveChanges')}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const { createApp, ref, computed, onMounted, watch } = Vue
+        
+        // Initialize i18n before Vue app creation
+        initializeI18n().then(() => {
+            // Get the i18n instance to properly bind the t function
+            const i18nInstance = window.i18n;
+            
+            createApp({
+            setup() {
+                
+                // State
+                const activeTab = ref('users');
+                const users = ref([]);
+                const stats = ref({
+                    total_users: 0,
+                    total_recordings: 0,
+                    total_storage: 0,
+                    total_queries: 0,
+                    completed_recordings: 0,
+                    processing_recordings: 0,
+                    pending_recordings: 0,
+                    failed_recordings: 0,
+                    top_users: []
+                });
+                const settings = ref([]);
+                const isLoadingUsers = ref(true);
+                const isLoadingSettings = ref(false);
+                const userSearchQuery = ref('');
+                const isDarkMode = ref(false);
+                const isUserMenuOpen = ref(false);
+                
+                // Modal state
+                const showAddUserModal = ref(false);
+                const showEditUserModal = ref(false);
+                const showDeleteUserModal = ref(false);
+                const newUser = ref({
+                    username: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: '',
+                    isAdmin: false
+                });
+                const editingUser = ref(null);
+                const userToDelete = ref(null);
+                
+                // Inquire Mode state
+                const inquireModeEnabled = ref({{ 'true' if inquire_mode_enabled else 'false' }});
+                const inquireStatus = ref({
+                    total_completed_recordings: 0,
+                    recordings_with_transcriptions: 0,
+                    processed_for_inquire: 0,
+                    need_processing: 0,
+                    total_chunks: 0,
+                    embeddings_available: false
+                });
+                const isProcessingRecordings = ref(false);
+                const processingResult = ref(null);
+                
+                // Default Prompts state
+                const defaultSummaryPrompt = ref('');
+                const isSavingPrompt = ref(false);
+                const promptSaveMessage = ref('');
+                const promptSaveError = ref(false);
+                const showFullPromptStructure = ref(false);
+                const originalDefaultPrompt = `Generate a comprehensive summary that includes the following sections:
+- **Key Issues Discussed**: A bulleted list of the main topics
+- **Key Decisions Made**: A bulleted list of any decisions reached
+- **Action Items**: A bulleted list of tasks assigned, including who is responsible if mentioned`;
+                
+                // Computed properties
+                const filteredUsers = computed(() => {
+                    if (!userSearchQuery.value) return users.value;
+                    
+                    const query = userSearchQuery.value.toLowerCase();
+                    return users.value.filter(user => 
+                        user.username.toLowerCase().includes(query) || 
+                        user.email.toLowerCase().includes(query)
+                    );
+                });
+                
+                // Methods
+                const loadUsers = async () => {
+                    isLoadingUsers.value = true;
+                    try {
+                        const response = await fetch('/admin/users');
+                        if (!response.ok) throw new Error('Failed to load users');
+                        
+                        const data = await response.json();
+                        users.value = data;
+                    } catch (error) {
+                        console.error('Error loading users:', error);
+                        // Show error notification
+                    } finally {
+                        isLoadingUsers.value = false;
+                    }
+                };
+                
+                const loadStats = async () => {
+                    try {
+                        const response = await fetch('/admin/stats');
+                        if (!response.ok) throw new Error('Failed to load statistics');
+                        
+                        const data = await response.json();
+                        stats.value = data;
+                    } catch (error) {
+                        console.error('Error loading statistics:', error);
+                        // Show error notification
+                    }
+                };
+                
+                const loadSettings = async () => {
+                    isLoadingSettings.value = true;
+                    try {
+                        const response = await fetch('/admin/settings');
+                        if (response.status === 429) {
+                            throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+                        }
+                        if (!response.ok) throw new Error('Failed to load settings');
+                        
+                        const data = await response.json();
+                        settings.value = data;
+                    } catch (error) {
+                        console.error('Error loading settings:', error);
+                        // Show error notification
+                    } finally {
+                        isLoadingSettings.value = false;
+                    }
+                };
+                
+                const showEditSettingModal = ref(false);
+                const editingSetting = ref(null);
+                const settingNewValue = ref('');
+                const settingUseNoLimit = ref(false);
+                const settingTimeoutMinutes = ref(30);
+                const settingTimeoutSeconds = ref(0);
+                const settingError = ref('');
+                
+                const editSetting = (setting) => {
+                    editingSetting.value = { ...setting };
+                    settingError.value = '';
+                    
+                    // Initialize form values based on setting type and key
+                    if (setting.key === 'transcript_length_limit') {
+                        if (setting.value === '-1') {
+                            settingUseNoLimit.value = true;
+                            settingNewValue.value = 30000; // Default if unchecked
+                        } else {
+                            settingUseNoLimit.value = false;
+                            settingNewValue.value = parseInt(setting.value) || 30000;
+                        }
+                    } else if (setting.key === 'asr_timeout_seconds') {
+                        const totalSeconds = parseInt(setting.value) || 1800;
+                        settingTimeoutMinutes.value = Math.floor(totalSeconds / 60);
+                        settingTimeoutSeconds.value = totalSeconds % 60;
+                    } else if (setting.setting_type === 'boolean') {
+                        settingNewValue.value = setting.value || 'false';
+                    } else {
+                        settingNewValue.value = setting.value || '';
+                    }
+                    
+                    showEditSettingModal.value = true;
+                };
+                
+                const saveSettingValue = async () => {
+                    settingError.value = '';
+                    
+                    let finalValue;
+                    
+                    // Validate and prepare the value based on setting type
+                    if (editingSetting.value.key === 'transcript_length_limit') {
+                        if (settingUseNoLimit.value) {
+                            finalValue = '-1';
+                        } else {
+                            const num = parseInt(settingNewValue.value);
+                            if (isNaN(num) || num < 1000) {
+                                settingError.value = 'Please enter a valid number of at least 1000 characters';
+                                return;
+                            }
+                            finalValue = num.toString();
+                        }
+                    } else if (editingSetting.value.key === 'max_file_size_mb') {
+                        const num = parseInt(settingNewValue.value);
+                        if (isNaN(num) || num < 1 || num > 10000) {
+                            settingError.value = 'Please enter a valid size between 1 and 10000 MB';
+                            return;
+                        }
+                        finalValue = num.toString();
+                    } else if (editingSetting.value.key === 'asr_timeout_seconds') {
+                        const totalSeconds = (settingTimeoutMinutes.value * 60) + settingTimeoutSeconds.value;
+                        if (totalSeconds < 60) {
+                            settingError.value = 'Timeout must be at least 60 seconds';
+                            return;
+                        }
+                        if (totalSeconds > 36000) {
+                            settingError.value = 'Timeout cannot exceed 10 hours (36000 seconds)';
+                            return;
+                        }
+                        finalValue = totalSeconds.toString();
+                    } else if (editingSetting.value.setting_type === 'integer') {
+                        const num = parseInt(settingNewValue.value);
+                        if (isNaN(num)) {
+                            settingError.value = 'Please enter a valid integer';
+                            return;
+                        }
+                        finalValue = num.toString();
+                    } else if (editingSetting.value.setting_type === 'float') {
+                        const num = parseFloat(settingNewValue.value);
+                        if (isNaN(num)) {
+                            settingError.value = 'Please enter a valid number';
+                            return;
+                        }
+                        finalValue = num.toString();
+                    } else {
+                        finalValue = settingNewValue.value;
+                    }
+                    
+                    // Save the setting
+                    await updateSetting(
+                        editingSetting.value.key,
+                        finalValue,
+                        editingSetting.value.description,
+                        editingSetting.value.setting_type
+                    );
+                    
+                    showEditSettingModal.value = false;
+                };
+                
+                const updateSetting = async (key, value, description, settingType) => {
+                    try {
+                        // Get CSRF token
+                        const csrfToken = document.querySelector('meta[name=csrf-token]')?.getAttribute('content');
+                        
+                        const headers = {
+                            'Content-Type': 'application/json'
+                        };
+                        
+                        if (csrfToken) {
+                            headers['X-CSRFToken'] = csrfToken;
+                        }
+                        
+                        const response = await fetch('/admin/settings', {
+                            method: 'POST',
+                            headers: headers,
+                            body: JSON.stringify({
+                                key: key,
+                                value: value,
+                                description: description,
+                                setting_type: settingType
+                            })
+                        });
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to update setting');
+                        }
+                        
+                        // Reload settings
+                        await loadSettings();
+                        
+                    } catch (error) {
+                        console.error('Error updating setting:', error);
+                        alert(error.message);
+                    }
+                };
+                
+                const formatDate = (dateString) => {
+                    if (!dateString) return t('adminDashboard.never');
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                };
+                
+                const getSettingDescription = (setting) => {
+                    // Map setting keys to translation keys
+                    const descriptionKeys = {
+                        'transcript_length_limit': 'adminDashboard.settings.transcriptLengthLimitDesc',
+                        'max_file_size_mb': 'adminDashboard.settings.maxFileSizeDesc',
+                        'asr_timeout_seconds': 'adminDashboard.settings.asrTimeoutDesc',
+                        'admin_default_summary_prompt': 'adminDashboard.settings.defaultSummaryPromptDesc',
+                        'recording_disclaimer': 'adminDashboard.settings.recordingDisclaimerDesc'
+                    };
+                    
+                    const key = descriptionKeys[setting.key];
+                    return key ? t(key) : setting.description || t('adminDashboard.noDescriptionAvailable');
+                };
+                
+                const addUser = async () => {
+                    if (newUser.value.password !== newUser.value.confirmPassword) {
+                        alert('Passwords do not match');
+                        return;
+                    }
+                    
+                    try {
+                        // Get CSRF token
+                        const csrfToken = document.querySelector('meta[name=csrf-token]')?.getAttribute('content');
+                        
+                        const headers = {
+                            'Content-Type': 'application/json'
+                        };
+                        
+                        if (csrfToken) {
+                            headers['X-CSRFToken'] = csrfToken;
+                        }
+                        
+                        const response = await fetch('/admin/users', {
+                            method: 'POST',
+                            headers: headers,
+                            body: JSON.stringify({
+                                username: newUser.value.username,
+                                email: newUser.value.email,
+                                password: newUser.value.password,
+                                is_admin: newUser.value.isAdmin
+                            })
+                        });
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to add user');
+                        }
+                        
+                        // Reset form and close modal
+                        newUser.value = {
+                            username: '',
+                            email: '',
+                            password: '',
+                            confirmPassword: '',
+                            isAdmin: false
+                        };
+                        showAddUserModal.value = false;
+                        
+                        // Reload users
+                        await loadUsers();
+                        await loadStats();
+                        
+                    } catch (error) {
+                        console.error('Error adding user:', error);
+                        alert(error.message);
+                    }
+                };
+                
+                const editUser = (user) => {
+                    editingUser.value = { ...user, password: '' };
+                    showEditUserModal.value = true;
+                };
+                
+                const updateUser = async () => {
+                    try {
+                        const payload = {
+                            username: editingUser.value.username,
+                            email: editingUser.value.email,
+                            is_admin: editingUser.value.is_admin
+                        };
+                        
+                        // Only include password if it was changed
+                        if (editingUser.value.password) {
+                            payload.password = editingUser.value.password;
+                        }
+                        
+                        // Get CSRF token
+                        const csrfToken = document.querySelector('meta[name=csrf-token]')?.getAttribute('content');
+                        
+                        const headers = {
+                            'Content-Type': 'application/json'
+                        };
+                        
+                        if (csrfToken) {
+                            headers['X-CSRFToken'] = csrfToken;
+                        }
+                        
+                        const response = await fetch(`/admin/users/${editingUser.value.id}`, {
+                            method: 'PUT',
+                            headers: headers,
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to update user');
+                        }
+                        
+                        // Close modal and reload users
+                        showEditUserModal.value = false;
+                        await loadUsers();
+                        
+                    } catch (error) {
+                        console.error('Error updating user:', error);
+                        alert(error.message);
+                    }
+                };
+                
+                const confirmDeleteUser = (user) => {
+                    userToDelete.value = user;
+                    showDeleteUserModal.value = true;
+                };
+                
+                const deleteUser = async () => {
+                    try {
+                        // Get CSRF token
+                        const csrfToken = document.querySelector('meta[name=csrf-token]')?.getAttribute('content');
+                        
+                        const headers = {};
+                        
+                        if (csrfToken) {
+                            headers['X-CSRFToken'] = csrfToken;
+                        }
+                        
+                        const response = await fetch(`/admin/users/${userToDelete.value.id}`, {
+                            method: 'DELETE',
+                            headers: headers
+                        });
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to delete user');
+                        }
+                        
+                        // Close modal and reload users
+                        showDeleteUserModal.value = false;
+                        await loadUsers();
+                        await loadStats();
+                        
+                    } catch (error) {
+                        console.error('Error deleting user:', error);
+                        alert(error.message);
+                    }
+                };
+                
+                const toggleAdminStatus = async (user) => {
+                    try {
+                        // Get CSRF token
+                        const csrfToken = document.querySelector('meta[name=csrf-token]')?.getAttribute('content');
+                        
+                        const headers = {};
+                        
+                        if (csrfToken) {
+                            headers['X-CSRFToken'] = csrfToken;
+                        }
+                        
+                        const response = await fetch(`/admin/users/${user.id}/toggle-admin`, {
+                            method: 'POST',
+                            headers: headers
+                        });
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to toggle admin status');
+                        }
+                        
+                        // Reload users
+                        await loadUsers();
+                        
+                    } catch (error) {
+                        console.error('Error toggling admin status:', error);
+                        alert(error.message);
+                    }
+                };
+                
+                const formatFileSize = (bytes) => {
+                    if (!bytes || bytes === 0) return '0 Bytes';
+                    
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                };
+                
+                const toggleDarkMode = () => {
+                    isDarkMode.value = !isDarkMode.value;
+                    if (isDarkMode.value) {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('darkMode', 'true');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('darkMode', 'false');
+                    }
+                };
+                
+                // Initialize dark mode
+                const initializeDarkMode = () => {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const savedMode = localStorage.getItem('darkMode');
+                    
+                    if (savedMode === 'true' || (savedMode === null && prefersDark)) {
+                        isDarkMode.value = true;
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        isDarkMode.value = false;
+                        document.documentElement.classList.remove('dark');
+                    }
+                };
+                
+                // Inquire Mode methods
+                // Default Prompts methods
+                const loadDefaultPrompt = async () => {
+                    try {
+                        // Use already loaded settings if available, otherwise load them
+                        let settingsData = settings.value;
+                        
+                        if (!settingsData || settingsData.length === 0) {
+                            const response = await fetch('/admin/settings');
+                            if (response.status === 429) {
+                                throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+                            }
+                            if (!response.ok) throw new Error('Failed to load settings');
+                            settingsData = await response.json();
+                            settings.value = settingsData;
+                        }
+                        
+                        const promptSetting = settingsData.find(s => s.key === 'admin_default_summary_prompt');
+                        if (promptSetting) {
+                            defaultSummaryPrompt.value = promptSetting.value || '';
+                        }
+                    } catch (error) {
+                        console.error('Error loading default prompt:', error);
+                        promptSaveMessage.value = t('adminDashboard.errors.failedToLoadPrompt');
+                        promptSaveError.value = true;
+                    }
+                };
+                
+                const saveDefaultPrompt = async () => {
+                    isSavingPrompt.value = true;
+                    promptSaveMessage.value = '';
+                    promptSaveError.value = false;
+                    
+                    try {
+                        const response = await fetch('/admin/settings', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                key: 'admin_default_summary_prompt',
+                                value: defaultSummaryPrompt.value,
+                                description: 'Default summarization prompt used when users have not set their own prompt. This serves as the base prompt for all users.',
+                                setting_type: 'string'
+                            })
+                        });
+                        
+                        if (!response.ok) throw new Error('Failed to save prompt');
+                        
+                        promptSaveMessage.value = t('adminDashboard.promptSavedSuccessfully');
+                        promptSaveError.value = false;
+                        
+                        // Clear message after 3 seconds
+                        setTimeout(() => {
+                            promptSaveMessage.value = '';
+                        }, 3000);
+                    } catch (error) {
+                        console.error('Error saving default prompt:', error);
+                        promptSaveMessage.value = t('adminDashboard.errors.failedToSavePrompt');
+                        promptSaveError.value = true;
+                    } finally {
+                        isSavingPrompt.value = false;
+                    }
+                };
+                
+                const resetDefaultPrompt = () => {
+                    defaultSummaryPrompt.value = originalDefaultPrompt;
+                    promptSaveMessage.value = t('adminDashboard.promptResetMessage');
+                    promptSaveError.value = false;
+                };
+                
+                const loadInquireStatus = async () => {
+                    try {
+                        const response = await fetch('/admin/inquire/status');
+                        if (!response.ok) throw new Error('Failed to load inquire status');
+                        
+                        const data = await response.json();
+                        inquireStatus.value = data;
+                    } catch (error) {
+                        console.error('Error loading inquire status:', error);
+                    }
+                };
+                
+                const processAllRecordings = async () => {
+                    if (isProcessingRecordings.value) return;
+                    
+                    isProcessingRecordings.value = true;
+                    processingResult.value = null;
+                    
+                    try {
+                        const response = await fetch('/admin/inquire/process-recordings', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({})
+                        });
+                        
+                        if (!response.ok) throw new Error('Failed to process recordings');
+                        
+                        const data = await response.json();
+                        processingResult.value = data;
+                        
+                        // Reload status after processing
+                        await loadInquireStatus();
+                    } catch (error) {
+                        console.error('Error processing recordings:', error);
+                        processingResult.value = {
+                            success: false,
+                            message: 'Failed to process recordings. Please try again.'
+                        };
+                    } finally {
+                        isProcessingRecordings.value = false;
+                    }
+                };
+                
+                const processBatchRecordings = async (batchSize) => {
+                    if (isProcessingRecordings.value) return;
+                    
+                    isProcessingRecordings.value = true;
+                    processingResult.value = null;
+                    
+                    try {
+                        const response = await fetch('/admin/inquire/process-recordings', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({ max_recordings: batchSize })
+                        });
+                        
+                        if (!response.ok) throw new Error('Failed to process recordings');
+                        
+                        const data = await response.json();
+                        processingResult.value = data;
+                        
+                        // Reload status after processing
+                        await loadInquireStatus();
+                    } catch (error) {
+                        console.error('Error processing recordings:', error);
+                        processingResult.value = {
+                            success: false,
+                            message: 'Failed to process recordings. Please try again.'
+                        };
+                    } finally {
+                        isProcessingRecordings.value = false;
+                    }
+                };
+                
+                const getProcessingProgress = () => {
+                    const total = (inquireStatus.value.processed_for_inquire || 0) + (inquireStatus.value.need_processing || 0);
+                    if (total === 0) return 100;
+                    return Math.round((inquireStatus.value.processed_for_inquire / total) * 100);
+                };
+                
+                // Lifecycle hooks - MUST be registered before any await statements
+                onMounted(async () => {
+                    loadUsers();
+                    loadStats();
+                    initializeDarkMode();
+
+                    // Load settings first, then default prompt can use that data
+                    if (activeTab.value === 'settings' || activeTab.value === 'prompts') {
+                        await loadSettings();
+                    }
+                    loadDefaultPrompt();
+
+                    if (inquireModeEnabled.value) {
+                        loadInquireStatus();
+                    }
+
+                    // Setup scroll indicators for tabs
+                    const tabsContainer = document.getElementById('admin-tabs-container');
+                    const leftIndicator = document.getElementById('admin-left-scroll-indicator');
+                    const rightIndicator = document.getElementById('admin-right-scroll-indicator');
+
+                    function updateScrollIndicators() {
+                        if (tabsContainer && leftIndicator && rightIndicator) {
+                            const scrollLeft = tabsContainer.scrollLeft;
+                            const scrollWidth = tabsContainer.scrollWidth;
+                            const clientWidth = tabsContainer.clientWidth;
+
+                            // Show/hide left indicator
+                            if (scrollLeft > 10) {
+                                leftIndicator.classList.remove('opacity-0');
+                                leftIndicator.classList.add('opacity-100');
+                            } else {
+                                leftIndicator.classList.remove('opacity-100');
+                                leftIndicator.classList.add('opacity-0');
+                            }
+
+                            // Show/hide right indicator
+                            if (scrollWidth - scrollLeft - clientWidth > 10) {
+                                rightIndicator.classList.remove('opacity-0');
+                                rightIndicator.classList.add('opacity-100');
+                            } else {
+                                rightIndicator.classList.remove('opacity-100');
+                                rightIndicator.classList.add('opacity-0');
+                            }
+                        }
+                    }
+
+                    if (tabsContainer) {
+                        tabsContainer.addEventListener('scroll', updateScrollIndicators);
+                        window.addEventListener('resize', updateScrollIndicators);
+                        // Initial check
+                        updateScrollIndicators();
+                        setTimeout(updateScrollIndicators, 100);
+                        setTimeout(updateScrollIndicators, 500);
+                    }
+                });
+                
+                // Watch for tab changes to reload data
+                watch(activeTab, async (newTab) => {
+                    if (newTab === 'users') {
+                        loadUsers();
+                    } else if (newTab === 'stats') {
+                        loadStats();
+                    } else if (newTab === 'settings') {
+                        await loadSettings();
+                    } else if (newTab === 'prompts') {
+                        // If settings aren't loaded, load them first
+                        if (!settings.value || settings.value.length === 0) {
+                            await loadSettings();
+                        }
+                        loadDefaultPrompt();
+                    } else if (newTab === 'vectorstore' && inquireModeEnabled.value) {
+                        loadInquireStatus();
+                    }
+                });
+                
+                return {
+                    // i18n - bind to i18n instance to maintain context
+                    t: (key, params) => i18nInstance ? i18nInstance.t(key, params) : key,
+                    
+                    // State
+                    activeTab,
+                    users,
+                    stats,
+                    settings,
+                    isLoadingUsers,
+                    isLoadingSettings,
+                    userSearchQuery,
+                    isDarkMode,
+                    isUserMenuOpen,
+                    
+                    // Modal state
+                    showAddUserModal,
+                    showEditUserModal,
+                    showDeleteUserModal,
+                    newUser,
+                    editingUser,
+                    userToDelete,
+                    
+                    // Settings modal state
+                    showEditSettingModal,
+                    editingSetting,
+                    settingNewValue,
+                    settingUseNoLimit,
+                    settingTimeoutMinutes,
+                    settingTimeoutSeconds,
+                    settingError,
+                    
+                    // Inquire Mode state
+                    inquireModeEnabled,
+                    inquireStatus,
+                    isProcessingRecordings,
+                    processingResult,
+                    
+                    // Default Prompts state
+                    defaultSummaryPrompt,
+                    isSavingPrompt,
+                    promptSaveMessage,
+                    promptSaveError,
+                    showFullPromptStructure,
+                    originalDefaultPrompt,
+                    
+                    // Computed
+                    filteredUsers,
+                    getProcessingProgress,
+                    
+                    // Methods
+                    loadUsers,
+                    loadStats,
+                    loadSettings,
+                    editSetting,
+                    saveSettingValue,
+                    updateSetting,
+                    formatDate,
+                    getSettingDescription,
+                    addUser,
+                    editUser,
+                    updateUser,
+                    confirmDeleteUser,
+                    deleteUser,
+                    toggleAdminStatus,
+                    formatFileSize,
+                    toggleDarkMode,
+                    
+                    // Inquire Mode methods
+                    loadInquireStatus,
+                    processAllRecordings,
+                    processBatchRecordings,
+                    
+                    // Default Prompts methods
+                    loadDefaultPrompt,
+                    saveDefaultPrompt,
+                    resetDefaultPrompt
+                };
+            },
+            delimiters: ['${', '}'] // Use different delimiters to avoid conflict with Flask's Jinja2
+        }).mount('#app');
+
+        // Hide loading overlay after Vue is mounted
+        Vue.nextTick(() => {
+            const overlay = document.querySelector('.app-loading-overlay');
+            if (overlay) {
+                setTimeout(() => {
+                    overlay.classList.add('fade-out');
+                    setTimeout(() => {
+                        overlay.remove();
+                        document.body.classList.remove('app-loading');
+                    }, 300);
+                }, 100);
+            } else {
+                document.body.classList.remove('app-loading');
+            }
+        });
+        }); // End of initializeI18n().then()
+    </script>
+</body>
+</html>
