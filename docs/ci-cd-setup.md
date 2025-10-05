@@ -1,10 +1,10 @@
-# CI/CD Setup for Speakr
+# CI/CD Setup for LecApp
 
-This document explains how the Continuous Integration and Continuous Deployment (CI/CD) pipeline is set up for the Speakr project.
+This document explains how the Continuous Integration and Continuous Deployment (CI/CD) pipeline is set up for the LecApp project.
 
 ## Automatic Docker Image Building and Publishing
 
-The Speakr project uses GitHub Actions to automatically build and publish Docker images to Docker Hub whenever changes are pushed to the repository.
+The LecApp project uses GitHub Actions to automatically build and publish Docker images to Docker Hub whenever changes are pushed to the repository.
 
 ### How It Works
 
@@ -26,7 +26,7 @@ To set up automatic Docker image publishing, follow these steps:
 
 1. **Create a Docker Hub Account** (if you don't already have one):
    - Go to [Docker Hub](https://hub.docker.com/) and sign up for an account.
-   - Create a repository named `speakr`.
+   - Create a repository named `lecapp`.
 
 2. **Create a Docker Hub Access Token**:
    - Log in to Docker Hub.
@@ -62,8 +62,8 @@ version: '3.8'
 
 services:
   app:
-    image: learnedmachine/speakr:latest
-    container_name: speakr
+    image: learnedmachine/lecapp:latest
+    container_name: lecapp
     restart: unless-stopped
     ports:
       - "8899:8899"
@@ -86,4 +86,4 @@ To create a new version of your application:
    ```
 3. The GitHub Actions workflow will automatically build and publish a new Docker image with the appropriate version tags.
 
-This allows users to choose between using the latest version (`learnedmachine/speakr:latest`) or a specific version (`learnedmachine/speakr:1.0.0`).
+This allows users to choose between using the latest version (`learnedmachine/lecapp:latest`) or a specific version (`learnedmachine/lecapp:1.0.0`).

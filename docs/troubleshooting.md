@@ -1,6 +1,6 @@
 # Troubleshooting
 
-When something goes wrong with Speakr, this guide helps you identify and resolve common issues quickly. Most problems fall into a few categories - [installation issues](getting-started/installation.md), transcription failures, performance problems, or feature-specific quirks. Also check the [FAQ](faq.md) for common questions. Understanding where to look and what to check saves hours of frustration.
+When something goes wrong with LecApp, this guide helps you identify and resolve common issues quickly. Most problems fall into a few categories - [installation issues](getting-started/installation.md), transcription failures, performance problems, or feature-specific quirks. Also check the [FAQ](faq.md) for common questions. Understanding where to look and what to check saves hours of frustration.
 
 ## Installation and Setup Issues
 
@@ -12,7 +12,7 @@ If you see database connection errors, ensure your database file has proper perm
 
 ### Can't Access the Web Interface
 
-When Speakr starts successfully but you can't reach the web interface, network configuration is usually the issue. First, verify the container is actually running with `docker ps`. Check that port 8899 is properly mapped - the docker-compose file should show `"8899:8899"` in the ports section.
+When LecApp starts successfully but you can't reach the web interface, network configuration is usually the issue. First, verify the container is actually running with `docker ps`. Check that port 8899 is properly mapped - the docker-compose file should show `"8899:8899"` in the ports section.
 
 Firewall rules often block access, especially on cloud servers. Ensure port 8899 is open in your firewall, security groups (AWS), or network policies. If accessing from another machine, remember that `localhost` won't work - use the server's actual IP address or hostname.
 
@@ -34,7 +34,7 @@ Network connectivity problems can also prevent transcription. The container need
 
 Quick failures usually indicate API authentication problems. Double-check your API keys in the environment file. Remember that OpenAI and OpenRouter use different key formats. OpenAI keys start with "sk-" while OpenRouter keys look different. Ensure you're using the right key for your configured service.
 
-API rate limits or insufficient credits also cause immediate failures. Log into your API provider's dashboard to check your usage and limits. Some API plans have restrictive rate limits that Speakr might exceed with large files.
+API rate limits or insufficient credits also cause immediate failures. Log into your API provider's dashboard to check your usage and limits. Some API plans have restrictive rate limits that LecApp might exceed with large files.
 
 ### ASR Endpoint Returns 405 or 404 Errors
 
@@ -52,9 +52,7 @@ For recordings with multiple speakers, using the [ASR endpoint with speaker diar
 
 ### Chinese Transcription Issues
 
-For [Chinese language transcription](features.md#language-support), model selection is critical. See the [FAQ on language support](faq.md#can-speakr-transcribe-languages-other-than-english) for more details.
-
-**Important**: Distil models (like distil-large-v3) do not support Chinese transcription properly. Even when you set the language to "zh", these models may recognize Chinese audio as English and produce incorrect output. Always use the full large-v3 model or similar non-distilled models for Chinese content. If you're getting English transcription for Chinese audio or romanized output instead of Chinese characters, switch from a distil model to large-v3.
+For [Chinese language transcription](features.md#language-support), model selection is critical. See the [FAQ on language support](faq.md#can-lecapp-transcribe-languages-other-than-english) for more details. The large-v3 model works best with Chinese content. Smaller models like distil-large-v3 may not output Chinese characters correctly even when the language is set to "zh". If you're getting romanized output instead of Chinese characters, upgrade to the large-v3 model.
 
 ### Summary Language Doesn't Match Preference
 
@@ -64,7 +62,7 @@ If [summaries](features.md#automatic-summarization) revert to English when you c
 
 ### Slow Transcription Processing
 
-Large audio files naturally take longer to process, but excessive delays indicate problems. Check your [server resources](getting-started.md#prerequisites) and review [system statistics](admin-guide/statistics.md) for performance metrics - Speakr needs adequate CPU and RAM, especially when processing multiple recordings simultaneously. The `docker stats` command shows current resource usage.
+Large audio files naturally take longer to process, but excessive delays indicate problems. Check your [server resources](getting-started.md#prerequisites) and review [system statistics](admin-guide/statistics.md) for performance metrics - LecApp needs adequate CPU and RAM, especially when processing multiple recordings simultaneously. The `docker stats` command shows current resource usage.
 
 Network speed affects transcription time since audio must upload to API services. Slow internet connections create bottlenecks, particularly for large files. Consider chunking settings if you consistently work with long recordings.
 
@@ -89,7 +87,7 @@ Long recordings (over 30 minutes) may timeout during ASR processing. Increase th
 
 Browser performance degrades with very large transcriptions. Recordings over 2 hours can generate massive amounts of text that some browsers may struggle to display smoothly. The bubble view for speaker-labeled transcriptions is particularly resource-intensive.
 
-Clear your browser cache if the interface gradually becomes slower over time. Speakr caches data locally for performance, but this cache can become corrupted. In Chrome or Firefox, hard refresh with Ctrl+Shift+R to reload fresh assets.
+Clear your browser cache if the interface gradually becomes slower over time. LecApp caches data locally for performance, but this cache can become corrupted. In Chrome or Firefox, hard refresh with Ctrl+Shift+R to reload fresh assets.
 
 ## Feature-Specific Issues
 
@@ -97,37 +95,17 @@ Clear your browser cache if the interface gradually becomes slower over time. Sp
 
 [Speaker diarization](features.md#speaker-diarization) requires the [ASR endpoint](getting-started.md#option-b-custom-asr-endpoint-configuration), not standard Whisper API. Configure speaker settings in [system settings](admin-guide/system-settings.md). Verify you've configured ASR settings correctly in your environment file. The ASR_BASE_URL should point to a valid ASR service that supports diarization.
 
-Even with ASR enabled, you must explicitly request diarization when uploading or reprocessing recordings. Speakr should do this by default, but user settings may override this behavior. Check the speaker count settings - if you set min and max speakers to 1, diarization effectively disables. Use reasonable ranges like 2-6 speakers for most recordings.
+Even with ASR enabled, you must explicitly request diarization when uploading or reprocessing recordings. LecApp should do this by default, but user settings may override this behavior. Check the speaker count settings - if you set min and max speakers to 1, diarization effectively disables. Use reasonable ranges like 2-6 speakers for most recordings.
 
 After transcription, speakers appear as generic labels (SPEAKER_01, etc.). You must manually [identify speakers](user-guide/transcripts.md#speaker-identification) by clicking the labels and assigning names. Manage your [speaker library](user-guide/settings.md#speakers-management-tab) in account settings.
 
 ### WhisperX Shows UNKNOWN_SPEAKER
 
-If WhisperX only shows "UNKNOWN_SPEAKER" instead of numbered speakers (SPEAKER_00, SPEAKER_01, etc.), check these common issues:
-
-1. **Wrong ASR_ENGINE**: You must use `ASR_ENGINE=whisperx` in your ASR container's Docker environment. The `faster_whisper` engine does NOT support speaker diarization, even though it can transcribe audio.
-
-2. **Missing or invalid HF_TOKEN**: The ASR container needs a valid HuggingFace token to download the diarization models. Ensure your `HF_TOKEN` environment variable is set in the ASR container configuration.
-
-3. **ASR_DIARIZE not enabled**: While this should be automatic when `USE_ASR_ENDPOINT=true`, explicitly set `ASR_DIARIZE=true` in your Speakr .env file if speakers aren't being detected.
-
-4. **Docker networking issues**: If using the Speakr and ASR webservice containers in the same docker-compose, containers must communicate via service names (e.g., `http://whisper-asr:9000`), not localhost or external IPs.
-
-Check your ASR container logs for pyannote/VAD messages to confirm diarization models are loading correctly.
-
-### ASR Service on Mac Shows GPU Errors
-
-If you're running the ASR webservice on macOS and getting GPU-related errors or "no matching manifest" errors:
-
-- **Use the CPU image**: Replace `onerahmet/openai-whisper-asr-webservice:latest-gpu` with `onerahmet/openai-whisper-asr-webservice:latest`
-- **Remove GPU configuration**: Delete the entire `deploy` section with GPU device reservations from your docker-compose.yml
-- **Expect slower processing**: CPU-based transcription works but is significantly slower than GPU acceleration
-
-This is a Docker limitation on macOS - GPU passthrough isn't supported because Docker runs in a Linux VM. See the [FAQ](faq.md#can-i-use-the-asr-webservice-for-speaker-diarization-on-mac) for complete Mac configuration.
+If WhisperX only shows "UNKNOWN_SPEAKER" instead of numbered speakers, ensure you're using the correct ASR_ENGINE setting. Set `ASR_ENGINE=whisperx` in your Docker environment. Also verify that your HF_TOKEN (Hugging Face token) is valid, as it's required for the speaker diarization models.
 
 ### Sharing Links Don't Work
 
-[Sharing](user-guide/sharing.md) requires your Speakr instance to be accessible from the internet with HTTPS. See [sharing requirements](user-guide/sharing.md#requirements-for-sharing) and [security considerations](user-guide/sharing.md#security-and-privacy-considerations). Local installations or non-SSL setups cannot generate working share links. The share button will be disabled or show an error explaining the requirements.
+[Sharing](user-guide/sharing.md) requires your LecApp instance to be accessible from the internet with HTTPS. See [sharing requirements](user-guide/sharing.md#requirements-for-sharing) and [security considerations](user-guide/sharing.md#security-and-privacy-considerations). Local installations or non-SSL setups cannot generate working share links. The share button will be disabled or show an error explaining the requirements.
 
 If your instance meets the requirements but shares still fail, check that your configured URL in the environment matches reality. Mismatched URLs cause share links to point to the wrong location. The URL must be exactly what external users will use to access your instance.
 
@@ -147,7 +125,7 @@ In many jurisdictions, you must inform participants they're being recorded. Enab
 
 ### Offline Deployment
 
-Speakr can run completely offline as all dependencies are built into the Docker image. For offline deployments, use local models via Ollama for [text generation](features.md#automatic-summarization) and ensure your ASR endpoint is hosted locally. The system will work without internet access once properly configured.
+LecApp can run completely offline as all dependencies are built into the Docker image. For offline deployments, use local models via Ollama for [text generation](features.md#automatic-summarization) and ensure your ASR endpoint is hosted locally. The system will work without internet access once properly configured.
 
 ### Non-Docker Installation
 
@@ -163,7 +141,7 @@ For ASR issues, also check the ASR container logs: `docker-compose logs -f whisp
 
 ### System Information
 
-When requesting help, provide your system configuration from the About tab in account settings. Include the Speakr version, configured AI model, transcription service type, and any error messages. This context helps others understand your specific setup.
+When requesting help, provide your system configuration from the About tab in account settings. Include the LecApp version, configured AI model, transcription service type, and any error messages. This context helps others understand your specific setup.
 
 ### Community Support
 

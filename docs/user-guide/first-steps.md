@@ -1,6 +1,6 @@
 # Main View
 
-The Speakr main view is where you'll spend most of your time. It's designed as a three-panel interface that makes it easy to navigate your recordings, review transcriptions, and interact with your content. Understanding each component will help you work more efficiently with your audio recordings.
+The LecApp main view is where you'll spend most of your time. It's designed as a three-panel interface that makes it easy to navigate your recordings, review transcriptions, and interact with your content. Understanding each component will help you work more efficiently with your audio recordings.
 
 ![Main View Interface](../assets/images/screenshots/recording view with simple transcription view and chat visible.png)
 
@@ -14,7 +14,7 @@ The navigation bar at the top of the screen provides quick access to essential f
 
 ![Navigation Elements](../assets/images/screenshots/Filters.png)
 
-Starting from the left, you'll find the Speakr logo which always brings you back to the main view from anywhere in the application. The Inquire button opens the semantic search interface, allowing you to search across all your recordings using natural language questions. The New Recording button is your gateway to creating new content, either by uploading existing audio files or recording directly in your browser. On the right side, your username appears with a dropdown menu containing access to settings, language preferences, and the logout option.
+Starting from the left, you'll find the LecApp logo which always brings you back to the main view from anywhere in the application. The Inquire button opens the semantic search interface, allowing you to search across all your recordings using natural language questions. The New Recording button is your gateway to creating new content, either by uploading existing audio files or recording directly in your browser. On the right side, your username appears with a dropdown menu containing access to settings, language preferences, and the logout option.
 
 ## Left Sidebar - Recording List and Filters
 
@@ -24,7 +24,7 @@ The left sidebar is your command center for organizing and finding recordings. A
 
 ![Filter Interface](../assets/images/screenshots/Filters.png)
 
-The filter system in Speakr is designed to be both powerful and intuitive. Click on "Active filters" to expand the filtering panel. You can filter by tags, which appear as colored pills that you can click to select or deselect. The date range filter offers convenient presets like "Today", "Yesterday", "This Week", and "Last Week", or you can set a custom date range using the date pickers. When filters are active, their count appears next to the filter label, and a clear button lets you reset all filters at once.
+The filter system in LecApp is designed to be both powerful and intuitive. Click on "Active filters" to expand the filtering panel. You can filter by tags, which appear as colored pills that you can click to select or deselect. The date range filter offers convenient presets like "Today", "Yesterday", "This Week", and "Last Week", or you can set a custom date range using the date pickers. When filters are active, their count appears next to the filter label, and a clear button lets you reset all filters at once.
 
 ### Recording List
 
@@ -32,7 +32,7 @@ Below the filters, your recordings are displayed as cards showing essential info
 
 ## Center Panel - Transcription View
 
-The center panel is where you'll read and interact with your transcription. This is the heart of Speakr, displaying the complete text of your recording.
+The center panel is where you'll read and interact with your transcription. This is the heart of LecApp, displaying the complete text of your recording.
 
 ### Transcription Display
 
@@ -77,7 +77,7 @@ The Chat tab provides an interactive AI assistant that can answer questions abou
 
 ## Reprocessing Options
 
-Speakr provides two types of reprocessing to update your recordings with improved settings or different parameters.
+LecApp provides two types of reprocessing to update your recordings with improved settings or different parameters.
 
 ### Full Reprocessing
 
@@ -111,7 +111,7 @@ Remember that the interface updates in real-time. When you upload a new recordin
 
 ## Creating New Content
 
-Now that you understand how to navigate and interact with existing recordings in the main view, let's explore how to create new content. Speakr offers two ways to add recordings to your library: uploading existing audio files or recording directly in your browser.
+Now that you understand how to navigate and interact with existing recordings in the main view, let's explore how to create new content. LecApp offers two ways to add recordings to your library: uploading existing audio files or recording directly in your browser.
 
 ---
 

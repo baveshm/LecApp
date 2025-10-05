@@ -1,14 +1,14 @@
-site_name: Speakr
+site_name: LecApp
 site_description: AI-Powered Audio Transcription & Note-Taking Platform
-site_url: https://speakr.yourdomain.com
-repo_url: https://github.com/murtaza-nasir/speakr
-repo_name: speakr
+site_url: https://lecapp.yourdomain.com
+repo_url: https://github.com/baveshm/LecApp
+repo_name: lecapp
 edit_uri: edit/main/docs/
 
 theme:
   name: material
-  logo: assets/images/speakr-logo.png
-  favicon: assets/images/speakr-logo.png
+  logo: assets/images/lecapp-logo.png
+  favicon: assets/images/lecapp-logo.png
   palette:
     # Light mode
     - media: "(prefers-color-scheme: light)"
@@ -118,9 +118,9 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/murtaza-nasir/speakr
+      link: https://github.com/baveshm/LecApp
     - icon: fontawesome/brands/docker
-      link: https://hub.docker.com/r/learnedmachine/speakr
+      link: https://hub.docker.com/r/learnedmachine/lecapp
   
   analytics:
     provider: google

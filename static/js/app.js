@@ -3513,64 +3513,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             };
 
-            const renderSummaryMath = async () => {
-                if (editingSummary.value) return;
-
-                await nextTick();
-
-                const containers = Array.from(document.querySelectorAll('[data-summary-container]'));
-                if (containers.length === 0) return;
-
-                const autoRender = typeof window.renderMathInElement === 'function'
-                    ? window.renderMathInElement
-                    : null;
-                const katexInstance = window.katex && typeof window.katex.render === 'function'
-                    ? window.katex
-                    : null;
-
-                if (!autoRender && !katexInstance) {
-                    return;
-                }
-
-                const delimiters = [
-                    { left: '$$', right: '$$', display: true },
-                    { left: '\\[', right: '\\]', display: true },
-                    { left: '$', right: '$', display: false },
-                    { left: '\\(', right: '\\)', display: false }
-                ];
-
-                containers.forEach(container => {
-                    if (!container || !container.isConnected) return;
-
-                    if (autoRender) {
-                        try {
-                            autoRender(container, {
-                                delimiters,
-                                throwOnError: false
-                            });
-                        } catch (error) {
-                            console.error('Failed to render math in summary container:', error);
-                        }
-                        return;
-                    }
-
-                    if (!katexInstance) return;
-
-                    container.querySelectorAll('[data-katex]').forEach(element => {
-                        const expression = element.getAttribute('data-katex') || element.textContent;
-                        if (!expression) return;
-                        try {
-                            katexInstance.render(expression, element, {
-                                throwOnError: false,
-                                displayMode: element.getAttribute('data-display') === 'true'
-                            });
-                        } catch (error) {
-                            console.error('Failed to render KaTeX expression:', error);
-                        }
-                    });
-                });
-            };
-
             const initializeMarkdownEditor = () => {
                 if (!notesMarkdownEditor.value) return;
                 
@@ -4624,9 +4566,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 generatedShareLink.value = '';
                 existingShareDetected.value = false;
                 showShareModal.value = true;
-
-                renderSummaryMath();
-
+                
                 // Check for existing share
                 try {
                     const response = await fetch(`/api/recording/${recording.id}/share`, {
@@ -4829,12 +4769,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         initializeSummaryMarkdownEditor();
                     });
                 }
-
-                if (newTab === 'summary') {
-                    renderSummaryMath();
-                }
             });
-
+            
             // Watch for mobile tab changes similarly
             watch(mobileTab, (newTab, oldTab) => {
                 // Save content when switching away from notes tab but keep editor open
@@ -4870,27 +4806,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     nextTick(() => {
                         initializeSummaryMarkdownEditor();
                     });
-                }
-
-                if (newTab === 'summary') {
-                    renderSummaryMath();
-                }
-            });
-
-            watch(() => selectedRecording.value?.summary_html, (newValue, oldValue) => {
-                if (newValue === oldValue) return;
-                renderSummaryMath();
-            });
-
-            watch(() => selectedRecording.value?.summary, (newValue, oldValue) => {
-                if (newValue === oldValue) return;
-                if (selectedRecording.value?.summary_html) return;
-                renderSummaryMath();
-            });
-
-            watch(showShareModal, (isOpen) => {
-                if (isOpen) {
-                    renderSummaryMath();
                 }
             });
 

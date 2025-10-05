@@ -1,6 +1,6 @@
 # User Guide
 
-Welcome to the Speakr User Guide! This documentation will help you master every feature, from basic recording to advanced AI-powered search capabilities.
+Welcome to the LecApp User Guide! This documentation will help you master every feature, from basic recording to advanced AI-powered search capabilities.
 
 ## Quick Navigation
 
@@ -84,7 +84,7 @@ Welcome to the Speakr User Guide! This documentation will help you master every 
 
 ## Getting Started
 
-The best way to learn Speakr is by doing. Start with these simple steps:
+The best way to learn LecApp is by doing. Start with these simple steps:
 
 1. **Upload a test file** - Try a short audio recording to see the transcription process
 2. **Explore the interface** - Click through the different views and panels
@@ -107,10 +107,10 @@ As you grow comfortable with basics, explore advanced features like speaker diar
   </div>
   <div class="help-item">
     <span class="help-icon">💬</span>
-    <span>Report issues on <a href="https://github.com/murtaza-nasir/speakr/issues">GitHub</a></span>
+    <span>Report issues on <a href="#">GitHub</a></span>
   </div>
 </div>
 
 ---
 
-Ready to become a Speakr power user? Start with [First Steps](first-steps.md) →
+Ready to become a LecApp power user? Start with [First Steps](first-steps.md) →

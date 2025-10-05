@@ -1,6 +1,6 @@
-# Welcome to Speakr
+# Welcome to LecApp
 
-Speakr is a powerful self-hosted transcription platform that helps you capture, transcribe, and understand your audio content. Whether you're recording meetings, interviews, lectures, or personal notes, Speakr transforms spoken words into valuable, searchable knowledge.
+LecApp is a powerful self-hosted transcription platform that helps you capture, transcribe, and understand your audio content. Whether you're recording meetings, interviews, lectures, or personal notes, LecApp transforms spoken words into valuable, searchable knowledge.
 
 <div style="max-width: 80%; margin: 2em auto;">
   <img src="assets/images/screenshots/Filters.png" alt="Main Interface" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
@@ -12,7 +12,7 @@ Speakr is a powerful self-hosted transcription platform that helps you capture, 
   <div class="card">
     <div class="card-icon">📚</div>
     <h3>Getting Started</h3>
-    <p>New to Speakr? Start here for a quick overview and setup guide.</p>
+    <p>New to LecApp? Start here for a quick overview and setup guide.</p>
     <a href="getting-started" class="card-link">Get Started →</a>
   </div>
   
@@ -40,7 +40,7 @@ Speakr is a powerful self-hosted transcription platform that helps you capture, 
   <div class="card">
     <div class="card-icon">❓</div>
     <h3>FAQ</h3>
-    <p>Find answers to commonly asked questions about Speakr.</p>
+    <p>Find answers to commonly asked questions about LecApp.</p>
     <a href="faq" class="card-link">View FAQ →</a>
   </div>
   
@@ -144,9 +144,9 @@ Need assistance? We're here to help:
     <h4>💬 Community</h4>
     <p>Connect with other users and get support:</p>
     <ul>
-      <li><a href="https://github.com/murtaza-nasir/speakr/issues">Report Issues</a></li>
-      <li><a href="https://github.com/murtaza-nasir/speakr/discussions">Join Discussions</a></li>
-      <li><a href="https://github.com/murtaza-nasir/speakr">Star on GitHub</a></li>
+      <li><a href="#">Report Issues</a></li>
+      <li><a href="#">Join Discussions</a></li>
+      <li><a href="#">Star on GitHub</a></li>
     </ul>
   </div>
 </div>

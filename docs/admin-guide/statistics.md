@@ -1,6 +1,6 @@
 # System Statistics
 
-The System Statistics tab transforms raw data into actionable insights about your Speakr instance. At a glance, you can see how many users you're serving, how many recordings they've created, how much storage they're consuming, and whether everything is processing smoothly.
+The System Statistics tab transforms raw data into actionable insights about your LecApp instance. At a glance, you can see how many users you're serving, how many recordings they've created, how much storage they're consuming, and whether everything is processing smoothly.
 
 ![System Statistics](../assets/images/screenshots/Admin stats.png)
 

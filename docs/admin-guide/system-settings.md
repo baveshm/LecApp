@@ -1,6 +1,6 @@
 # System Settings
 
-System Settings is where you configure the fundamental behaviors that affect every user and recording in your Speakr instance. These global parameters shape how the system operates, from technical limits to user-facing features.
+System Settings is where you configure the fundamental behaviors that affect every user and recording in your LecApp instance. These global parameters shape how the system operates, from technical limits to user-facing features.
 
 ![System Settings](../assets/images/screenshots/Admin system settings.png)
 
@@ -24,7 +24,7 @@ If users frequently hit the limit, consider whether they really need single reco
 
 ## ASR Timeout Settings
 
-The ASR timeout determines how long Speakr will wait for advanced transcription services to complete their work. The default 1,800 seconds (30 minutes) handles most recordings, but you might need to adjust based on your transcription service and typical file sizes.
+The ASR timeout determines how long LecApp will wait for advanced transcription services to complete their work. The default 1,800 seconds (30 minutes) handles most recordings, but you might need to adjust based on your transcription service and typical file sizes.
 
 Setting this too low causes longer recordings to fail even when the transcription service is working normally. The recording appears stuck in processing, then eventually fails, frustrating users who must retry or give up. Setting it too high ties up system resources waiting for services that might have actually failed.
 

@@ -1,7 +1,7 @@
 services:
   app:
-    image: learnedmachine/speakr:latest
-    container_name: speakr
+    image: #
+    container_name: lecapp
     restart: unless-stopped
     ports:
       - "8899:8899"
@@ -39,5 +39,5 @@ services:
 
     # Option 2: Docker-managed volumes.
     # volumes:
-    #   - speakr-uploads:/data/uploads
-    #   - speakr-instance:/data/instance
+    #   - lecapp-uploads:/data/uploads
+    #   - lecapp-instance:/data/instance

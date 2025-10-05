@@ -2,7 +2,7 @@
 
 ## Overview
 
-Transcript Templates in Speakr allow you to customize how your transcriptions are formatted when downloading them. Instead of a fixed format, you can create multiple templates for different use cases - whether you need timestamps for subtitles, speaker-focused formats for interviews, or screenplay-style formatting for media production.
+Transcript Templates in LecApp allow you to customize how your transcriptions are formatted when downloading them. Instead of a fixed format, you can create multiple templates for different use cases - whether you need timestamps for subtitles, speaker-focused formats for interviews, or screenplay-style formatting for media production.
 
 ## Accessing Transcript Templates
 

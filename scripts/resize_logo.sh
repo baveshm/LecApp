@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Logo Resizer Script for Speakr (ImageMagick version)
+# Logo Resizer Script for LecApp (ImageMagick version)
 # Resizes a source PNG image to all required icon sizes for PWA and favicon support.
 #
 # Usage: ./resize_logo.sh <source_image.png>
@@ -34,7 +34,7 @@ fi
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
-echo "🎨 Speakr Logo Resizer (ImageMagick)"
+echo "🎨 LecApp Logo Resizer (ImageMagick)"
 echo "=================================================="
 echo "Source file: $SOURCE_FILE"
 echo "Output directory: $OUTPUT_DIR"
