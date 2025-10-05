@@ -1,10 +1,10 @@
 # Recording and Uploading Audio
 
-Speakr provides two powerful ways to add content to your library: uploading existing audio files for transcription or recording new audio directly in your browser. Both methods include the same powerful features for organization, [tagging](settings.md#tag-management-tab), and processing. After recording, you can [work with transcriptions](transcripts.md) and use [AI features](../features.md#ai-powered-intelligence).
+LecApp provides two powerful ways to add content to your library: uploading existing audio files for transcription or recording new audio directly in your browser. Both methods include the same powerful features for organization, [tagging](settings.md#tag-management-tab), and processing. After recording, you can [work with transcriptions](transcripts.md) and use [AI features](../features.md#ai-powered-intelligence).
 
 ## Important: Browser Requirements for Recording
 
-Before you start recording, it's crucial to understand that browser security features can affect your ability to record audio, especially system audio. For security reasons, most browsers require HTTPS connections for audio recording features. If you're accessing Speakr locally (not via localhost), you may need to configure your browser to allow audio recording on HTTP connections. Detailed browser configuration instructions are provided at the bottom of this page.
+Before you start recording, it's crucial to understand that browser security features can affect your ability to record audio, especially system audio. For security reasons, most browsers require HTTPS connections for audio recording features. If you're accessing LecApp locally (not via localhost), you may need to configure your browser to allow audio recording on HTTP connections. Detailed browser configuration instructions are provided at the bottom of this page.
 
 When recording system audio, you'll need to grant screen sharing permissions and specifically enable the "Also share system audio" option. Without this, only your microphone will be recorded. Different browsers may phrase this option differently, but it's essential for capturing computer audio.
 
@@ -18,7 +18,7 @@ Click the "+ New Recording" button in the top navigation bar to access the recor
 
 The upload interface provides a simple drag-and-drop area at the top of the screen. You can either drag audio files directly from your file manager onto this area, or click the area to open a file browser and select files.
 
-Speakr supports a [wide range of audio and video formats](../faq.md#what-audio-formats-does-speakr-support). Common audio formats like MP3, WAV, M4A, FLAC, AAC, and OGG work perfectly. You can also upload video files including MP4, MOV, and AVI, and Speakr will extract and process the audio track. Mobile recordings in formats like AMR, 3GP, and 3GPP are also supported. The default file size limit is 500MB, though this can be configured by your administrator in [system settings](../admin-guide/system-settings.md#maximum-file-size). For files over 25MB with OpenAI, see [chunking configuration](../troubleshooting.md#files-over-25mb-fail-with-openai).
+LecApp supports a [wide range of audio and video formats](../faq.md#what-audio-formats-does-lecapp-support). Common audio formats like MP3, WAV, M4A, FLAC, AAC, and OGG work perfectly. You can also upload video files including MP4, MOV, and AVI, and LecApp will extract and process the audio track. Mobile recordings in formats like AMR, 3GP, and 3GPP are also supported. The default file size limit is 500MB, though this can be configured by your administrator in [system settings](../admin-guide/system-settings.md#maximum-file-size). For files over 25MB with OpenAI, see [chunking configuration](../troubleshooting.md#files-over-25mb-fail-with-openai).
 
 When you upload a file, it immediately appears in the upload queue with a progress bar showing the upload status. Once uploaded, you can add [tags](settings.md#tag-management-tab), set a custom title, and configure processing options before starting transcription. Tags can include [custom AI prompts](../admin-guide/prompts.md) for specialized processing.
 
@@ -66,9 +66,9 @@ This is the recommended option when recording:
 - System sounds or notifications you want to capture
 - Any combination of audio sources on your computer
 
-When you select "Your Entire Screen", you'll see previews of all your available screens (if you have multiple monitors). It doesn't matter which screen you choose since Speakr only records audio, not video. The critical step is to enable the **"Also share system audio"** checkbox at the bottom of the dialog. Without this checkbox enabled, you'll only record silence.
+When you select "Your Entire Screen", you'll see previews of all your available screens (if you have multiple monitors). It doesn't matter which screen you choose since LecApp only records audio, not video. The critical step is to enable the **"Also share system audio"** checkbox at the bottom of the dialog. Without this checkbox enabled, you'll only record silence.
 
-**Important macOS Limitation:** The "Also share system audio" option is available on Windows and Linux, but may not be available on macOS due to operating system limitations. macOS users may only be able to record audio from browser tabs, not from the entire system or desktop applications. This is a limitation imposed by macOS's security model, not by Speakr or your browser.
+**Important macOS Limitation:** The "Also share system audio" option is available on Windows and Linux, but may not be available on macOS due to operating system limitations. macOS users may only be able to record audio from browser tabs, not from the entire system or desktop applications. This is a limitation imposed by macOS's security model, not by LecApp or your browser.
 
 ## During Recording - Live Interface
 
@@ -84,7 +84,7 @@ A prominent timer at the top shows the elapsed recording time in minutes and sec
 
 ### Live Note-Taking with Markdown
 
-One of Speakr's most powerful features is the ability to take structured notes while recording. The note-taking area appears below the audio visualizers and supports full markdown formatting.
+One of LecApp's most powerful features is the ability to take structured notes while recording. The note-taking area appears below the audio visualizers and supports full markdown formatting.
 
 ![Note Taking During Recording](../assets/images/screenshots/live recording view with notes.png)
 
@@ -102,7 +102,7 @@ After stopping a recording or selecting an uploaded file, you'll see the finaliz
 
 ### Adding Tags
 
-The tag system is one of Speakr's most powerful organizational features. Tags appear as colored pills that you can select to categorize your recording. You can apply multiple tags to a single recording, making it easy to cross-reference content across different categories.
+The tag system is one of LecApp's most powerful organizational features. Tags appear as colored pills that you can select to categorize your recording. You can apply multiple tags to a single recording, making it easy to cross-reference content across different categories.
 
 ![Tag Selection and Stacking](../assets/images/screenshots/tag selection and stacking.png)
 
@@ -128,7 +128,7 @@ At the bottom of the modal, you have three options for proceeding. The "Upload" 
 
 The quality of your transcription starts with the quality of your recording. When using a microphone, find a quiet space with minimal echo and background noise. Soft furnishings and carpeted rooms generally provide better acoustics than empty rooms with hard surfaces. Position your microphone consistently, about 6-12 inches from your mouth, and speak at a steady volume.
 
-**Important Note for Phone Recordings:** Many smartphones have aggressive noise cancellation algorithms designed to enhance single-speaker calls. When recording meetings or conversations with multiple speakers using a phone's microphone, these noise cancellation features may incorrectly identify other speakers as background noise and filter them out. This can result in muffled or missing audio from speakers who are farther from the phone. This is not a limitation of Speakr but rather how modern phones process audio. For multi-speaker recordings, consider using an external microphone without noise cancellation or positioning the phone equidistant from all speakers.
+**Important Note for Phone Recordings:** Many smartphones have aggressive noise cancellation algorithms designed to enhance single-speaker calls. When recording meetings or conversations with multiple speakers using a phone's microphone, these noise cancellation features may incorrectly identify other speakers as background noise and filter them out. This can result in muffled or missing audio from speakers who are farther from the phone. This is not a limitation of LecApp but rather how modern phones process audio. For multi-speaker recordings, consider using an external microphone without noise cancellation or positioning the phone equidistant from all speakers.
 
 For system audio recording, close unnecessary applications that might produce notification sounds or background audio. If you're recording a video call, ensure you have a stable internet connection to avoid audio dropouts. Using wired internet instead of WiFi can improve stability for important recordings.
 
@@ -149,15 +149,15 @@ Take advantage of the live note-taking feature to capture information that might
 
 System audio recording requires specific browser support and configuration. The feature works best in Chrome and other Chromium-based browsers like Edge or Brave. Firefox has limited support, and Safari currently doesn't support system audio recording at all.
 
-For production deployments using HTTPS, audio recording works without additional configuration. However, if you're accessing Speakr over HTTP (except for localhost), you'll need to configure your browser to allow audio recording on insecure connections.
+For production deployments using HTTPS, audio recording works without additional configuration. However, if you're accessing LecApp over HTTP (except for localhost), you'll need to configure your browser to allow audio recording on insecure connections.
 
 ### Chrome Configuration for HTTP Access
 
-If you're accessing Speakr over HTTP (not localhost), Chrome will block audio recording by default. To enable it:
+If you're accessing LecApp over HTTP (not localhost), Chrome will block audio recording by default. To enable it:
 
 1. Open Chrome and navigate to `chrome://flags`
 2. Search for "Insecure origins treated as secure"
-3. In the text field, enter your Speakr URL (e.g., `http://192.168.1.100:8899`)
+3. In the text field, enter your LecApp URL (e.g., `http://192.168.1.100:8899`)
 4. Set the dropdown to "Enabled"
 5. Click "Relaunch" to restart Chrome with the new settings
 
@@ -185,15 +185,15 @@ If your microphone isn't detected, first check that your browser has permission 
 
 When system audio recording isn't working, the most common issue is forgetting to check the "Also share system audio" checkbox when selecting what to share. This checkbox appears at the bottom of the screen/tab selection dialog and must be enabled. Make sure you're selecting either the entire screen or a browser tab, not an individual application window, as application audio sharing is often not supported.
 
-If you're on a locally hosted instance and can't record audio, check whether you're accessing Speakr via HTTP. Browsers block audio recording on insecure connections for security reasons. Either set up HTTPS with a reverse proxy or configure your browser using the instructions above to allow audio recording on your specific HTTP URL.
+If you're on a locally hosted instance and can't record audio, check whether you're accessing LecApp via HTTP. Browsers block audio recording on insecure connections for security reasons. Either set up HTTPS with a reverse proxy or configure your browser using the instructions above to allow audio recording on your specific HTTP URL.
 
 If a recording stops unexpectedly, check your available disk space as browsers have limits on local storage. Ensure your internet connection is stable, especially if you have auto-save features enabled. Check the browser's developer console (F12) for any error messages that might indicate the problem.
 
-For poor audio quality issues, start by checking your microphone placement and gain settings. External USB microphones often provide better quality than built-in laptop microphones. Reduce background noise by closing windows, turning off fans, and muting other devices. If recording system audio, ensure the source audio quality is good, as Speakr can't improve poor source audio.
+For poor audio quality issues, start by checking your microphone placement and gain settings. External USB microphones often provide better quality than built-in laptop microphones. Reduce background noise by closing windows, turning off fans, and muting other devices. If recording system audio, ensure the source audio quality is good, as LecApp can't improve poor source audio.
 
 ## Moving Forward
 
-Now that you understand how to create and upload recordings, you're ready to explore how to work with transcriptions and leverage Speakr's AI-powered features for summarization and chat.
+Now that you understand how to create and upload recordings, you're ready to explore how to work with transcriptions and leverage LecApp's AI-powered features for summarization and chat.
 
 ---
 

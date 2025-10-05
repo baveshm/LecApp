@@ -1,5 +1,5 @@
 /**
- * Lightweight i18n (internationalization) system for Speakr
+ * Lightweight i18n (internationalization) system for LecApp
  * Handles loading and managing translations with template variable support
  */
 

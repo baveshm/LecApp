@@ -1,46 +1,46 @@
 # Frequently Asked Questions
 
-These are the questions that come up most often when people start using Speakr. The answers here will save you time and help you understand how to get the most from the platform.
+These are the questions that come up most often when people start using LecApp. The answers here will save you time and help you understand how to get the most from the platform.
 
 ## General Questions
 
-### What is Speakr exactly?
+### What is LecApp exactly?
 
-Speakr is a self-hosted web application that transforms your audio recordings into organized, searchable, and intelligent notes. It combines [transcription](features.md#core-transcription-features), [AI summarization](features.md#automatic-summarization), [speaker identification](features.md#speaker-diarization), and [semantic search](user-guide/inquire-mode.md) into a single platform you control completely. If you self-host an ASR model like a Whisper endpoint or the recommended ASR service, and an openAI compatible API for LLMs, your data never leaves your infrastructure, giving you complete privacy and control.
+LecApp is a self-hosted web application that transforms your audio recordings into organized, searchable, and intelligent notes. It combines [transcription](features.md#core-transcription-features), [AI summarization](features.md#automatic-summarization), [speaker identification](features.md#speaker-diarization), and [semantic search](user-guide/inquire-mode.md) into a single platform you control completely. If you self-host an ASR model like a Whisper endpoint or the recommended ASR service, and an openAI compatible API for LLMs, your data never leaves your infrastructure, giving you complete privacy and control.
 
-### How is Speakr different from other transcription services?
+### How is LecApp different from other transcription services?
 
-The key difference is self-hosting - you run Speakr on your own server, keeping complete control of your data. Beyond privacy, Speakr integrates transcription with AI-powered features like [intelligent summarization](features.md#automatic-summarization), [interactive chat](user-guide/transcripts.md) with your recordings, and [semantic search](user-guide/inquire-mode.md) across all your content. It's not just about converting speech to text; it's about making that text useful and accessible.
+The key difference is self-hosting - you run LecApp on your own server, keeping complete control of your data. Beyond privacy, LecApp integrates transcription with AI-powered features like [intelligent summarization](features.md#automatic-summarization), [interactive chat](user-guide/transcripts.md) with your recordings, and [semantic search](user-guide/inquire-mode.md) across all your content. It's not just about converting speech to text; it's about making that text useful and accessible.
 
-### What audio formats does Speakr support?
+### What audio formats does LecApp support?
 
-Speakr handles most common audio formats including MP3, WAV, M4A, OGG, FLAC, and more. The system uses FFmpeg internally to process audio, so essentially any format FFmpeg supports will work. Video files containing audio tracks are also supported - Speakr will extract and process the audio component.
+LecApp handles most common audio formats including MP3, WAV, M4A, OGG, FLAC, and more. The system uses FFmpeg internally to process audio, so essentially any format FFmpeg supports will work. Video files containing audio tracks are also supported - LecApp will extract and process the audio component.
 
-### Can multiple people use the same Speakr instance?
+### Can multiple people use the same LecApp instance?
 
-Yes, Speakr is designed as a multi-user system. Each user has their own account with separate recordings, settings, and speaker libraries. Admins can [create and manage user accounts](admin-guide/user-management.md). See [system statistics](admin-guide/statistics.md) to monitor usage, monitor usage, and configure system-wide settings. Users can't see each other's recordings unless explicitly shared through [share links](user-guide/sharing.md). Learn about [sharing security](user-guide/sharing.md#security-and-privacy-considerations).
+Yes, LecApp is designed as a multi-user system. Each user has their own account with separate recordings, settings, and speaker libraries. Admins can [create and manage user accounts](admin-guide/user-management.md). See [system statistics](admin-guide/statistics.md) to monitor usage, monitor usage, and configure system-wide settings. Users can't see each other's recordings unless explicitly shared through [share links](user-guide/sharing.md). Learn about [sharing security](user-guide/sharing.md#security-and-privacy-considerations).
 
 ## Installation and Setup
 
 ### What are the minimum system requirements?
 
-Speakr runs comfortably on modest hardware. You need at least 2GB of RAM, though 4GB is recommended for better performance. CPU requirements depend on your usage - a dual-core processor handles single-user instances fine, while busy multi-user installations benefit from more cores. Storage needs depend on your recording volume, but start with at least 20GB free space for the application and initial recordings.
+LecApp runs comfortably on modest hardware. You need at least 2GB of RAM, though 4GB is recommended for better performance. CPU requirements depend on your usage - a dual-core processor handles single-user instances fine, while busy multi-user installations benefit from more cores. Storage needs depend on your recording volume, but start with at least 20GB free space for the application and initial recordings.
 
-### Do I need to know Docker to install Speakr?
+### Do I need to know Docker to install LecApp?
 
 Basic Docker knowledge helps but isn't essential. The [quick start guide](getting-started.md) provides exact commands to copy and run. For production deployments, see the [installation guide](getting-started/installation.md). You'll need to install Docker and Docker Compose on your server, create a configuration file with your API keys, then run a single command to start everything. The hardest part is usually getting your API keys from OpenAI or OpenRouter.
 
-### Can I run Speakr on a Raspberry Pi?
+### Can I run LecApp on a Raspberry Pi?
 
-Yes, Speakr can run on a Raspberry Pi 4 or newer with at least 4GB of RAM. Performance won't match a full server, especially for transcription processing, but it's perfectly usable for personal use. The ARM-compatible Docker images work out of the box. Just be patient with longer processing times for large recordings.
+Yes, LecApp can run on a Raspberry Pi 4 or newer with at least 4GB of RAM. Performance won't match a full server, especially for transcription processing, but it's perfectly usable for personal use. The ARM-compatible Docker images work out of the box. Just be patient with longer processing times for large recordings.
 
-### How do I backup my Speakr data?
+### How do I backup my LecApp data?
 
-Your Speakr data consists of three essential components: the SQLite database in the `instance/` directory, audio files and transcriptions in the `uploads/` directory, and your configuration in the `.env` file. To create a complete backup, stop the container first to ensure database consistency, then backup all three directories:
+Your LecApp data consists of three essential components: the SQLite database in the `instance/` directory, audio files and transcriptions in the `uploads/` directory, and your configuration in the `.env` file. To create a complete backup, stop the container first to ensure database consistency, then backup all three directories:
 
 ```bash
 docker compose down
-tar czf speakr_backup_$(date +%Y%m%d).tar.gz uploads/ instance/ .env
+tar czf lecapp_backup_$(date +%Y%m%d).tar.gz uploads/ instance/ .env
 docker compose up -d
 ```
 
@@ -56,9 +56,9 @@ Transcription accuracy depends on several factors - audio quality, speaker clari
 
 Whisper API provides basic transcription - converting speech to text without speaker identification. The [recommended ASR container](getting-started.md#option-b-custom-asr-endpoint-configuration) (`onerahmet/openai-whisper-asr-webservice`) offers advanced features like [speaker diarization](features.md#speaker-diarization), which identifies and labels different speakers in the conversation. Learn to [manage speakers](user-guide/transcripts.md#speaker-identification) after transcription. Diarization is essential for meetings with multiple participants, while Whisper API works fine for single-speaker recordings like dictations or podcasts.
 
-### Can Speakr transcribe languages other than English?
+### Can LecApp transcribe languages other than English?
 
-Yes, Speakr supports multiple languages through its transcription services. Whisper models handle dozens of languages with varying accuracy - major languages like Spanish, French, German, and Chinese work well, while less common languages may have reduced accuracy. Set your preferred language in [account settings](user-guide/settings.md#language-preferences) or leave it blank for automatic detection. See [language support details](features.md#language-support).
+Yes, LecApp supports multiple languages through its transcription services. Whisper models handle dozens of languages with varying accuracy - major languages like Spanish, French, German, and Chinese work well, while less common languages may have reduced accuracy. Set your preferred language in [account settings](user-guide/settings.md#language-preferences) or leave it blank for automatic detection. See [language support details](features.md#language-support).
 
 ### How long can my recordings be?
 
@@ -74,7 +74,7 @@ Summary generation uses the language model configured in your [environment file]
 
 When self-hosted properly, your audio and transcriptions never leave your server. However, the transcription and summarization APIs (OpenAI, OpenRouter) do process your content on their servers. For complete privacy, you'd need to use local models for both transcription and summarization, which requires significant computational resources.
 
-### Can I use Speakr for confidential business meetings?
+### Can I use LecApp for confidential business meetings?
 
 Yes, with appropriate precautions. Self-hosting keeps data under your control, but consider your API provider's data policies. OpenAI and OpenRouter have different data retention and usage policies. For maximum security, use local transcription and summarization models, though this requires powerful hardware and technical expertise.
 
@@ -84,17 +84,17 @@ Yes, with appropriate precautions. Self-hosting keeps data under your control, b
 
 ### Who can see my recordings?
 
-Only you can see your recordings by default. [Admin users](admin-guide/user-management.md) cannot directly view other users' recordings through the interface, though they can monitor [usage patterns](admin-guide/statistics.md), though they have database access that could theoretically allow it. Shared recordings are accessible to anyone with the share link. Other users on the same Speakr instance cannot see your recordings unless you explicitly share them.
+Only you can see your recordings by default. [Admin users](admin-guide/user-management.md) cannot directly view other users' recordings through the interface, though they can monitor [usage patterns](admin-guide/statistics.md), though they have database access that could theoretically allow it. Shared recordings are accessible to anyone with the share link. Other users on the same LecApp instance cannot see your recordings unless you explicitly share them.
 
 ## Features and Functionality
 
 ### What is Inquire Mode?
 
-[Inquire Mode](user-guide/inquire-mode.md) is Speakr's semantic search feature that lets you find information across all your recordings using natural language questions. The [vector store](admin-guide/vector-store.md) must be configured for this to work. Instead of searching for exact keywords, you can ask questions like "What did we decide about the marketing budget?" and get relevant excerpts from any recording that discussed that topic. It uses AI embeddings to understand meaning and context.
+[Inquire Mode](user-guide/inquire-mode.md) is LecApp's semantic search feature that lets you find information across all your recordings using natural language questions. The [vector store](admin-guide/vector-store.md) must be configured for this to work. Instead of searching for exact keywords, you can ask questions like "What did we decide about the marketing budget?" and get relevant excerpts from any recording that discussed that topic. It uses AI embeddings to understand meaning and context.
 
 ### How do speaker profiles work?
 
-When you [identify speakers](user-guide/transcripts.md#speaker-identification) in a transcription by clicking on generic labels (SPEAKER_01, etc.) and assigning names, Speakr saves these as speaker profiles. Manage them in [account settings](user-guide/settings.md#speakers-management-tab). In future updates, we intend to add functionality to allow recordings can then use these profiles to automatically suggest speaker identities based on voice characteristics. Over time, you build a library of recognized speakers that makes multi-person transcriptions much more useful.
+When you [identify speakers](user-guide/transcripts.md#speaker-identification) in a transcription by clicking on generic labels (SPEAKER_01, etc.) and assigning names, LecApp saves these as speaker profiles. Manage them in [account settings](user-guide/settings.md#speakers-management-tab). In future updates, we intend to add functionality to allow recordings can then use these profiles to automatically suggest speaker identities based on voice characteristics. Over time, you build a library of recognized speakers that makes multi-person transcriptions much more useful.
 
 ### Can I edit transcriptions after they're generated?
 
@@ -102,7 +102,7 @@ Yes, transcriptions are fully editable. Click the Edit button above any transcri
 
 ### What export formats are available?
 
-Speakr can export recordings in multiple formats. Copy transcriptions directly to your clipboard for pasting into other applications. Learn about [export options](features.md#export-options) and [sharing](user-guide/sharing.md). Download complete recordings as Word documents (.docx) including transcription, summary, and notes. [Share links](user-guide/sharing.md) provide read-only web access. Configure what's visible in [share settings](user-guide/sharing.md#creating-a-share-link). The chat history can also be exported for documentation purposes.
+LecApp can export recordings in multiple formats. Copy transcriptions directly to your clipboard for pasting into other applications. Learn about [export options](features.md#export-options) and [sharing](user-guide/sharing.md). Download complete recordings as Word documents (.docx) including transcription, summary, and notes. [Share links](user-guide/sharing.md) provide read-only web access. Configure what's visible in [share settings](user-guide/sharing.md#creating-a-share-link). The chat history can also be exported for documentation purposes.
 
 ## Troubleshooting
 
@@ -116,7 +116,7 @@ This usually means the background processor has stopped or encountered an error.
 
 ### Why can't I share recordings?
 
-[Sharing](user-guide/sharing.md) requires your Speakr instance to be accessible from the internet with HTTPS/SSL encryption. Check [sharing requirements](user-guide/sharing.md#requirements-for-sharing) and [troubleshooting](troubleshooting.md#sharing-links-dont-work). Local installations or non-HTTPS setups cannot generate working share links. The system disables sharing features when these requirements aren't met. To enable sharing, deploy Speakr on a public server with a domain name and SSL certificate.
+[Sharing](user-guide/sharing.md) requires your LecApp instance to be accessible from the internet with HTTPS/SSL encryption. Check [sharing requirements](user-guide/sharing.md#requirements-for-sharing) and [troubleshooting](troubleshooting.md#sharing-links-dont-work). Local installations or non-HTTPS setups cannot generate working share links. The system disables sharing features when these requirements aren't met. To enable sharing, deploy LecApp on a public server with a domain name and SSL certificate.
 
 ### The interface is slow with large transcriptions
 
@@ -130,7 +130,7 @@ Develop a consistent [tagging system](user-guide/settings.md#tag-management-tab)
 
 ### Do I need to inform people they're being recorded?
 
-Legal requirements vary by jurisdiction. Many regions require explicit consent from all parties being recorded. Speakr includes a configurable [recording disclaimer](admin-guide/system-settings.md#recording-disclaimer) feature. See [compliance considerations](troubleshooting.md#recording-disclaimer-for-legal-compliance). Set appropriate legal text that displays before recordings start. Consult local laws to ensure compliance - this is especially important in regions with strict recording laws like the EU, California, or Australia.
+Legal requirements vary by jurisdiction. Many regions require explicit consent from all parties being recorded. LecApp includes a configurable [recording disclaimer](admin-guide/system-settings.md#recording-disclaimer) feature. See [compliance considerations](troubleshooting.md#recording-disclaimer-for-legal-compliance). Set appropriate legal text that displays before recordings start. Consult local laws to ensure compliance - this is especially important in regions with strict recording laws like the EU, California, or Australia.
 
 ### What's the best audio quality for transcription?
 

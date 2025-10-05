@@ -1,6 +1,6 @@
 # Admin Guide
 
-Welcome to the Speakr Admin Guide! As an administrator, you control the heart of your Speakr instance, managing users, monitoring system health, and configuring AI behavior.
+Welcome to the LecApp Admin Guide! As an administrator, you control the heart of your LecApp instance, managing users, monitoring system health, and configuring AI behavior.
 
 ## Administrative Controls
 
@@ -8,7 +8,7 @@ Welcome to the Speakr Admin Guide! As an administrator, you control the heart of
   <div class="guide-card">
     <div class="card-icon">👥</div>
     <h3>User Management</h3>
-    <p>Create accounts, manage permissions, monitor usage, and control access to your Speakr instance.</p>
+    <p>Create accounts, manage permissions, monitor usage, and control access to your LecApp instance.</p>
     <a href="user-management" class="card-link">Manage Users →</a>
   </div>
   
@@ -96,4 +96,4 @@ Welcome to the Speakr Admin Guide! As an administrator, you control the heart of
 
 ---
 
-Ready to manage your Speakr instance? Start with [User Management](user-management.md) →
+Ready to manage your LecApp instance? Start with [User Management](user-management.md) →

@@ -1,6 +1,6 @@
 # Vector Store Management
 
-The Vector Store tab controls the intelligence behind Inquire Mode, Speakr's semantic search capability that lets users find information across all their recordings using natural language questions. This is where you monitor and manage the embedding system that transforms transcripts into searchable knowledge.
+The Vector Store tab controls the intelligence behind Inquire Mode, LecApp's semantic search capability that lets users find information across all their recordings using natural language questions. This is where you monitor and manage the embedding system that transforms transcripts into searchable knowledge.
 
 ![Vector Store Management](../assets/images/screenshots/Admin vector store.png)
 
@@ -12,7 +12,7 @@ This approach goes beyond simple keyword matching. The system understands that "
 
 ## The Embedding Model
 
-Your Speakr instance uses the all-MiniLM-L6-v2 model, shown prominently in the interface. This model generates 384-dimensional vectors - imagine each chunk of text mapped to a point in 384-dimensional space where similar meanings cluster together.
+Your LecApp instance uses the all-MiniLM-L6-v2 model, shown prominently in the interface. This model generates 384-dimensional vectors - imagine each chunk of text mapped to a point in 384-dimensional space where similar meanings cluster together.
 
 This specific model was chosen carefully. Larger models exist with better accuracy, but they require GPUs and significant computational resources. The MiniLM model runs efficiently on CPU-only systems, making advanced search accessible without expensive infrastructure. It processes text quickly, understands context well, and produces compact embeddings that don't overwhelm your storage.
 

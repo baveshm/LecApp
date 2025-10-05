@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Speakr-cache-v3';
+const CACHE_NAME = 'LecApp-cache-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/static/offline.html',

@@ -1,6 +1,6 @@
 # Screenshots Gallery
 
-Explore Speakr's powerful features through our visual gallery. Click on any image to view it in full size.
+Explore LecApp's powerful features through our visual gallery. Click on any image to view it in full size.
 
 ## Main Interface
 
@@ -206,7 +206,7 @@ Explore Speakr's powerful features through our visual gallery. Click on any imag
 ### Speaker Management
 
 <div class="screenshot-item">
-  <img src="../assets/images/screenshots/settings speakr management.png" alt="Speaker Management" />
+  <img src="../assets/images/screenshots/settings lecapp management.png" alt="Speaker Management" />
   <p class="caption">Manage your speaker library with usage statistics</p>
 </div>
 

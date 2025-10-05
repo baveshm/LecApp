@@ -32,7 +32,7 @@ def create_admin_user_from_env():
     - ADMIN_EMAIL
     - ADMIN_PASSWORD
     """
-    print("Creating admin user for Speakr application from environment variables")
+    print("Creating admin user for LecApp application from environment variables")
     print("=================================================================")
     
     # Get values from environment variables
