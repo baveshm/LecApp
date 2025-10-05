@@ -1,6 +1,6 @@
 # Working with Transcriptions
 
-Once your audio has been processed, Speakr provides a rich set of tools for viewing, editing, and interacting with your transcriptions. This section covers everything you need to know about working with transcribed content. For information on the transcription process itself, see [transcription features](../features.md#core-transcription-features).
+Once your audio has been processed, LecApp provides a rich set of tools for viewing, editing, and interacting with your transcriptions. This section covers everything you need to know about working with transcribed content. For information on the transcription process itself, see [transcription features](../features.md#core-transcription-features).
 
 ## Understanding the Transcription View
 
@@ -24,7 +24,7 @@ The speaker identification modal shows each detected speaker with a sample of th
 
 All speakers you identify are automatically saved to your speaker database. You can manage these saved speakers through the dedicated [Speakers Management tab](settings.md#speakers-management-tab) in your [account settings](settings.md). Navigate to Account > Speakers Management to view all your saved speakers.
 
-![Speakers Management](../assets/images/screenshots/settings speakr management.png)
+![Speakers Management](../assets/images/screenshots/settings lecapp management.png)
 
 The Speakers Management interface displays all your saved speakers in a responsive grid layout. Each speaker card shows the speaker's name, usage statistics including how many times they've been identified, when they were last used in a recording, and when they were first added to your database. The interface includes internal scrolling to handle large numbers of speakers while keeping the header and action buttons always visible.
 
@@ -34,7 +34,7 @@ The system uses these saved speakers to provide suggestions when you're identify
 
 ## Editing Transcriptions
 
-Speakr provides two different editing modes depending on the type of transcription you're working with.
+LecApp provides two different editing modes depending on the type of transcription you're working with.
 
 ### Simple Text Editing
 
@@ -42,7 +42,7 @@ For standard transcriptions without speaker diarization, click the Edit button i
 
 ### Advanced ASR Segment Editing
 
-For transcriptions processed with [ASR](../features.md#speaker-diarization) and speaker diarization, Speakr offers a powerful segment-based editor that preserves the structure and timing of your transcription. If you encounter issues with speaker identification, see [troubleshooting](../troubleshooting.md#speaker-identification-not-working).
+For transcriptions processed with [ASR](../features.md#speaker-diarization) and speaker diarization, LecApp offers a powerful segment-based editor that preserves the structure and timing of your transcription. If you encounter issues with speaker identification, see [troubleshooting](../troubleshooting.md#speaker-identification-not-working).
 
 ![ASR Transcription Editor](../assets/images/screenshots/edit transcript with ASR.png)
 
@@ -82,7 +82,7 @@ The summary is designed to save you time by highlighting the most important info
 
 ### Customizing Summary Prompts
 
-Speakr provides multiple levels of customization for summary generation, allowing you to tailor the AI's output to your specific needs. The summary prompt can be customized at three different levels:
+LecApp provides multiple levels of customization for summary generation, allowing you to tailor the AI's output to your specific needs. The summary prompt can be customized at three different levels:
 
 **Admin Level**: System administrators can set a default summary prompt that applies to all users who haven't configured their own. This is configured in the Admin Dashboard under Default Prompts and serves as the baseline for the entire system.
 
@@ -92,15 +92,15 @@ Speakr provides multiple levels of customization for summary generation, allowin
 
 ### Prompt Precedence and Stacking
 
-When generating a summary, Speakr follows a clear precedence order to determine which prompt to use:
+When generating a summary, LecApp follows a clear precedence order to determine which prompt to use:
 
-1. **Tag Custom Prompts** (highest priority): If a recording has tags with custom prompts, these take precedence. When multiple tags with custom prompts are applied to a recording, Speakr intelligently combines them in the order the tags were added. This creates a sophisticated stacking effect where you can have a base tag like "Meeting" with general instructions, then add modifier tags like "Client-Facing" or "Technical Discussion" that add specific requirements. The prompts are seamlessly merged to create comprehensive instructions for the AI.
+1. **Tag Custom Prompts** (highest priority): If a recording has tags with custom prompts, these take precedence. When multiple tags with custom prompts are applied to a recording, LecApp intelligently combines them in the order the tags were added. This creates a sophisticated stacking effect where you can have a base tag like "Meeting" with general instructions, then add modifier tags like "Client-Facing" or "Technical Discussion" that add specific requirements. The prompts are seamlessly merged to create comprehensive instructions for the AI.
 
 2. **User Summary Prompt**: If no tag prompts are present, the system uses your personal summary prompt configured in your account settings.
 
 3. **Admin Default Prompt**: When neither tag nor user prompts are configured, the system falls back to the administrator-configured default prompt.
 
-4. **System Fallback**: If no custom prompts exist at any level, Speakr uses a built-in default that generates sections for key issues, decisions, and action items.
+4. **System Fallback**: If no custom prompts exist at any level, LecApp uses a built-in default that generates sections for key issues, decisions, and action items.
 
 ### Summary Quality Factors
 
@@ -120,7 +120,7 @@ You can regenerate the summary with different settings if needed, which is usefu
 
 ## Event Extraction
 
-When event extraction is enabled in your account settings, Speakr automatically identifies calendar-worthy events from your recordings during the summary generation process. This feature intelligently detects meetings, deadlines, appointments, and other time-sensitive items mentioned in your conversations.
+When event extraction is enabled in your account settings, LecApp automatically identifies calendar-worthy events from your recordings during the summary generation process. This feature intelligently detects meetings, deadlines, appointments, and other time-sensitive items mentioned in your conversations.
 
 ![Event Extraction](../assets/images/screenshots/event extraction.png)
 
@@ -194,7 +194,7 @@ If your recording was processed with ASR and speaker diarization, the exported t
 
 ## Next Steps
 
-Now that you understand how to work with transcriptions, let's explore Speakr's powerful search capabilities with Inquire Mode, which allows you to search across all your recordings using natural language.
+Now that you understand how to work with transcriptions, let's explore LecApp's powerful search capabilities with Inquire Mode, which allows you to search across all your recordings using natural language.
 
 ---
 

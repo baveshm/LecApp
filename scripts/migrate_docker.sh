@@ -7,8 +7,8 @@ echo "🎯 Inquire Mode Manual Migration for Docker"
 echo "============================================="
 
 # Check if container is running
-if ! docker-compose ps | grep -q "speakr.*Up"; then
-    echo "❌ Speakr container is not running. Please start it first with:"
+if ! docker-compose ps | grep -q "lecapp.*Up"; then
+    echo "❌ LecApp container is not running. Please start it first with:"
     echo "   docker-compose up -d"
     exit 1
 fi

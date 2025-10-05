@@ -1,4 +1,4 @@
-# Speakr - Audio Transcription and Summarization App
+# LecApp - Audio Transcription and Summarization App
 import os
 import sys
 from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for, flash, Response, make_response
@@ -2108,9 +2108,9 @@ TEXT_MODEL_NAME = os.environ.get("TEXT_MODEL_NAME", "openai/gpt-3.5-turbo") # De
 
 # Set up HTTP client with custom headers for OpenRouter app identification
 app_headers = {
-    "HTTP-Referer": "https://github.com/murtaza-nasir/speakr",  # Your app's repo URL for OpenRouter visibility
-    "X-Title": "Speakr - AI Audio Transcription",  # Your app name for OpenRouter visibility
-    "User-Agent": "Speakr/1.0 (https://github.com/murtaza-nasir/speakr)"  # Custom user agent for better tracking
+    "HTTP-Referer": "https://github.com/baveshm/LecApp",  # Your app's repo URL for OpenRouter visibility
+    "X-Title": "LecApp - AI Audio Transcription",  # Your app name for OpenRouter visibility
+    "User-Agent": "LecApp/1.0 (https://github.com/baveshm/LecApp)"  # Custom user agent for better tracking
 }
 
 http_client_no_proxy = httpx.Client(
@@ -2236,7 +2236,7 @@ def get_version():
 
 version = get_version()
 
-app.logger.info(f"=== Speakr {version} Starting Up ===")
+app.logger.info(f"=== LecApp {version} Starting Up ===")
 app.logger.info(f"Using LLM endpoint: {TEXT_MODEL_BASE_URL} with model: {TEXT_MODEL_NAME}")
 
 # Validate transcription service configuration
@@ -4112,7 +4112,7 @@ def download_all_events_ics(recording_id):
         ics_lines = []
         ics_lines.append("BEGIN:VCALENDAR")
         ics_lines.append("VERSION:2.0")
-        ics_lines.append("PRODID:-//Speakr//Event Export//EN")
+        ics_lines.append("PRODID:-//LecApp//Event Export//EN")
         ics_lines.append("CALSCALE:GREGORIAN")
         ics_lines.append("METHOD:PUBLISH")
 
@@ -4152,7 +4152,7 @@ def generate_ics_content(event):
     from datetime import datetime, timedelta
 
     # Generate unique ID for the event
-    uid = f"{event.id}-{uuid.uuid4()}@speakr.app"
+    uid = f"{event.id}-{uuid.uuid4()}@lecapp.app"
 
     # Format dates in iCalendar format (YYYYMMDDTHHMMSS)
     def format_ical_date(dt):
@@ -4164,7 +4164,7 @@ def generate_ics_content(event):
     lines = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
-        'PRODID:-//Speakr//Event Export//EN',
+        'PRODID:-//LecApp//Event Export//EN',
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'BEGIN:VEVENT',
@@ -5126,14 +5126,14 @@ def transcript_templates_guide():
     # Convert markdown to HTML
     html_content = markdown.markdown(content, extensions=['tables', 'fenced_code', 'codehilite'])
 
-    # Wrap in basic HTML template with Speakr styling
+    # Wrap in basic HTML template with LecApp styling
     html_template = f'''
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Transcript Templates Guide - Speakr</title>
+        <title>Transcript Templates Guide - LecApp</title>
         <link rel="stylesheet" href="/static/css/output.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
@@ -5162,7 +5162,7 @@ def transcript_templates_guide():
             <div class="bg-[var(--bg-secondary)] border-b border-[var(--border-primary)] p-4">
                 <div class="max-w-6xl mx-auto flex items-center justify-between">
                     <a href="/" class="text-2xl font-bold text-[var(--text-primary)]">
-                        <i class="fas fa-microphone-alt mr-2"></i>Speakr
+                        <i class="fas fa-microphone-alt mr-2"></i>LecApp
                     </a>
                     <a href="/account" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
                         Back to Account

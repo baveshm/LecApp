@@ -11,7 +11,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: docker.io
   # Use explicit image name instead of github.repository
-  IMAGE_NAME: learnedmachine/speakr
+  IMAGE_NAME: baveshm/lecapp
 
 jobs:
   build:

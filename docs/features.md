@@ -1,16 +1,16 @@
 # Features
 
-Speakr combines powerful transcription capabilities with intelligent AI features to transform your audio recordings into valuable, actionable knowledge. Every feature is designed to save time and extract maximum value from your spoken content.
+LecApp combines powerful transcription capabilities with intelligent AI features to transform your audio recordings into valuable, actionable knowledge. Every feature is designed to save time and extract maximum value from your spoken content.
 
 ## Core Transcription Features
 
 ### Multi-Engine Support
 
-Speakr supports multiple transcription engines to match your needs and budget. Use [OpenAI's Whisper API](getting-started.md#option-a-openai-whisper-configuration) for quick, cloud-based transcription with excellent accuracy. Deploy the [recommended ASR container](getting-started.md#option-b-custom-asr-endpoint-configuration) for advanced features like speaker diarization and local processing. See the [installation guide](getting-started/installation.md) for detailed setup instructions. The system automatically handles different audio formats, converting them as needed for optimal transcription quality.
+LecApp supports multiple transcription engines to match your needs and budget. Use [OpenAI's Whisper API](getting-started.md#option-a-openai-whisper-configuration) for quick, cloud-based transcription with excellent accuracy. Deploy the [recommended ASR container](getting-started.md#option-b-custom-asr-endpoint-configuration) for advanced features like speaker diarization and local processing. See the [installation guide](getting-started/installation.md) for detailed setup instructions. The system automatically handles different audio formats, converting them as needed for optimal transcription quality.
 
 ### Speaker Diarization
 
-When using the [ASR endpoint](getting-started.md#option-b-custom-asr-endpoint-configuration), Speakr automatically identifies different speakers in your recordings. If you encounter issues, check the [troubleshooting guide](troubleshooting.md#speaker-identification-not-working). Each speaker gets a unique label that you can later customize with actual names. The system remembers these speaker profiles, building a library that improves identification accuracy over time. Manage your speaker library in [account settings](user-guide/settings.md). This feature transforms multi-person meetings from walls of text into organized conversations.
+When using the [ASR endpoint](getting-started.md#option-b-custom-asr-endpoint-configuration), LecApp automatically identifies different speakers in your recordings. If you encounter issues, check the [troubleshooting guide](troubleshooting.md#speaker-identification-not-working). Each speaker gets a unique label that you can later customize with actual names. The system remembers these speaker profiles, building a library that improves identification accuracy over time. Manage your speaker library in [account settings](user-guide/settings.md). This feature transforms multi-person meetings from walls of text into organized conversations.
 
 ### Language Support
 
@@ -24,7 +24,7 @@ Every recording receives an AI-generated summary that captures key points, decis
 
 ### Event Extraction
 
-Speakr can automatically extract calendar-worthy events from your recordings during the summary process. When enabled in your account settings, the system identifies mentions of meetings, deadlines, appointments, and other time-sensitive items. Each detected event can be exported as an ICS file compatible with any calendar application. The feature intelligently parses relative date references and provides sensible defaults when specific times aren't mentioned. Learn more about [using event extraction](user-guide/transcripts.md#event-extraction) in your workflow.
+LecApp can automatically extract calendar-worthy events from your recordings during the summary process. When enabled in your account settings, the system identifies mentions of meetings, deadlines, appointments, and other time-sensitive items. Each detected event can be exported as an ICS file compatible with any calendar application. The feature intelligently parses relative date references and provides sensible defaults when specific times aren't mentioned. Learn more about [using event extraction](user-guide/transcripts.md#event-extraction) in your workflow.
 
 ### Interactive Chat
 
@@ -52,7 +52,7 @@ Shape AI behavior with [custom prompts](admin-guide/prompts.md) at multiple leve
 
 ### Secure Share Links
 
-Generate cryptographically secure links to [share recordings](user-guide/sharing.md) with people outside your Speakr instance. Note the [requirements for sharing](user-guide/sharing.md#requirements-for-sharing). Control exactly what recipients see - include or exclude summaries and notes based on your needs. Share links work on any device without requiring accounts or authentication.
+Generate cryptographically secure links to [share recordings](user-guide/sharing.md) with people outside your LecApp instance. Note the [requirements for sharing](user-guide/sharing.md#requirements-for-sharing). Control exactly what recipients see - include or exclude summaries and notes based on your needs. Share links work on any device without requiring accounts or authentication.
 
 ### Export Options
 
@@ -80,7 +80,7 @@ Fine-tune transcription for specific scenarios with custom ASR settings. See [AS
 
 ### Progressive Web App
 
-Install Speakr as a progressive web app for a native-like experience on any device. The PWA works offline for viewing existing recordings and syncs when connectivity returns. Mobile-optimized interfaces ensure smooth operation on phones and tablets.
+Install LecApp as a progressive web app for a native-like experience on any device. The PWA works offline for viewing existing recordings and syncs when connectivity returns. Mobile-optimized interfaces ensure smooth operation on phones and tablets.
 
 ### Dark Mode
 
@@ -88,13 +88,13 @@ Reduce eye strain with a full dark mode implementation that affects every interf
 
 ### Responsive Design
 
-Access Speakr from any device with interfaces that adapt to screen size. Desktop users get a full three-panel layout with simultaneous access to recordings, transcripts, and chat. Mobile users receive a streamlined interface optimized for touch interaction and smaller screens.
+Access LecApp from any device with interfaces that adapt to screen size. Desktop users get a full three-panel layout with simultaneous access to recordings, transcripts, and chat. Mobile users receive a streamlined interface optimized for touch interaction and smaller screens.
 
 ## Administrative Control
 
 ### Multi-User Support
 
-Run a single Speakr instance for your entire team with isolated user spaces. See [user management](admin-guide/user-management.md) for details. The [FAQ](faq.md#can-multiple-people-use-the-same-speakr-instance) explains the multi-user architecture. Each user maintains their own recordings, settings, and speaker libraries. Administrators manage users, monitor usage, and configure system-wide settings without accessing individual recordings.
+Run a single LecApp instance for your entire team with isolated user spaces. See [user management](admin-guide/user-management.md) for details. The [FAQ](faq.md#can-multiple-people-use-the-same-lecapp-instance) explains the multi-user architecture. Each user maintains their own recordings, settings, and speaker libraries. Administrators manage users, monitor usage, and configure system-wide settings without accessing individual recordings.
 
 ### System Monitoring
 
@@ -102,7 +102,7 @@ Track system health with comprehensive statistics and metrics. Monitor transcrip
 
 ### Flexible Configuration
 
-Configure every aspect of Speakr through [environment variables](getting-started.md#step-3-configure-your-transcription-service) and [admin settings](admin-guide/index.md). Check [system settings](admin-guide/system-settings.md) for global configuration options. Set API endpoints, adjust processing limits, enable or disable features, and customize the user experience. The system adapts to your infrastructure and requirements.
+Configure every aspect of LecApp through [environment variables](getting-started.md#step-3-configure-your-transcription-service) and [admin settings](admin-guide/index.md). Check [system settings](admin-guide/system-settings.md) for global configuration options. Set API endpoints, adjust processing limits, enable or disable features, and customize the user experience. The system adapts to your infrastructure and requirements.
 
 ---
 

@@ -29,7 +29,7 @@ def create_admin_user():
     """
     Create an admin user interactively.
     """
-    print("Creating admin user for Speakr application")
+    print("Creating admin user for LecApp application")
     print("=========================================")
     
     # Get username
