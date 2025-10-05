@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Logo Resizer Script for Speakr
+Logo Resizer Script for LecApp
 Resizes a source PNG image to all required icon sizes for PWA and favicon support.
 
 Usage:
@@ -128,14 +128,14 @@ def create_ico_favicon(source_path, output_dir="static/img"):
         print(f"Warning: Could not create favicon.ico: {e}")
 
 def main():
-    parser = argparse.ArgumentParser(description='Resize logo for Speakr PWA icons')
+    parser = argparse.ArgumentParser(description='Resize logo for LecApp PWA icons')
     parser.add_argument('source', help='Source PNG image file')
     parser.add_argument('--output-dir', default='static/img', help='Output directory (default: static/img)')
     parser.add_argument('--create-ico', action='store_true', help='Also create favicon.ico file')
     
     args = parser.parse_args()
     
-    print("🎨 Speakr Logo Resizer")
+    print("🎨 LecApp Logo Resizer")
     print("=" * 50)
     
     # Resize the logo

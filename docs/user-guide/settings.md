@@ -1,6 +1,6 @@
 # Account Settings
 
-Your account settings are the control center for personalizing Speakr to work exactly how you need it. Every preference you set here shapes your daily experience, from the language you see to how AI summarizes your recordings. Access these settings by clicking your username in the top navigation and selecting Account.
+Your account settings are the control center for personalizing LecApp to work exactly how you need it. Every preference you set here shapes your daily experience, from the language you see to how AI summarizes your recordings. Access these settings by clicking your username in the top navigation and selecting Account.
 
 ## Account Information Tab
 
@@ -14,7 +14,7 @@ On the left side, you'll find fields to update your full name, job title, and co
 
 ### Language Preferences
 
-Three distinct language settings shape your entire Speakr experience. The interface language dropdown immediately transforms all menus, buttons, and messages to your chosen language - English, Spanish, French, Chinese, or German. The transcription language field accepts ISO language codes like "en" or "es" to optimize recognition accuracy, though leaving it blank enables automatic detection for multilingual content. The preferred chatbot and summarization language ensures all AI-generated content appears in your chosen language, regardless of the source audio's language.
+Three distinct language settings shape your entire LecApp experience. The interface language dropdown immediately transforms all menus, buttons, and messages to your chosen language - English, Spanish, French, Chinese, or German. The transcription language field accepts ISO language codes like "en" or "es" to optimize recognition accuracy, though leaving it blank enables automatic detection for multilingual content. The preferred chatbot and summarization language ensures all AI-generated content appears in your chosen language, regardless of the source audio's language.
 
 ### Account Statistics
 
@@ -32,7 +32,7 @@ The account actions section provides quick access to essential functions. The pr
 
 ![Custom Prompts](../assets/images/screenshots/settings custom prompts.png)
 
-The Custom Prompts tab unlocks one of Speakr's most powerful features - the ability to shape how AI interprets and summarizes your recordings.
+The Custom Prompts tab unlocks one of LecApp's most powerful features - the ability to shape how AI interprets and summarizes your recordings.
 
 ### Your Custom Summary Prompt
 
@@ -44,7 +44,7 @@ Below your custom prompt area, you'll see the default prompt that applies when y
 
 ### Prompt Hierarchy
 
-Understanding prompt precedence helps you use this feature effectively. Tag prompts have the highest priority - when you tag a recording with "Legal" or "Sales," any prompts associated with those tags override everything else. Your personal custom prompt comes next, applying to all recordings without tag-specific prompts. Below that sits the admin default set by your Speakr administrator, with a system fallback ensuring summaries always generate.
+Understanding prompt precedence helps you use this feature effectively. Tag prompts have the highest priority - when you tag a recording with "Legal" or "Sales," any prompts associated with those tags override everything else. Your personal custom prompt comes next, applying to all recordings without tag-specific prompts. Below that sits the admin default set by your LecApp administrator, with a system fallback ensuring summaries always generate.
 
 ### Prompt Stacking
 
@@ -84,7 +84,7 @@ The delete button (trash icon) immediately revokes access. Once deleted, anyone 
 
 ## Speakers Management Tab
 
-![Speakers Management](../assets/images/screenshots/settings speakr management.png)
+![Speakers Management](../assets/images/screenshots/settings lecapp management.png)
 
 The Speakers Management tab provides a comprehensive interface for managing all speakers identified across your recordings.
 
@@ -138,11 +138,11 @@ Edit and delete buttons on each card provide full control. Edit to refine prompt
 
 ![About](../assets/images/screenshots/settings about page.png)
 
-The About tab presents a comprehensive overview of your Speakr installation, combining version information, system configuration, feature highlights, and quick access to resources.
+The About tab presents a comprehensive overview of your LecApp installation, combining version information, system configuration, feature highlights, and quick access to resources.
 
 ### Version Information
 
-At the top, the Speakr logo and tagline "AI-Powered Audio Transcription & Note-Taking" remind you of the system's core purpose. The version badge (v0.5.5 in the example) immediately tells you which release you're running, essential information for troubleshooting and determining available features.
+At the top, the LecApp logo and tagline "AI-Powered Audio Transcription & Note-Taking" remind you of the system's core purpose. The version badge (v0.5.5 in the example) immediately tells you which release you're running, essential information for troubleshooting and determining available features.
 
 ### System Configuration
 
@@ -154,17 +154,17 @@ Quick access buttons connect you to essential resources. The GitHub Repository b
 
 ### Key Features
 
-Colorful cards remind you of Speakr's core capabilities. Audio Transcription highlights support for both Whisper API and custom ASR with high accuracy. AI Summarization emphasizes the OpenRouter and Ollama integrations for flexible, powerful summary generation. Speaker Diarization showcases the ability to identify and label different speakers automatically. Interactive Chat demonstrates the conversational AI capabilities for exploring transcripts. Inquire Mode highlights semantic search across all recordings. Sharing & Export emphasizes the ability to share recordings and export to various formats.
+Colorful cards remind you of LecApp's core capabilities. Audio Transcription highlights support for both Whisper API and custom ASR with high accuracy. AI Summarization emphasizes the OpenRouter and Ollama integrations for flexible, powerful summary generation. Speaker Diarization showcases the ability to identify and label different speakers automatically. Interactive Chat demonstrates the conversational AI capabilities for exploring transcripts. Inquire Mode highlights semantic search across all recordings. Sharing & Export emphasizes the ability to share recordings and export to various formats.
 
 ### Using This Information
 
-This information-rich tab serves multiple purposes. For troubleshooting, it provides all the version and configuration details support teams need. For planning, it shows which features are available and properly configured. For learning, it links to all the resources needed to master Speakr's capabilities.
+This information-rich tab serves multiple purposes. For troubleshooting, it provides all the version and configuration details support teams need. For planning, it shows which features are available and properly configured. For learning, it links to all the resources needed to master LecApp's capabilities.
 
 ## Privacy and Security Considerations
 
-Your account settings contain sensitive information that shapes your entire Speakr experience. The custom prompts you create might reveal organizational priorities or confidential project details. Speaker profiles could indicate who you meet with regularly. Share histories show what information you've distributed.
+Your account settings contain sensitive information that shapes your entire LecApp experience. The custom prompts you create might reveal organizational priorities or confidential project details. Speaker profiles could indicate who you meet with regularly. Share histories show what information you've distributed.
 
-Always log out when using shared computers. Speakr maintains sessions for convenience, but this means anyone with access to your browser can access your account. The logout button in the user menu immediately terminates your session and requires re-authentication.
+Always log out when using shared computers. LecApp maintains sessions for convenience, but this means anyone with access to your browser can access your account. The logout button in the user menu immediately terminates your session and requires re-authentication.
 
 Review your shared recordings regularly. Links you created months ago might still be active, providing access to outdated or sensitive information. The Shared Transcripts tab makes this review easy - scan through periodically and revoke anything no longer needed.
 
@@ -172,13 +172,13 @@ Consider the implications of language settings in international contexts. If you
 
 ## Optimizing Your Settings
 
-The most effective Speakr setup evolves with your needs. Start with basic configuration - your name, language preferences, and a simple custom prompt. As you become comfortable, add tags for organization, refine your prompts for better summaries, and build your speaker library for improved transcripts.
+The most effective LecApp setup evolves with your needs. Start with basic configuration - your name, language preferences, and a simple custom prompt. As you become comfortable, add tags for organization, refine your prompts for better summaries, and build your speaker library for improved transcripts.
 
 Monitor which settings you actually use. If you never change certain preferences, they're probably fine at defaults. If you constantly adjust others, consider whether different base settings would reduce this friction. Your settings should work for you, not require constant attention.
 
 Share successful configurations with your team. If you've crafted an excellent prompt for technical summaries, share it with colleagues who might benefit. If your tag taxonomy works well, document it for others to adopt. Collective improvement benefits everyone.
 
-Remember that settings are tools for productivity, not endpoints themselves. The goal isn't perfect configuration but effective recording management. When your settings fade into the background and Speakr just works how you expect, you've achieved the right balance.
+Remember that settings are tools for productivity, not endpoints themselves. The goal isn't perfect configuration but effective recording management. When your settings fade into the background and LecApp just works how you expect, you've achieved the right balance.
 
 ---
 

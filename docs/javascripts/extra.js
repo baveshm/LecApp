@@ -1,4 +1,4 @@
-// Custom JavaScript for Speakr documentation
+// Custom JavaScript for LecApp documentation
 
 document.addEventListener('DOMContentLoaded', function() {
   // Add smooth scrolling for anchor links
