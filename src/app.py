@@ -1524,6 +1524,33 @@ class TranscriptTemplate(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
+class Attachment(db.Model):
+    """Stores supporting documents attached to recordings."""
+    id = db.Column(db.Integer, primary_key=True)
+    recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    file_path = db.Column(db.String(500), nullable=False)
+    original_filename = db.Column(db.String(500), nullable=False)
+    file_size = db.Column(db.Integer, nullable=False)  # Size in bytes
+    file_type = db.Column(db.String(50), nullable=True)  # pdf, docx, png, etc.
+    mime_type = db.Column(db.String(100), nullable=True)
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    recording = db.relationship('Recording', backref=db.backref('attachments', lazy=True, cascade='all, delete-orphan'))
+    user = db.relationship('User', backref=db.backref('attachments', lazy=True, cascade='all, delete-orphan'))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'recording_id': self.recording_id,
+            'original_filename': self.original_filename,
+            'file_size': self.file_size,
+            'file_type': self.file_type,
+            'mime_type': self.mime_type,
+            'uploaded_at': self.uploaded_at.isoformat() if self.uploaded_at else None
+        }
+
 
 class InquireSession(db.Model):
     """Tracks inquire mode sessions and their filtering criteria."""

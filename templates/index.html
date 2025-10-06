@@ -689,6 +689,10 @@
                                             <span v-text="t('help.approachingLimit', { limit: maxRecordingMB })"></span>
                                         </div>
                                     </div>
+                                    <!-- Attached files text summary (during recording) -->
+                                    <p v-if="documentUploads && documentUploads.length" class="text-xs text-[var(--text-muted)] mt-2">
+                                        Files attached: ${ documentUploads.map(d => d.file && d.file.name).filter(Boolean).join('; ') }
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -709,13 +713,63 @@
                         
                         <!-- Bottom: Action Buttons -->
                         <div class="flex-shrink-0 p-4 md:p-6 bg-[var(--bg-tertiary)] border-t border-[var(--border-primary)]">
-                            <div v-if="isRecording" class="text-center">
+                            <div v-if="isRecording" class="flex items-center justify-center gap-3 flex-wrap text-center">
+                                <!-- Stop Recording -->
                                 <button @click="stopRecording"
                                         class="px-8 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors animate-pulse">
                                     <i class="fas fa-stop mr-2"></i>Stop Recording
                                 </button>
+                
+                                <!-- Attach Documents (opens file picker) -->
+                                <button @click="$refs.supportingDocInput && $refs.supportingDocInput.click()"
+                                        class="px-4 py-3 bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-secondary)] rounded-lg hover:bg-[var(--bg-accent)] transition-colors flex items-center gap-2">
+                                    <i class="fas fa-paperclip"></i>
+                                    <span>Attach</span>
+                                </button>
+                            </div>
+                            <!-- Hidden file input for supporting documents (always present) -->
+                            <input
+                                ref="supportingDocInput"
+                                type="file"
+                                multiple
+                                class="hidden"
+                                accept=".pdf,.doc,.docx,.txt,.md,.rtf,.ppt,.pptx,.xls,.xlsx,.csv,.json,.png,.jpg,.jpeg,.heic,.webp"
+                                @change="handleDocumentSelect"
+                            >
+                
+                            <!-- Compact background upload progress for supporting documents -->
+                            <div v-if="documentUploads && documentUploads.length" class="mt-3 max-w-2xl mx-auto w-full">
+                                <div class="text-xs text-[var(--text-muted)] mb-1 flex items-center gap-1">
+                                    <i class="fas fa-file-upload"></i>
+                                    <span>Uploading supporting documents...</span>
+                                </div>
+                                <ul class="space-y-1">
+                                    <li v-for="doc in documentUploads" :key="doc.clientId"
+                                        class="flex items-center gap-2 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-md px-2 py-1">
+                                        <i :class="[
+                                            'fas',
+                                            doc.status === 'completed'
+                                                ? 'fa-check-circle text-green-500'
+                                                : (doc.status === 'failed'
+                                                    ? 'fa-exclamation-circle text-red-500'
+                                                    : 'fa-file-upload text-[var(--text-muted)]')
+                                        ]"></i>
+                                        <span class="truncate text-sm flex-1" :title="doc.file.name">${ doc.file.name }</span>
+                                        <span v-if="doc.status === 'uploading'" class="text-xs font-mono">${ doc.progress }%</span>
+                                        <span v-else-if="doc.status === 'completed'" class="text-xs text-green-600">Done</span>
+                                        <span v-else-if="doc.status === 'failed'" class="text-xs text-red-600">Failed</span>
+                                    </li>
+                                </ul>
                             </div>
                             <div v-if="!isRecording && audioBlobURL" class="flex flex-col gap-4">
+                                <!-- Attach button also available after recording (before upload) -->
+                                <div class="flex items-center justify-center gap-3 flex-wrap text-center">
+                                    <button @click="$refs.supportingDocInput && $refs.supportingDocInput.click()"
+                                            class="px-4 py-2 bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-secondary)] rounded-lg hover:bg-[var(--bg-accent)] transition-colors flex items-center gap-2">
+                                        <i class="fas fa-paperclip"></i>
+                                        <span>Attach</span>
+                                    </button>
+                                </div>
                                 <!-- Tag Selection -->
                                 <div>
                                     <label for="recordingTagSelect" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">
@@ -1485,11 +1539,11 @@
                                 <div :class="{'flex-1': !isChatMaximized, 'flex-none': isChatMaximized}" class="flex flex-col overflow-hidden">
                                     <!-- Tab Navigation -->
                                     <div class="bg-[var(--bg-tertiary)] border-b border-[var(--border-primary)] flex">
-                                        <button @click="selectedTab = 'summary'" 
+                                        <button @click="selectedTab = 'summary'"
                                                 :class="[
                                                     'flex-1 px-4 py-3 text-sm font-medium transition-colors',
-                                                    selectedTab === 'summary' 
-                                                        ? 'bg-[var(--bg-secondary)] text-[var(--text-accent)] border-b-2 border-[var(--border-focus)]' 
+                                                    selectedTab === 'summary'
+                                                        ? 'bg-[var(--bg-secondary)] text-[var(--text-accent)] border-b-2 border-[var(--border-focus)]'
                                                         : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
                                                 ]">
                                             ${ t('summary.title') }
@@ -1502,6 +1556,16 @@
                                                         : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
                                                 ]">
                                             ${ t('notes.title') }
+                                        </button>
+                                        <button @click="selectedTab = 'attached_files'"
+                                                :class="[
+                                                    'flex-1 px-4 py-3 text-sm font-medium transition-colors',
+                                                    selectedTab === 'attached_files'
+                                                        ? 'bg-[var(--bg-secondary)] text-[var(--text-accent)] border-b-2 border-[var(--border-focus)]'
+                                                        : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                                                ]">
+                                            <i class="fas fa-paperclip mr-1"></i>
+                                            ${ t('recording.attachedFiles') }
                                         </button>
                                         <button v-if="selectedRecording.events && selectedRecording.events.length > 0"
                                                 @click="selectedTab = 'events'"
@@ -1632,6 +1696,92 @@
                                                                 class="px-3 py-1 text-sm bg-[var(--bg-button)] text-[var(--text-button)] rounded hover:bg-[var(--bg-button-hover)]">
                                                             Save
                                                         </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Attached Files Tab -->
+                                        <div v-if="selectedTab === 'attached_files'" class="h-full p-4 overflow-y-auto">
+                                            <div class="content-box h-full">
+                                                <!-- Header with actions -->
+                                                <div class="flex items-center justify-between mb-4">
+                                                    <h3 class="text-lg font-semibold text-[var(--text-primary)] flex items-center">
+                                                        <i class="fas fa-paperclip mr-2"></i>
+                                                        Attached Files
+                                                    </h3>
+                                                    <div class="flex items-center gap-2">
+                                                        <button @click="refreshAttachedFiles"
+                                                                class="px-3 py-1.5 bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-secondary)] rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors text-sm flex items-center gap-1.5">
+                                                            <i class="fas fa-sync-alt text-xs"></i>
+                                                            <span>Refresh</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Files List -->
+                                                <div v-if="isLoadingAttachedFiles" class="flex items-center justify-center py-8">
+                                                    <i class="fas fa-spinner fa-spin text-2xl text-[var(--text-muted)]"></i>
+                                                    <p class="mt-2 text-[var(--text-muted)]">Loading attached files...</p>
+                                                </div>
+                                                
+                                                <div v-else-if="!attachedFiles || attachedFiles.length === 0" class="text-center py-8">
+                                                    <i class="fas fa-paperclip text-3xl text-[var(--text-muted)] mb-3"></i>
+                                                    <p class="text-[var(--text-muted)] mb-4">No files attached to this recording</p>
+                                                    <p class="text-sm text-[var(--text-muted)]">
+                                                        Files can be attached during recording or upload from the recording view
+                                                    </p>
+                                                </div>
+                                                
+                                                <div v-else class="space-y-3">
+                                                    <div v-for="file in attachedFiles" :key="file.id"
+                                                         class="bg-[var(--bg-tertiary)] rounded-lg p-4 border border-[var(--border-primary)] hover:border-[var(--border-accent)] transition-colors">
+                                                        <div class="flex items-start justify-between">
+                                                            <div class="flex items-start gap-3 flex-1 min-w-0">
+                                                                <!-- File Icon -->
+                                                                <div class="flex-shrink-0 w-10 h-10 bg-[var(--bg-secondary)] rounded-lg flex items-center justify-center">
+                                                                    <i :class="getFileIcon(file.file_type)" class="text-[var(--text-accent)]"></i>
+                                                                </div>
+                                                                
+                                                                <!-- File Info -->
+                                                                <div class="flex-1 min-w-0">
+                                                                    <h4 class="font-medium text-[var(--text-primary)] truncate" :title="file.original_filename">
+                                                                        ${file.original_filename}
+                                                                    </h4>
+                                                                    <div class="flex items-center gap-3 mt-1 text-xs text-[var(--text-muted)]">
+                                                                        <span>${formatFileSize(file.file_size)}</span>
+                                                                        <span>•</span>
+                                                                        <span>${formatDate(file.uploaded_at)}</span>
+                                                                        <span v-if="file.file_type">•</span>
+                                                                        <span v-if="file.file_type" class="uppercase">${file.file_type}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Actions -->
+                                                            <div class="flex items-center gap-1.5 ml-3">
+                                                                <!-- Preview Button -->
+                                                                <button @click="previewAttachedFile(file)"
+                                                                        class="p-1.5 rounded-md hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                                                                        title="Preview file">
+                                                                    <i class="fas fa-eye text-sm"></i>
+                                                                </button>
+                                                                
+                                                                <!-- Download Button -->
+                                                                <a :href="`/api/recordings/${selectedRecording.id}/files/${file.id}/download`"
+                                                                   class="p-1.5 rounded-md hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors inline-block"
+                                                                   title="Download file">
+                                                                    <i class="fas fa-download text-sm"></i>
+                                                                </a>
+                                                                
+                                                                <!-- Delete Button -->
+                                                                <button @click="confirmDeleteAttachedFile(file)"
+                                                                        class="p-1.5 rounded-md hover:bg-[var(--bg-danger-light)] text-[var(--text-danger)] transition-colors"
+                                                                        title="Delete file">
+                                                                    <i class="fas fa-trash text-sm"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

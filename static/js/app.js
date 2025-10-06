@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const dragover = ref(false);
             const recordings = ref([]);
             const selectedRecording = ref(null);
-            const selectedTab = ref('summary'); // 'summary' or 'notes'
+            const selectedTab = ref('summary'); // 'summary', 'notes', or 'files'
             const searchQuery = ref('');
             const isLoadingRecordings = ref(true);
             const globalError = ref(null);
@@ -94,6 +94,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const pollInterval = ref(null);
             const progressPopupMinimized = ref(false);
             const progressPopupClosed = ref(false);
+            const documentUploads = ref([]);
+            const attachedFiles = ref([]); // Files attached to the current recording
+            const isLoadingAttachedFiles = ref(false);
             const maxFileSizeMB = ref(250); // Default value, will be updated from API
             const chunkingEnabled = ref(true); // Default value, will be updated from API
             const chunkingMode = ref('size'); // 'size' or 'duration', will be updated from API
@@ -2028,6 +2031,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 e.target.value = null;
             };
 
+            // Supporting documents selector (non-audio). Frontend-only wiring for now.
+            const handleDocumentSelect = (e) => {
+                try {
+                    const files = Array.from(e.target?.files || []);
+                    files.forEach((file) => {
+                        const clientId = `doc-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+                        documentUploads.value.push({
+                            clientId,
+                            file,
+                            status: 'selected', // one of: selected | uploading | completed | failed
+                            progress: 0
+                        });
+                    });
+                } catch (err) {
+                    console.error('handleDocumentSelect error:', err);
+                    setGlobalError(`Failed to attach files: ${err.message}`);
+                } finally {
+                    if (e && e.target) {
+                        e.target.value = null;
+                    }
+                }
+            };
+            
             const addFilesToQueue = (files) => {
                 let filesAdded = 0;
                 for (const file of files) {
@@ -4832,6 +4858,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     editingSummary.value = false;
                     editingNotes.value = false;
                     
+                    // Load attached files for the new recording
+                    if (newVal?.id) {
+                        loadAttachedFiles();
+                    }
+                    
                     // Fix WebM duration issue by forcing metadata load
                     if (newVal?.id) {
                         nextTick(() => {
@@ -5101,6 +5132,139 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             };
 
+            // --- File Management Functions ---
+            const loadAttachedFiles = async () => {
+                if (!selectedRecording.value) return;
+                
+                isLoadingAttachedFiles.value = true;
+                try {
+                    const response = await fetch(`/api/recording/${selectedRecording.value.id}/files`);
+                    if (!response.ok) {
+                        throw new Error('Failed to load attached files');
+                    }
+                    const files = await response.json();
+                    attachedFiles.value = files;
+                } catch (error) {
+                    console.error('Error loading attached files:', error);
+                    setGlobalError(`Failed to load attached files: ${error.message}`);
+                    attachedFiles.value = [];
+                } finally {
+                    isLoadingAttachedFiles.value = false;
+                }
+            };
+
+            const previewFile = async (file) => {
+                try {
+                    // For image files, show preview in modal
+                    if (file.type && file.type.startsWith('image/')) {
+                        const response = await fetch(`/api/recording/${selectedRecording.value.id}/files/${file.id}/preview`);
+                        if (!response.ok) {
+                            throw new Error('Failed to load preview');
+                        }
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+                        
+                        // Create modal for image preview
+                        const modal = document.createElement('div');
+                        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+                        modal.innerHTML = `
+                            <div class="relative max-w-4xl max-h-screen p-4">
+                                <img src="${url}" alt="${file.filename}" class="max-w-full max-h-full object-contain">
+                                <button class="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                        document.body.appendChild(modal);
+                        
+                        // Close modal on click
+                        modal.addEventListener('click', () => {
+                            URL.revokeObjectURL(url);
+                            modal.remove();
+                        });
+                    } else {
+                        // For other file types, download them
+                        downloadAttachedFile(file);
+                    }
+                } catch (error) {
+                    console.error('Error previewing file:', error);
+                    setGlobalError(`Failed to preview file: ${error.message}`);
+                }
+            };
+
+            const downloadAttachedFile = async (file) => {
+                try {
+                    const response = await fetch(`/api/recording/${selectedRecording.value.id}/files/${file.id}/download`);
+                    if (!response.ok) {
+                        throw new Error('Failed to download file');
+                    }
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = file.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } catch (error) {
+                    console.error('Error downloading file:', error);
+                    setGlobalError(`Failed to download file: ${error.message}`);
+                }
+            };
+
+            const deleteAttachedFile = async (file) => {
+                if (!confirm(`Are you sure you want to delete "${file.filename}"? This action cannot be undone.`)) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/api/recording/${selectedRecording.value.id}/files/${file.id}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to delete file');
+                    }
+                    
+                    // Remove file from attachedFiles array
+                    const index = attachedFiles.value.findIndex(f => f.id === file.id);
+                    if (index !== -1) {
+                        attachedFiles.value.splice(index, 1);
+                    }
+                    
+                    showToast('File deleted successfully', 'fa-check-circle');
+                } catch (error) {
+                    console.error('Error deleting file:', error);
+                    setGlobalError(`Failed to delete file: ${error.message}`);
+                }
+            };
+
+            const unlinkFile = async (file) => {
+                if (!confirm(`Are you sure you want to unlink "${file.filename}" from this recording? The file will remain available for other recordings.`)) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/api/recording/${selectedRecording.value.id}/files/${file.id}/unlink`, {
+                        method: 'POST'
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to unlink file');
+                    }
+                    
+                    // Remove file from attachedFiles array
+                    const index = attachedFiles.value.findIndex(f => f.id === file.id);
+                    if (index !== -1) {
+                        attachedFiles.value.splice(index, 1);
+                    }
+                    
+                    showToast('File unlinked successfully', 'fa-check-circle');
+                } catch (error) {
+                    console.error('Error unlinking file:', error);
+                    setGlobalError(`Failed to unlink file: ${error.message}`);
+                }
+            };
+
             // --- Audio Format Detection ---
             const detectSupportedAudioFormats = () => {
                 const formats = [
@@ -5328,6 +5492,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 asrLanguage, asrMinSpeakers, asrMaxSpeakers,
                 availableTags, selectedTagIds, selectedTags, uploadTagSearchFilter, filteredAvailableTagsForUpload, onTagSelected, addTagToSelection, removeTagFromSelection,
                 showSystemAudioHelp,
+                documentUploads,
                 
                 // Modal State
                 showEditModal, showDeleteModal, showResetModal, editingRecording, recordingToDelete,
@@ -5366,14 +5531,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Methods
                 setGlobalError, formatFileSize, formatDisplayDate, formatStatus, getStatusClass, formatTime,
                 t, tc, changeLanguage,
-                toggleDarkMode, applyColorScheme, initializeColorScheme, openColorSchemeModal, 
+                toggleDarkMode, applyColorScheme, initializeColorScheme, openColorSchemeModal,
                 closeColorSchemeModal, selectColorScheme, resetColorScheme,
                 toggleSidebar, switchToUploadView, selectRecording,
-                handleDragOver, handleDragLeave, handleDrop, handleFileSelect, addFilesToQueue,
+                handleDragOver, handleDragLeave, handleDrop, handleFileSelect, handleDocumentSelect, addFilesToQueue,
                 startRecording, stopRecording, uploadRecordedAudio, discardRecording,
                 loadRecordings, loadMoreRecordings, performSearch, debouncedSearch, saveMetadata, editRecording, cancelEdit, saveEdit,
                 confirmDelete, cancelDelete, deleteRecording,
-                toggleEditParticipants, toggleEditMeetingDate, toggleEditSummary, cancelEditSummary, saveEditSummary, toggleEditNotes, 
+                toggleEditParticipants, toggleEditMeetingDate, toggleEditSummary, cancelEditSummary, saveEditSummary, toggleEditNotes,
                 cancelEditNotes, saveEditNotes, initializeMarkdownEditor, saveInlineEdit, clickToEditNotes, clickToEditSummary,
                 autoSaveNotes, autoSaveSummary,
                 sendChatMessage, isChatScrolledToBottom, scrollChatToBottom, startColumnResize, handleChatKeydown, seekAudio, seekAudioFromEvent, onPlayerVolumeChange,
@@ -5459,6 +5624,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 deleteShare,
                 copyShareLink,
                 
+                // File management functions
+                loadAttachedFiles,
+                previewFile,
+                downloadAttachedFile,
+                deleteAttachedFile,
+                unlinkFile,
+                
                 // Recording Size Monitoring
                 estimatedFileSize,
                 fileSizeWarningShown,
@@ -5468,7 +5640,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 sizeCheckInterval,
                 updateFileSizeEstimate,
                 startSizeMonitoring,
-                stopSizeMonitoring
+                stopSizeMonitoring,
+                
+                // File management state
+                attachedFiles,
+                isLoadingAttachedFiles
             }
         },
         delimiters: ['${', '}']

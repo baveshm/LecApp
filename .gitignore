@@ -8,6 +8,7 @@ __pycache__/
 *.pyc
 *.log
 .env
+.kilocode/
 .migrate/
 project_files.md
 *.md
