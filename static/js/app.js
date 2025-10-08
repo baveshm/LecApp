@@ -5138,7 +5138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 isLoadingAttachedFiles.value = true;
                 try {
-                    const response = await fetch(`/api/recording/${selectedRecording.value.id}/files`);
+                    const response = await fetch(`/api/recordings/${selectedRecording.value.id}/files`);
                     if (!response.ok) {
                         throw new Error('Failed to load attached files');
                     }
@@ -5155,37 +5155,120 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const previewFile = async (file) => {
                 try {
-                    // For image files, show preview in modal
-                    if (file.type && file.type.startsWith('image/')) {
-                        const response = await fetch(`/api/recording/${selectedRecording.value.id}/files/${file.id}/preview`);
-                        if (!response.ok) {
-                            throw new Error('Failed to load preview');
-                        }
+                    const response = await fetch(`/api/recordings/${selectedRecording.value.id}/files/${file.id}/preview`);
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to load preview');
+                    }
+                    
+                    const contentType = response.headers.get('Content-Type');
+                    const file_type = file.file_type ? file.file_type.toLowerCase() : '';
+                    
+                    // Handle different file types
+                    if (contentType && contentType.startsWith('image/')) {
+                        // Image preview
                         const blob = await response.blob();
                         const url = URL.createObjectURL(blob);
                         
-                        // Create modal for image preview
                         const modal = document.createElement('div');
-                        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+                        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
                         modal.innerHTML = `
-                            <div class="relative max-w-4xl max-h-screen p-4">
-                                <img src="${url}" alt="${file.filename}" class="max-w-full max-h-full object-contain">
-                                <button class="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                            <div class="relative bg-[var(--bg-secondary)] rounded-lg max-w-4xl max-h-[90vh] overflow-auto">
+                                <div class="sticky top-0 bg-[var(--bg-secondary)] border-b border-[var(--border-primary)] p-4 flex justify-between items-center">
+                                    <h3 class="text-lg font-semibold text-[var(--text-primary)]">${file.original_filename}</h3>
+                                    <button class="close-btn text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-2">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                <div class="p-4">
+                                    <img src="${url}" alt="${file.original_filename}" class="max-w-full h-auto">
+                                </div>
                             </div>
                         `;
                         document.body.appendChild(modal);
                         
-                        // Close modal on click
-                        modal.addEventListener('click', () => {
+                        modal.querySelector('.close-btn').addEventListener('click', () => {
                             URL.revokeObjectURL(url);
                             modal.remove();
                         });
+                        
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                URL.revokeObjectURL(url);
+                                modal.remove();
+                            }
+                        });
+                        
+                    } else if (contentType === 'application/pdf') {
+                        // PDF preview
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+                        
+                        const modal = document.createElement('div');
+                        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
+                        modal.innerHTML = `
+                            <div class="relative bg-[var(--bg-secondary)] rounded-lg w-full max-w-4xl h-[90vh] flex flex-col">
+                                <div class="bg-[var(--bg-secondary)] border-b border-[var(--border-primary)] p-4 flex justify-between items-center">
+                                    <h3 class="text-lg font-semibold text-[var(--text-primary)]">${file.original_filename} (First 2 pages)</h3>
+                                    <button class="close-btn text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-2">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                <div class="flex-1 overflow-hidden">
+                                    <iframe src="${url}" class="w-full h-full border-0"></iframe>
+                                </div>
+                            </div>
+                        `;
+                        document.body.appendChild(modal);
+                        
+                        modal.querySelector('.close-btn').addEventListener('click', () => {
+                            URL.revokeObjectURL(url);
+                            modal.remove();
+                        });
+                        
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                URL.revokeObjectURL(url);
+                                modal.remove();
+                            }
+                        });
+                        
+                    } else if (contentType && contentType.startsWith('text/')) {
+                        // Text preview
+                        const text = await response.text();
+                        
+                        const modal = document.createElement('div');
+                        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
+                        modal.innerHTML = `
+                            <div class="relative bg-[var(--bg-secondary)] rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col">
+                                <div class="bg-[var(--bg-secondary)] border-b border-[var(--border-primary)] p-4 flex justify-between items-center">
+                                    <h3 class="text-lg font-semibold text-[var(--text-primary)]">${file.original_filename} (Preview)</h3>
+                                    <button class="close-btn text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-2">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                <div class="flex-1 overflow-auto p-4">
+                                    <pre class="text-[var(--text-primary)] whitespace-pre-wrap font-mono text-sm">${text}</pre>
+                                </div>
+                            </div>
+                        `;
+                        document.body.appendChild(modal);
+                        
+                        modal.querySelector('.close-btn').addEventListener('click', () => {
+                            modal.remove();
+                        });
+                        
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                modal.remove();
+                            }
+                        });
+                        
                     } else {
-                        // For other file types, download them
-                        downloadAttachedFile(file);
+                        // Unsupported type - show error
+                        showToast('Preview not available for this file type', 'fa-exclamation-circle');
                     }
+                    
                 } catch (error) {
                     console.error('Error previewing file:', error);
                     setGlobalError(`Failed to preview file: ${error.message}`);
@@ -5194,7 +5277,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const downloadAttachedFile = async (file) => {
                 try {
-                    const response = await fetch(`/api/recording/${selectedRecording.value.id}/files/${file.id}/download`);
+                    const response = await fetch(`/api/recordings/${selectedRecording.value.id}/files/${file.id}/download`);
                     if (!response.ok) {
                         throw new Error('Failed to download file');
                     }
@@ -5219,7 +5302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 
                 try {
-                    const response = await fetch(`/api/recording/${selectedRecording.value.id}/files/${file.id}`, {
+                    const response = await fetch(`/api/recordings/${selectedRecording.value.id}/files/${file.id}`, {
                         method: 'DELETE'
                     });
                     if (!response.ok) {
@@ -5245,7 +5328,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 
                 try {
-                    const response = await fetch(`/api/recording/${selectedRecording.value.id}/files/${file.id}/unlink`, {
+                    const response = await fetch(`/api/recordings/${selectedRecording.value.id}/files/${file.id}/unlink`, {
                         method: 'POST'
                     });
                     if (!response.ok) {
@@ -5263,6 +5346,68 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.error('Error unlinking file:', error);
                     setGlobalError(`Failed to unlink file: ${error.message}`);
                 }
+            };
+            
+            const confirmDeleteAttachedFile = (file) => {
+                deleteAttachedFile(file);
+            };
+            
+            const refreshAttachedFiles = () => {
+                loadAttachedFiles();
+            };
+            
+            const getFileIcon = (fileType) => {
+                if (!fileType) return 'fas fa-file';
+                const type = fileType.toLowerCase();
+                
+                // Images
+                if (['png', 'jpg', 'jpeg', 'heic', 'webp'].includes(type)) {
+                    return 'fas fa-file-image';
+                }
+                // PDFs
+                if (type === 'pdf') {
+                    return 'fas fa-file-pdf';
+                }
+                // Word documents
+                if (['doc', 'docx'].includes(type)) {
+                    return 'fas fa-file-word';
+                }
+                // Excel spreadsheets
+                if (['xls', 'xlsx', 'csv'].includes(type)) {
+                    return 'fas fa-file-excel';
+                }
+                // PowerPoint
+                if (['ppt', 'pptx'].includes(type)) {
+                    return 'fas fa-file-powerpoint';
+                }
+                // Text files
+                if (['txt', 'md', 'rtf'].includes(type)) {
+                    return 'fas fa-file-alt';
+                }
+                // JSON
+                if (type === 'json') {
+                    return 'fas fa-file-code';
+                }
+                // Default
+                return 'fas fa-file';
+            };
+            
+            const formatDate = (dateString) => {
+                if (!dateString) return '';
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString(undefined, { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                } catch (e) {
+                    return dateString;
+                }
+            };
+            
+            const previewAttachedFile = (file) => {
+                previewFile(file);
             };
 
             // --- Audio Format Detection ---
@@ -5629,7 +5774,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 previewFile,
                 downloadAttachedFile,
                 deleteAttachedFile,
-                unlinkFile,
+                confirmDeleteAttachedFile,
+                refreshAttachedFiles,
+                getFileIcon,
+                formatDate,
+                previewAttachedFile,
                 
                 // Recording Size Monitoring
                 estimatedFileSize,

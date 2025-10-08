@@ -1,173 +1,119 @@
-# Speakr — Agent Runbook (Codex/Copilot)
+# Agent Memory & Project Runbook (`AGENTS.md`)
 
-This file is for an automated coding agent to reliably run the web server and make safe edits.
+**Instructions for Agent:** You have a limited context window. This document is your long-term memory and runbook. You **MUST** refer to it to understand the project structure, run the server, and make safe edits.
 
-- Default URL: http://localhost:8899
-- Default DB: SQLite (file lives under `./instance/` locally or `/data/instance/` in Docker)
-- Preferred start method: Docker Compose (fully reproducible)
+---
 
-## How to run the web server
+### **1. Core Objective**
 
-### Option A — Docker Compose (recommended)
+This project is a Flask-based web application named "LecApp" for audio transcription and summarization. The primary goal is to refactor its monolithic structure into a modular one and upgrade its chat functionality from a basic RAG implementation to an intelligent, tool-using **ReAct agent** using LangChain and Qdrant.
 
-Prereqs: Docker Desktop (macOS/Windows) or Docker Engine (Linux).
+---
 
-1) Prepare config at repo root
+### **2. CRITICAL - Refactored Project Structure**
 
+The application is no longer a single `app.py` file. The logic is now separated into the following modules inside the `src/` directory:
+
+*   **`src/app.py`**: **App Factory**. This is the main entry point. It contains the `create_app()` function which initializes the app, loads configuration, registers all blueprints, and contains the root routes (`/` and `/api/config`).
+
+*   **`src/extensions.py`**: **Flask Extensions**. Initializes all third-party Flask extensions (`db` for SQLAlchemy, `bcrypt`, `limiter`, `csrf`, `login_manager`).
+
+*   **`src/models.py`**: **Data Layer**. Defines all SQLAlchemy database models (like `User`, `Recording`, `Attachment`) and all WTForms classes (like `RegistrationForm`).
+
+*   **`src/utils.py`**: **Utilities**. Contains self-contained helper functions that do not depend on the Flask app context (e.g., `safe_json_loads`, `md_to_html`, `process_markdown_to_docx`).
+
+*   **`src/blueprints/`**: **Web Layer (Routes)**. This directory contains all the application's routes, organized by feature.
+    *   `auth.py`: Handles user registration, login, logout, and the `/account` page.
+    *   `recordings.py`: The largest blueprint. Handles the main recording list, file uploads, status polling, audio playback, transcription/summary/notes updates, speaker management, downloads, and the single-recording chat (`/chat`).
+    *   `attachments.py`: Handles all API endpoints for uploading, listing, previewing, and deleting attached files (`/api/recordings/.../files`).
+    *   `inquire.py`: Handles all "Inquire Mode" functionality, including the UI page (`/inquire`) and the multi-recording RAG chat (`/api/inquire/chat`).
+    *   `admin.py`: Contains all routes for the admin dashboard (`/admin`).
+    *   `tags_shares.py`: Contains all routes for managing tags and public share links.
+
+*   **`src/services/`**: **Business Logic Layer**. This is where the core "work" of the application happens.
+    *   `llm_service.py`: **Handles all LLM interactions.** This includes generating summaries, titles, identifying speakers, and **all logic for creating embeddings and performing semantic search**.
+    *   `transcription_service.py`: **Handles all audio transcription.** This includes calling the ASR endpoint or Whisper API, audio/video conversion, and audio chunking.
+    *   `vector_store_service.py`: **Handles all interaction with the Qdrant vector database.** This is the abstraction layer for vector search.
+    *   `file_monitor.py`: Contains the logic for the background service that automatically processes files dropped into a watch directory.
+
+---
+
+### **3. How to Run the Web Server (Agent Workflow)**
+
+**Prerequisites:** Python 3.11+, `ffmpeg`.
+
+**Step 1: Activate Virtual Environment (CRITICAL)**
+Before executing any Python command, you **MUST** run this:
 ```bash
-cp config/docker-compose.example.yml docker-compose.yml
-# Choose ONE env template
-cp config/env.whisper.example .env   # Whisper API (OpenAI-compatible)
-# or
-cp config/env.asr.example .env       # ASR endpoint + speaker diarization
-```
-
-2) Edit `.env` and set keys
-
-- Text model: `TEXT_MODEL_BASE_URL`, `TEXT_MODEL_API_KEY`, `TEXT_MODEL_NAME`
-- Whisper API flow: `TRANSCRIPTION_BASE_URL`, `TRANSCRIPTION_API_KEY`, `WHISPER_MODEL`
-- ASR flow: `USE_ASR_ENDPOINT=true`, `ASR_BASE_URL=http://whisper-asr:9000`
-- Admin bootstrap (auto-created on first run): `ADMIN_USERNAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`
-
-3) Create host data dirs
-
-```bash
-mkdir -p uploads instance
-```
-
-4) Start server
-
-```bash
-docker compose up -d
-```
-
-5) Health check
-
-- Open http://localhost:8899/login and confirm HTTP 200 and the login form renders
-- Logs: `docker compose logs -f app`
-- Stop: `docker compose down`
-
-Notes
-- For diarization, run the ASR webservice container too (see `docs/getting-started/installation.md`). On macOS use CPU image.
-
-### Option B — Run locally (Python)
-
-Prereqs: Python 3.11+, ffmpeg installed (macOS: `brew install ffmpeg`).
-
-1) Create venv and install deps
-
-```bash
-python3.11 -m venv .venv
 source .venv/bin/activate
-pip install --upgrade pip
+```
+
+**Step 2: Install/Update Dependencies**
+If you add a new package, pin it in `requirements.txt`, then run:
+```bash
 pip install -r requirements.txt
 ```
 
-2) Env and local paths
+**Step 3: Start the Development Server**
+To start the server in the background and log its output for later review, you **MUST** use the following command. This prevents the server from blocking your terminal.
 
 ```bash
-cp config/env.whisper.example .env   # or config/env.asr.example
+nohup flask run --host 0.0.0.0 --port 8899 > /tmp/lecapp_server.log 2>&1 &
 ```
 
-Required local overrides (keep data inside project directory):
+**Step 4: Verify Server is Running**
+After starting the server, confirm it is running correctly.
+- **Check Logs:** `tail -f /tmp/lecapp_server.log`
+- **Health Check URL:** Access `http://localhost:8899/login`. You should see the login page.
 
+**Step 5: Stop the Server**
+When you are finished, find and stop the Flask process.
 ```bash
-SQLALCHEMY_DATABASE_URI=sqlite:///./instance/transcriptions.db
-UPLOAD_FOLDER=./uploads
+ps aux | grep "flask run" | grep -v grep | awk '{print $2}' | xargs kill
 ```
 
-3) Create data dirs
+---
 
-```bash
-mkdir -p uploads instance
-```
+### **4. How to Test and Verify Changes**
 
-4) Create admin user (interactive)
+You are not required to write new test scripts. Use your primary capabilities (e.g., `bash`, `curl`, browser interaction) to verify changes.
 
-```bash
-python scripts/create_admin.py
-```
+**A. Manual Verification (Primary Method):**
+1.  Start the development server using the command in Step 3 above.
+2.  Open the application in a browser at `http://localhost:8899`.
+3.  Log in and manually navigate through the application to test the feature you have changed.
+4.  Observe the server logs for errors: `tail -f /tmp/lecapp_server.log`.
 
-5) Start server
+**B. Running Existing Automated Tests:**
+If you need to run the existing test suite to check for regressions:
+1.  Make sure your virtual environment is active.
+2.  Run the command: `pytest -q`
 
-- Production-like:
+---
 
-```bash
-gunicorn --workers 3 --bind 0.0.0.0:8899 --timeout 600 src.app:app
-```
+### **5. Common Tasks**
 
-- Dev server with auto-reload:
+*   **Reset Database (Local Development Only):**
+    If you need to clear all data and start fresh, run this script:
+    ```bash
+    python scripts/reset_db.py
+    ```
 
-```bash
-export FLASK_APP=src/app.py
-flask run --host 0.0.0.0 --port 8899
-```
+*   **Create an Admin User:**
+    If no admin user exists, run this interactive script:
+    ```bash
+    python scripts/create_admin.py
+    ```
 
-6) Health check
+---
 
-- Open http://localhost:8899/login and verify HTTP 200 with login page
-- Server logs appear in the same terminal
+### **6. Quick Reference**
 
-## Editing workflow for the agent
-
-Where to make changes
-- Backend routes, logic, and config: `src/app.py`
-- Templates (HTML/Jinja): `templates/` (e.g., `templates/index.html`, `templates/login.html`)
-- Frontend assets: `static/js/` and `static/css/`
-- Background helpers: `src/audio_chunking.py`, `src/file_monitor.py`
-- Scripts and utilities: `scripts/`
-- Tests: `tests/`
-
-Safe edit-and-verify loop (local dev)
-1) Ensure venv active and deps installed (see run locally steps)
-2) Run dev server: `flask run --host 0.0.0.0 --port 8899`
-3) Make code changes, save, and verify changes hot-reload in the browser
-4) Run tests (optional, see below)
-
-Safe edit-and-verify loop (Docker)
-1) Edit files on host (volumes are bind-mounted in example compose)
-2) If using gunicorn in container, it won’t auto-reload — restart container after edits:
-
-```bash
-docker compose restart app
-```
-
-Testing
-- If pytest isn’t available, install it: `pip install pytest`
-- Run all tests: `pytest -q`
-- Relevant suites live under `tests/` (e.g., inquire mode, JSON fix/preprocessing)
-
-Adding/Updating dependencies
-1) Add pinned package to `requirements.txt`
-2) Reinstall: `pip install -r requirements.txt`
-3) For Docker, rebuild image only if system deps change; otherwise container pulls prebuilt image
-
-Common tasks
-- Reset DB (local dev only): use `scripts/reset_db.py` to clear state
-- Recreate admin: rerun `scripts/create_admin.py` (local) or set `ADMIN_*` in `.env` (Docker) and restart
-- Change port: update `docker-compose.yml` mapping (e.g., `"8080:8899"`) or change `--port` in dev server
-
-## Options and flags you may need
-
-- Inquire Mode (semantic search): set `ENABLE_INQUIRE_MODE=true` in `.env`
-- Automated file processing: set `ENABLE_AUTO_PROCESSING=true` and configure `AUTO_PROCESS_*`
-- Chunking for large files (Whisper API flow only): `ENABLE_CHUNKING=true`, set `CHUNK_LIMIT`, `CHUNK_OVERLAP_SECONDS`
-
-## Troubleshooting quick refs
-
-- Port in use: adjust compose port mapping or stop the other process
-- Admin login fails: confirm `.env` values and admin creation step
-- ASR features missing: ensure `USE_ASR_ENDPOINT=true` and `ASR_BASE_URL` points to reachable service
-- ffmpeg missing errors: install ffmpeg (macOS: `brew install ffmpeg`)
-
-## Quick reference
-
-- App URL: http://localhost:8899
-- Docker logs: `docker compose logs -f app`
-- Local logs: printed to terminal; adjust `LOG_LEVEL` in `.env`
-- Data paths (Docker): host `./uploads` and `./instance` map into container
-- Data paths (Local): controlled by `UPLOAD_FOLDER` and `SQLALCHEMY_DATABASE_URI`
-
-—
-
-For deeper details, see `README.md` and `docs/getting-started/installation.md`.
+| Item | Value / Command |
+| :--- | :--- |
+| **Application URL** | `http://localhost:8899` |
+| **Server Log File** | `/tmp/lecapp_server.log` |
+| **Local Database Path** | `./instance/transcriptions.db` (controlled by `.env`) |
+| **Local Uploads Path**| `./uploads` (controlled by `.env`) |
+| **Enable Inquire Mode**| In `.env`, set `ENABLE_INQUIRE_MODE=true` |
+| **Enable Auto-Processing**| In `.env`, set `ENABLE_AUTO_PROCESSING=true` |

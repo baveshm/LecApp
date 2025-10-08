@@ -8,22 +8,19 @@ from email_validator import validate_email, EmailNotValidError
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Try to import from app context
+# Import using the app factory pattern
 try:
-    from flask import current_app
-    app = current_app._get_current_object()
-    with app.app_context():
-        db = app.extensions['sqlalchemy'].db
-        User = app.extensions['sqlalchemy'].db.metadata.tables['user']
-        bcrypt = app.extensions.get('bcrypt')
-except (RuntimeError, AttributeError, KeyError):
-    # If not in app context, import directly
-    try:
-        from src.app import app, db, User, bcrypt
-    except ImportError as e:
-        print(f"Error: Could not import required modules: {e}")
-        print("Make sure create_admin.py is runnable and PYTHONPATH is set.")
-        sys.exit(1)
+    from src.app import create_app
+    from src.extensions import db, bcrypt
+    from src.models import User
+    
+    # Create app instance
+    app = create_app()
+    
+except ImportError as e:
+    print(f"Error: Could not import required modules: {e}")
+    print("Make sure create_admin.py is runnable and PYTHONPATH is set.")
+    sys.exit(1)
 
 def create_admin_user():
     """
@@ -51,8 +48,9 @@ def create_admin_user():
     while True:
         email = input("Enter email address: ").strip()
         try:
-            # Validate email
-            validate_email(email)
+            # Basic email validation (simpler for script usage)
+            if '@' not in email or '.' not in email.split('@')[1]:
+                raise EmailNotValidError("Please enter a valid email address")
             
             # Check if email already exists
             with app.app_context():

@@ -119,13 +119,13 @@
                         <a href="{{ url_for('index') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-accent)]">
                             <i class="fas fa-home mr-2"></i> ${t('nav.home')}
                         </a>
-                        <a href="{{ url_for('account') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-accent)]">
+                        <a href="{{ url_for('auth.account') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-accent)]">
                             <i class="fas fa-user mr-2"></i> ${t('nav.account')}
                         </a>
-                        <a href="{{ url_for('admin') }}" class="block px-4 py-2 text-[var(--text-accent)] bg-[var(--bg-accent)]">
+                        <a href="{{ url_for('admin.admin') }}" class="block px-4 py-2 text-[var(--text-accent)] bg-[var(--bg-accent)]">
                             <i class="fas fa-user-shield mr-2"></i> ${t('nav.admin')}
                         </a>
-                        <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-danger)]">
+                        <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-danger)]">
                             <i class="fas fa-sign-out-alt mr-2"></i> ${t('nav.signOut')}
                         </a>
                     </div>
@@ -963,7 +963,7 @@ Summarization Instructions:
             const i18nInstance = window.i18n;
             
             createApp({
-            setup() {
+                setup() {
                 
                 // State
                 const activeTab = ref('users');
@@ -1484,7 +1484,7 @@ Summarization Instructions:
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+                                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                             },
                             body: JSON.stringify({
                                 key: 'admin_default_summary_prompt',
@@ -1759,7 +1759,7 @@ Summarization Instructions:
                     resetDefaultPrompt
                 };
             },
-            delimiters: ['${', '}'] // Use different delimiters to avoid conflict with Flask's Jinja2
+            delimiters: ['${', '}'], // Use different delimiters to avoid conflict with Flask's Jinja2
         }).mount('#app');
 
         // Hide loading overlay after Vue is mounted
@@ -1776,7 +1776,6 @@ Summarization Instructions:
             } else {
                 document.body.classList.remove('app-loading');
             }
-        });
         }); // End of initializeI18n().then()
     </script>
 </body>

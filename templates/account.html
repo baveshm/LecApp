@@ -109,7 +109,7 @@
                 formData.append('output_language', document.getElementById('output_language').value || '');
                 
                 // Send AJAX request to update language preference
-                const response = await fetch('{{ url_for("account") }}', {
+                const response = await fetch('{{ url_for("auth.account") }}', {
                     method: 'POST',
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
@@ -347,15 +347,15 @@
                         <a href="{{ url_for('index') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-accent)]">
                             <i class="fas fa-home mr-2"></i> <span data-i18n="nav.home">Home</span>
                         </a>
-                        <a href="{{ url_for('account') }}" class="block px-4 py-2 text-[var(--text-accent)] bg-[var(--bg-accent)]">
+                        <a href="{{ url_for('auth.account') }}" class="block px-4 py-2 text-[var(--text-accent)] bg-[var(--bg-accent)]">
                             <i class="fas fa-user-circle mr-2"></i> <span data-i18n="nav.account">Account</span>
                         </a>
                         {% if current_user.is_admin %}
-                        <a href="{{ url_for('admin') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-accent)]">
+                        <a href="{{ url_for('admin.admin') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-accent)]">
                             <i class="fas fa-user-shield mr-2"></i> <span data-i18n="nav.admin">Admin</span>
                         </a>
                         {% endif %}
-                        <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-danger)]">
+                        <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-danger)]">
                             <i class="fas fa-sign-out-alt mr-2"></i> <span data-i18n="nav.signOut">Logout</span>
                         </a>
                     </div>
@@ -419,7 +419,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Left Column: Form -->
                     <div>
-                        <form id="accountInfoForm" method="POST" action="{{ url_for('account') }}" class="space-y-6">
+                        <form id="accountInfoForm" method="POST" action="{{ url_for('auth.account') }}" class="space-y-6">
                             <div class="mb-6">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <h3 class="text-lg font-medium text-[var(--text-secondary)] mb-2" data-i18n="account.personalInfo">Personal Information</h3>
@@ -542,7 +542,7 @@
                     <div id="content-prompts" class="hidden tab-content pt-6">
                     <h2 class="text-2xl font-semibold text-[var(--text-primary)] mb-6" data-i18n="accountTabs.promptOptions">Prompt Options</h2>
 
-                    <form id="customPromptsForm" method="POST" action="{{ url_for('account') }}" class="space-y-6">
+                    <form id="customPromptsForm" method="POST" action="{{ url_for('auth.account') }}" class="space-y-6">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
                         <!-- Event Extraction Settings -->
@@ -999,7 +999,7 @@
                 <h3 class="text-xl font-semibold text-[var(--text-primary)]" data-i18n="account.changePassword">Change Password</h3>
                 <button id="closeModalBtn" class="text-[var(--text-light)] hover:text-[var(--text-muted)] text-2xl leading-none">&times;</button>
             </div>
-            <form id="changePasswordForm" method="POST" action="{{ url_for('change_password') }}">
+            <form id="changePasswordForm" method="POST" action="{{ url_for('auth.change_password') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="mb-4">
                     <label for="current_password" class="block text-sm font-medium text-[var(--text-secondary)] mb-1" data-i18n="changePasswordModal.currentPassword">Current Password</label>

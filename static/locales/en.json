@@ -678,6 +678,7 @@
   },
   "recording": {
     "acceptDisclaimer": "I Accept",
+    "attachedFiles": "Attached Files",
     "cancelRecording": "Cancel",
     "disclaimer": "Recording Disclaimer",
     "microphone": "Microphone",

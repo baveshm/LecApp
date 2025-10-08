@@ -5,7 +5,16 @@ This script will chunk and vectorize all existing recordings that haven't been p
 """
 import os
 import sys
-from src.app import app, db, Recording, TranscriptChunk, process_recording_chunks
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.app import create_app
+from src.extensions import db
+from src.models import Recording, TranscriptChunk
+from src.services.llm_service import process_recording_chunks
+
+app = create_app()
 
 def count_recordings_needing_processing():
     """Count how many recordings need chunk processing."""

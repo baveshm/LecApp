@@ -75,7 +75,7 @@
                     {% endif %}
                 {% endwith %}
                 
-                <form method="POST" action="{{ url_for('register') }}">
+                <form method="POST" action="{{ url_for('auth.register') }}">
                     {{ form.hidden_tag() }}
                     
                     <div class="mb-4">
@@ -140,7 +140,7 @@
                         
                         <div class="text-center text-sm text-[var(--text-muted)]">
                             <span>Already have an account?</span>
-                            <a href="{{ url_for('login') }}" class="font-medium text-[var(--text-accent)] hover:underline">Login here</a>
+                            <a href="{{ url_for('auth.login') }}" class="font-medium text-[var(--text-accent)] hover:underline">Login here</a>
                         </div>
                     </div>
                 </form>

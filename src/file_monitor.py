@@ -81,7 +81,9 @@ class FileMonitor:
             return
         
         # Import Flask components inside function to avoid circular imports
-        from src.app import app, db, User
+        from src.app import app
+        from src.extensions import db
+        from src.models import User
             
         with app.app_context():
             try:
@@ -275,7 +277,10 @@ class FileMonitor:
             user_id (int): ID of the user to assign the recording to
         """
         # Import Flask components inside function to avoid circular imports
-        from src.app import app, db, Recording, User, transcribe_audio_task
+        from src.app import app
+        from src.extensions import db
+        from src.models import Recording, User
+        from src.services.transcription_service import transcribe_audio_task
         
         with app.app_context():
             try:
